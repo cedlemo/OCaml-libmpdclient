@@ -1,0 +1,17 @@
+Name: ocaml-libmpdclient
+Version: 0.1
+Synopsis: A mpd client library.
+Authors: cedlemo <cedlemo@gmx.com>
+License: LGPL with OCaml linking exception
+
+Description: This is an attempt to write a library in order to access to the mpd server.
+Homepage: https://github.com/cedlemo/OCaml-libmpdclient
+
+OASISFormat: 0.4
+BuildTools: ocamlbuild
+Plugins: META (0.4), DevFiles (0.4)
+
+Library "ocaml-libmpdclient"
+  Path: src
+  Modules: Mpd
+  InternalModules: Mpd_responses, MpdClient
