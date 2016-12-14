@@ -1,10 +1,10 @@
 (* ocamlfind ocamlc -o test -package oUnit,str -linkpkg -g mpd_responses.ml mpd.ml test.ml *)
-open OUnit2
-open Mpd
-open Mpd_responses
+(* ocamlfind ocamlc -o test -package oUnit,str,libmpdclient -linkpkg -g test.ml *)
 
-let test_ok test_ctxt =  assert_equal Ok (Mpd.parse_response "OK\n")
-let test_error_50 test_ctxt =  assert_equal true (let response = Mpd.parse_response "ACK [50@1] {play} error while playing\n" in
+open OUnit2
+
+let test_ok test_ctxt =  assert_equal Ok (LibMpd.parse_response "OK\n")
+let test_error_50 test_ctxt =  assert_equal true (let response = MpdResponses.parse_response "ACK [50@1] {play} error while playing\n" in
 match response with
 | Ok -> false
 | Error (er_val, cmd_num, cmd, message) -> er_val = No_exist && cmd_num = 1 && cmd = "play" &&

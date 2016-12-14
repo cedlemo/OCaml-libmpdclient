@@ -1,4 +1,4 @@
-Name: ocaml-libmpdclient
+Name: libmpdclient
 Version: 0.1
 Synopsis: A mpd client library.
 Authors: cedlemo <cedlemo@gmx.com>
@@ -11,7 +11,6 @@ OASISFormat: 0.4
 BuildTools: ocamlbuild
 Plugins: META (0.4), DevFiles (0.4)
 
-Library "ocaml-libmpdclient"
+Library "libmpdclient"
   Path: src
-  Modules: Mpd
-  InternalModules: Mpd_responses, MpdClient
+  Modules: LibMpd
