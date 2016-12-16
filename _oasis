@@ -13,4 +13,4 @@ Plugins: META (0.4), DevFiles (0.4)
 
 Library "libmpdclient"
   Path: src
-  Modules: LibMpd
+  Modules: Mpd
