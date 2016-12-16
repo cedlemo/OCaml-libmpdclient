@@ -10,16 +10,8 @@ let host = "127.0.0.1"
 let port = 6600
 
 let () =
-(*  let server_addr = Mpd.get_server_address host in
-    let sock = socket PF_INET SOCK_STREAM 0 in
-      connect sock (ADDR_INET(server_addr, port));
-      print_endline ("received: " ^ (Mpd.read sock));
-      Mpd.write sock (Sys.argv.(1) ^"\n");
-      print_endline ("received: " ^ (Mpd.read sock));
-      close sock;
-      *)
-      let client = LibMpd.Client.initialize host port in
-      print_endline ("received: " ^ (LibMpd.Client.read client));
-      LibMpd.Client.write client (Sys.argv.(1) ^"\n");
-      print_endline ("received: " ^ (LibMpd.Client.read client));
-      LibMpd.Client.close client;
+   let connection = Mpd.Connection.initialize host port in
+   print_endline ("received: " ^ (Mpd.Client.read connection));
+   Mpd.Client.write connection (Sys.argv.(1) ^"\n");
+   print_endline ("received: " ^ (Mpd.Client.read connection));
+   Mpd.Connection.close connection;
