@@ -14,3 +14,17 @@ Plugins: META (0.4), DevFiles (0.4)
 Library "libmpdclient"
   Path: src
   Modules: Mpd,Protocol
+
+Executable mpdclient_test_unit
+  Path: tests
+  Build$: flag(tests)
+  Install: false
+  CompiledObject: best
+  MainIs: test.ml
+  BuildDepends: oUnit, libmpdclient
+
+Test "mpdclient_test_unit"
+  Run$: flag(tests)
+  TestTools: mpdclient_test_unit
+  Command: $mpdclient_test_unit
+  WorkingDirectory: tests
