@@ -10,3 +10,11 @@ Later it should be inspired by the C [libmpdclient](https://www.musicpd.org/libs
     ./configure
     make
     make install
+
+# Build and test
+
+    oasis setup -setup-update dynamic
+    ./configure --enable-tests
+    make test
+
+
