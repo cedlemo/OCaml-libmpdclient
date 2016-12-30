@@ -17,4 +17,14 @@ Later it should be inspired by the C [libmpdclient](https://www.musicpd.org/libs
     ./configure --enable-tests
     make test
 
+# Test sample :
+
+    ./try_mpd_queries.native "play"
+    received: OK MPD 0.19.0
+
+    received: OK
+    ./try_mpd_queries.native "stop"
+    received: OK MPD 0.19.0
+
+    received: OK
 
