@@ -31,6 +31,11 @@ open Unix
  * TODO create a Client connection that takes a connection
  * mpd client api *)
 
+(** Libmpd client main module *)
+
+(** Connection module :
+   Offers functions in order to handle connections to the mpd server at the
+   socket level *)
 module Connection : sig
   type c
 
@@ -38,9 +43,12 @@ module Connection : sig
   val close : c -> unit
   val socket: c -> Unix.file_descr
 end = struct
+
+  (** connection type *)
   type c =
     { hostname : string; port : int; ip : Unix.inet_addr; socket : Unix.file_descr }
 
+  (** Create the connection, exist is the connection can not be initialized. *)
   let initialize hostname port =
     let ip = try (Unix.gethostbyname hostname).h_addr_list.(0)
              with Not_found ->
@@ -50,10 +58,12 @@ end = struct
     in let _ = Unix.connect socket (ADDR_INET(ip, port))
     in { hostname = hostname; port = port; ip = ip; socket = socket}
 
+  (** Close the connection *)
   let close { socket; _} =
     let _ = Unix.set_nonblock socket
     in Unix.close socket
 
+  (** Get the socket on which the connection is based *)
   let socket { socket; _} = socket
 end
 
@@ -61,11 +71,14 @@ module Client : sig
   val write: Connection.c -> string -> unit
   val read: Connection.c -> string
 end = struct
+
+  (** Write to an Mpd connection *)
   let write c str =
     let socket = Connection.socket c in
     let len = String.length str in
     ignore(send socket str 0 len [])
 
+  (** Read in an Mpd connection *)
   let read c =
     let socket = Connection.socket c in
     let _ = Unix.set_nonblock socket in

@@ -35,3 +35,13 @@ Executable "foo"
   MainIs: try_mpd_queries.ml
   CompiledObject: best
   BuildDepends: libmpdclient
+
+AlphaFeatures: ocamlbuild_more_args
+Document "libmpdclient_doc"
+  Type: ocamlbuild (0.4)
+  BuildTools: ocamldoc
+  Title: API reference for Mpd
+  XOCamlbuildPath: .
+  XOCamlbuildExtraArgs:
+    "-docflags '-colorize-code -short-functors -charset utf-8'"
+  XOCamlbuildLibraries: libmpdclient
