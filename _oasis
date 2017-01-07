@@ -30,7 +30,7 @@ Test "mpdclient_test_unit"
   Command: $mpdclient_test_unit
   WorkingDirectory: tests
 
-Executable "foo"
+Executable "try_mpd_queries"
   Path: samples
   MainIs: try_mpd_queries.ml
   CompiledObject: best
