@@ -33,6 +33,14 @@ Test "mpdclient_test_unit"
 Executable "try_mpd_queries"
   Path: samples
   MainIs: try_mpd_queries.ml
+
+  CompiledObject: best
+  BuildDepends: libmpdclient
+
+Executable "mpd_status_query"
+  Path: samples
+  MainIs: mpd_status_query.ml
+  Install: false
   CompiledObject: best
   BuildDepends: libmpdclient
 
