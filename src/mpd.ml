@@ -70,6 +70,7 @@ end
 module Client : sig
   val write: Connection.c -> string -> unit
   val read: Connection.c -> string
+  val read_lines: Connection.c -> string list
 end = struct
 
   (** Write to an Mpd connection *)
@@ -90,4 +91,9 @@ end = struct
         with
         | Unix_error(Unix.EAGAIN, _, _) -> if acc = [] then _read s acc else acc
     in String.concat "" (List.rev (_read socket []))
+
+  (** Read an Mpd response and returns a list of strings *)
+  let read_lines c =
+    let response = read c in
+    Str.split (Str.regexp "\n") response
 end
