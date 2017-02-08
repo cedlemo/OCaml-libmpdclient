@@ -69,12 +69,35 @@ end
 
 module Client : sig
   type status_type
+  type state_type
+
+  val bool_of_int_str: string -> bool
   val write: Connection.c -> string -> unit
   val read: Connection.c -> string
   val read_lines: Connection.c -> string list
   val status: Connection.c -> status_type
   val volume: status_type -> int
-  val bool_of_int_str: string -> bool
+  val repeat: status_type -> bool
+  val random: status_type -> bool
+  val single: status_type -> bool
+  val consume: status_type -> bool
+  val playlist: status_type -> int
+  val playlistlength: status_type -> int
+  val state: status_type -> state_type
+  val song: status_type -> int
+  val songid: status_type -> int
+  val nextsong: status_type -> int
+  val nextsongid: status_type -> int
+  val time: status_type -> float
+  val elapsed: status_type -> float
+  val duration: status_type -> float
+  val bitrate: status_type -> int
+  val xfade: status_type -> int
+  val mixrampdb: status_type -> float
+  val mixrampdelay: status_type -> int
+  val audio: status_type -> string
+  val updating_db: status_type -> int
+  val error: status_type -> string
 end = struct
 
   (** Write to an Mpd connection *)
@@ -109,7 +132,7 @@ end = struct
     let v =  List.hd (List.rev two_str_list) in
     {key = List.hd two_str_list; value = v}
 
-  type state = Play | Pause | Stop | ErrState
+  type state_type = Play | Pause | Stop | ErrState
 
   let state_of_string str =
     match str with
@@ -126,7 +149,7 @@ end = struct
     consume: bool; (** false or true *)
     playlist: int; (** 31-bit unsigned integer, the playlist version number *)
     playlistlength: int; (** the length of the playlist *)
-    state: state; (** play, stop, or pause *)
+    state: state_type; (** play, stop, or pause *)
     song: int; (** playlist song number of the current song stopped on or playing *)
     songid: int; (** playlist songid of the current song stopped on or playing *)
     nextsong: int; (** playlist song number of the next song to be played *)
@@ -206,6 +229,47 @@ end = struct
       in parse status_pairs initial_status
 
   let volume {volume = v; _} =
-   v
-
+    v
+  let repeat {repeat = r; _} =
+    r
+  let random {random = r; _} =
+    r
+  let single {single = s; _} =
+    s
+  let consume {consume = c; _} =
+    c
+  let playlist {playlist = p; _} =
+    p
+  let playlistlength {playlistlength =p; _} =
+    p
+  let state {state = s; _} =
+    s
+  let song {song = s; _} =
+    s
+  let songid {songid = s; _} =
+    s
+  let nextsong {nextsong = n; _} =
+    n
+  let nextsongid {nextsongid = n; _} =
+    n
+  let time {time = t; _} =
+    t
+  let elapsed {elapsed = e; _} =
+    e
+  let duration {duration = d; _} =
+    d
+  let bitrate {bitrate = b; _} =
+    b
+  let xfade {xfade = x; _} =
+    x
+  let mixrampdb {mixrampdb = m; _} =
+    m
+  let mixrampdelay {mixrampdelay = m; _} =
+    m
+  let audio {audio = a; _} =
+    a
+  let updating_db {updating_db = u; _} =
+    u
+  let error {error = e; _} =
+    e
 end
