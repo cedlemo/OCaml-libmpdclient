@@ -67,72 +67,37 @@ end = struct
   let socket { socket; _} = socket
 end
 
-module Client : sig
-  type status_type
-  type state_type
+module Status : sig
+  type s
+  type state
 
-  val bool_of_int_str: string -> bool
-  val write: Connection.c -> string -> unit
-  val read: Connection.c -> string
-  val read_lines: Connection.c -> string list
-  val status: Connection.c -> status_type
-  val volume: status_type -> int
-  val repeat: status_type -> bool
-  val random: status_type -> bool
-  val single: status_type -> bool
-  val consume: status_type -> bool
-  val playlist: status_type -> int
-  val playlistlength: status_type -> int
-  val state: status_type -> state_type
-  val song: status_type -> int
-  val songid: status_type -> int
-  val nextsong: status_type -> int
-  val nextsongid: status_type -> int
-  val time: status_type -> float
-  val elapsed: status_type -> float
-  val duration: status_type -> float
-  val bitrate: status_type -> int
-  val xfade: status_type -> int
-  val mixrampdb: status_type -> float
-  val mixrampdelay: status_type -> int
-  val audio: status_type -> string
-  val updating_db: status_type -> int
-  val error: status_type -> string
+  val empty : s
+
+  val parse: string list -> s
+  val volume: s -> int
+  val repeat: s -> bool
+  val random: s -> bool
+  val single: s -> bool
+  val consume: s -> bool
+  val playlist: s -> int
+  val playlistlength: s -> int
+  val state: s -> state
+  val song: s -> int
+  val songid: s -> int
+  val nextsong: s -> int
+  val nextsongid: s -> int
+  val time: s -> float
+  val elapsed: s -> float
+  val duration: s -> float
+  val bitrate: s -> int
+  val xfade: s -> int
+  val mixrampdb: s -> float
+  val mixrampdelay: s -> int
+  val audio: s -> string
+  val updating_db: s -> int
+  val error: s -> string
 end = struct
-
-  (** Write to an Mpd connection *)
-  let write c str =
-    let socket = Connection.socket c in
-    let len = String.length str in
-    ignore(send socket str 0 len [])
-
-  (** Read in an Mpd connection *)
-  let read c =
-    let socket = Connection.socket c in
-    let _ = Unix.set_nonblock socket in
-    let str = Bytes.create 128 in
-    let rec _read s acc =
-        try
-          let recvlen = Unix.recv s str 0 128 [] in
-          let recvstr = String.sub str 0 recvlen in _read s (recvstr :: acc)
-        with
-        | Unix_error(Unix.EAGAIN, _, _) -> if acc = [] then _read s acc else acc
-    in String.concat "" (List.rev (_read socket []))
-
-  (** Read an Mpd response and returns a list of strings *)
-  let read_lines c =
-    let response = read c in
-    Str.split (Str.regexp "\n") response
-
-  type pair = { key : string; value : string }
-
-  let read_key_val str =
-    let pattern = Str.regexp ": " in
-    let two_str_list = Str.bounded_split pattern str 2 in
-    let v =  List.hd (List.rev two_str_list) in
-    {key = List.hd two_str_list; value = v}
-
-  type state_type = Play | Pause | Stop | ErrState
+  type state = Play | Pause | Stop | ErrState
 
   let state_of_string str =
     match str with
@@ -141,7 +106,7 @@ end = struct
     | "stop" -> Stop
     | _ -> ErrState
 
-  type status_type =
+  type s =
   { volume: int; (** 0-100 *)
     repeat: bool; (** false or true *)
     random: bool; (** false or true *)
@@ -149,7 +114,7 @@ end = struct
     consume: bool; (** false or true *)
     playlist: int; (** 31-bit unsigned integer, the playlist version number *)
     playlistlength: int; (** the length of the playlist *)
-    state: state_type; (** play, stop, or pause *)
+    state: state; (** play, stop, or pause *)
     song: int; (** playlist song number of the current song stopped on or playing *)
     songid: int; (** playlist songid of the current song stopped on or playing *)
     nextsong: int; (** playlist song number of the next song to be played *)
@@ -165,68 +130,77 @@ end = struct
     updating_db: int; (** job id *)
     error: string; (** there is an error, returns message here *)
   }
+
+  let empty =
+    {
+      volume = 0;
+      repeat = false;
+      random = false;
+      single = false;
+      consume = false;
+      playlist = 0;
+      playlistlength = 0;
+      state = Stop;
+      song = 0;
+      songid = 0;
+      nextsong = 0;
+      nextsongid = 0;
+      time = 0.0;
+      elapsed = 0.0;
+      duration = 0.0;
+      bitrate = 0;
+      xfade = 0;
+      mixrampdb = 0.0;
+      mixrampdelay = 0;
+      audio = "";
+      updating_db = 0;
+      error = "";
+    }
+
   let bool_of_int_str b =
     match b with
     | "0" -> false
     | _   -> true
 
-  let status c =
-    let _ = write c "status\n" in
-    let status_pairs = read_lines c in
-    let rec parse pairs s =
+  type pair = { key : string; value : string }
+
+  let read_key_val str =
+    let pattern = Str.regexp ": " in
+    let two_str_list = Str.bounded_split pattern str 2 in
+    let v =  List.hd (List.rev two_str_list) in
+    {key = List.hd two_str_list; value = v}
+
+
+  let parse lines =
+    let rec _parse pairs s =
       match pairs with
       | [] -> s
       | p :: remain -> let { key = k; value = v} = read_key_val p in
       match k with
-        | "volume" -> parse remain { s with volume = int_of_string v }
-        | "repeat" -> parse remain { s with repeat = bool_of_int_str v }
-        | "random" -> parse remain { s with random = bool_of_int_str v }
-        | "single" -> parse remain { s with single = bool_of_int_str v }
-        | "consume" -> parse remain { s with consume = bool_of_int_str v }
-        | "playlist" -> parse remain { s with playlist = int_of_string v }
-        | "playlistlength" -> parse remain { s with playlistlength = int_of_string v }
-        | "state" -> parse remain { s with state = state_of_string v }
-        | "song" -> parse remain { s with song = int_of_string v }
-        | "songid" -> parse remain { s with songid = int_of_string v }
-        | "nextsong" -> parse remain { s with nextsong = int_of_string v }
-        | "nextsongid" -> parse remain { s with nextsongid = int_of_string v }
-        | "time" -> parse remain { s with time = float_of_string v }
-        | "elapsed" -> parse remain { s with elapsed = float_of_string v }
-        | "duration" -> parse remain { s with duration = float_of_string v }
-        | "bitrate" -> parse remain { s with bitrate = int_of_string v }
-        | "xfade" -> parse remain { s with xfade = int_of_string v }
-        | "mixrampdb" -> parse remain { s with mixrampdb = float_of_string v }
-        | "mixrampdelay" -> parse remain { s with mixrampdelay = int_of_string v }
-        | "audio" -> parse remain { s with audio = v }
-        | "updating_db" -> parse remain { s with updating_db = int_of_string v }
-        | "error" -> parse remain { s with error = v }
-        | _ -> parse remain s
-      in let initial_status =
-        {
-          volume = 0;
-          repeat = false;
-          random = false;
-          single = false;
-          consume = false;
-          playlist = 0;
-          playlistlength = 0;
-          state = Stop;
-          song = 0;
-          songid = 0;
-          nextsong = 0;
-          nextsongid = 0;
-          time = 0.0;
-          elapsed = 0.0;
-          duration = 0.0;
-          bitrate = 0;
-          xfade = 0;
-          mixrampdb = 0.0;
-          mixrampdelay = 0;
-          audio = "";
-          updating_db = 0;
-          error = "";
-        }
-      in parse status_pairs initial_status
+        | "volume" -> _parse remain { s with volume = int_of_string v }
+        | "repeat" -> _parse remain { s with repeat = bool_of_int_str v }
+        | "random" -> _parse remain { s with random = bool_of_int_str v }
+        | "single" -> _parse remain { s with single = bool_of_int_str v }
+        | "consume" -> _parse remain { s with consume = bool_of_int_str v }
+        | "playlist" -> _parse remain { s with playlist = int_of_string v }
+        | "playlistlength" -> _parse remain { s with playlistlength = int_of_string v }
+        | "state" -> _parse remain { s with state = state_of_string v }
+        | "song" -> _parse remain { s with song = int_of_string v }
+        | "songid" -> _parse remain { s with songid = int_of_string v }
+        | "nextsong" -> _parse remain { s with nextsong = int_of_string v }
+        | "nextsongid" -> _parse remain { s with nextsongid = int_of_string v }
+        | "time" -> _parse remain { s with time = float_of_string v }
+        | "elapsed" -> _parse remain { s with elapsed = float_of_string v }
+        | "duration" -> _parse remain { s with duration = float_of_string v }
+        | "bitrate" -> _parse remain { s with bitrate = int_of_string v }
+        | "xfade" -> _parse remain { s with xfade = int_of_string v }
+        | "mixrampdb" -> _parse remain { s with mixrampdb = float_of_string v }
+        | "mixrampdelay" -> _parse remain { s with mixrampdelay = int_of_string v }
+        | "audio" -> _parse remain { s with audio = v }
+        | "updating_db" -> _parse remain { s with updating_db = int_of_string v }
+        | "error" -> _parse remain { s with error = v }
+        | _ -> _parse remain s
+      in _parse lines empty
 
   let volume {volume = v; _} =
     v
@@ -272,4 +246,41 @@ end = struct
     u
   let error {error = e; _} =
     e
+end
+
+module Client : sig
+  val write: Connection.c -> string -> unit
+  val read: Connection.c -> string
+  val read_lines: Connection.c -> string list
+  val status: Connection.c -> Status.s
+end = struct
+
+  (** Write to an Mpd connection *)
+  let write c str =
+    let socket = Connection.socket c in
+    let len = String.length str in
+    ignore(send socket str 0 len [])
+
+  (** Read in an Mpd connection *)
+  let read c =
+    let socket = Connection.socket c in
+    let _ = Unix.set_nonblock socket in
+    let str = Bytes.create 128 in
+    let rec _read s acc =
+        try
+          let recvlen = Unix.recv s str 0 128 [] in
+          let recvstr = String.sub str 0 recvlen in _read s (recvstr :: acc)
+        with
+        | Unix_error(Unix.EAGAIN, _, _) -> if acc = [] then _read s acc else acc
+    in String.concat "" (List.rev (_read socket []))
+
+  (** Read an Mpd response and returns a list of strings *)
+  let read_lines c =
+    let response = read c in
+    Str.split (Str.regexp "\n") response
+
+  let status c =
+    let _ = write c "status\n" in
+    let status_pairs = read_lines c in
+    Status.parse status_pairs
 end
