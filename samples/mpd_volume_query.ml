@@ -13,6 +13,6 @@ let () =
    let connection = Mpd.Connection.initialize host port in
    print_endline ("received: " ^ (Mpd.Client.read connection));
    let s = Mpd.Client.status connection in
-   let vol = Mpd.Client.volume s in
+   let vol = Mpd.Status.volume s in
    print_endline (string_of_int vol);
    Mpd.Connection.close connection;
