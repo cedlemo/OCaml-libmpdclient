@@ -85,7 +85,7 @@ module Status : sig
   val songid: s -> int
   val nextsong: s -> int
   val nextsongid: s -> int
-  val time: s -> float
+  val time: s -> string
   val elapsed: s -> float
   val duration: s -> float
   val bitrate: s -> int
@@ -118,7 +118,7 @@ end = struct
     songid: int; (** playlist songid of the current song stopped on or playing *)
     nextsong: int; (** playlist song number of the next song to be played *)
     nextsongid: int; (** playlist songid of the next song to be played *)
-    time: float; (** total time elapsed (of current playing/paused song) *)
+    time: string; (** total time elapsed (of current playing/paused song) *)
     elapsed: float; (** Total time elapsed within the current song, but with higher resolution. *)
     duration: float; (** Duration of the current song in seconds. *)
     bitrate: int; (** instantaneous bitrate in kbps. *)
@@ -144,7 +144,7 @@ end = struct
       songid = 0;
       nextsong = 0;
       nextsongid = 0;
-      time = 0.0;
+      time = "";
       elapsed = 0.0;
       duration = 0.0;
       bitrate = 0;
@@ -188,7 +188,7 @@ end = struct
         | "songid" -> _parse remain { s with songid = int_of_string v }
         | "nextsong" -> _parse remain { s with nextsong = int_of_string v }
         | "nextsongid" -> _parse remain { s with nextsongid = int_of_string v }
-        | "time" -> _parse remain { s with time = float_of_string v }
+        | "time" -> _parse remain { s with time = v } (* TODO: !! mpd time format min:sec*)
         | "elapsed" -> _parse remain { s with elapsed = float_of_string v }
         | "duration" -> _parse remain { s with duration = float_of_string v }
         | "bitrate" -> _parse remain { s with bitrate = int_of_string v }
@@ -303,4 +303,39 @@ end = struct
     let _ = write c "status\n" in
     let status_pairs = read_lines c in
     Status.parse status_pairs
+end
+
+(* https://www.musicpd.org/doc/protocol/playback_commands.html *)
+
+module Playback : sig
+  val next: Connection.c -> Protocol.response
+  val stop: Connection.c -> Protocol.response
+  val pause: Connection.c -> bool -> Protocol.response
+end = struct
+
+  let next c =
+    Client.write c "next";
+    let response = Client.read c in
+    Protocol.parse_response response
+
+  let stop c =
+    Client.write c "stop";
+    let response = Client.read c in
+    Protocol.parse_response response
+
+  let pause c arg =
+    let _ = match arg with
+    | true -> Client.write c "pause 1"
+    | _    -> Client.write c "pause 2"
+    in let response = Client.read c in
+    Protocol.parse_response response
+
+end
+
+(* https://www.musicpd.org/doc/protocol/queue.html *)
+
+module Playlist : sig
+
+end = struct
+
 end
