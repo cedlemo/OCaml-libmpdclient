@@ -305,8 +305,8 @@ end = struct
     Status.parse status_pairs
 end
 
-(* https://www.musicpd.org/doc/protocol/playback_commands.html *)
-
+(** Controlling playback :
+  * https://www.musicpd.org/doc/protocol/playback_commands.html *)
 module Playback : sig
   val next: Connection.c -> Protocol.response
   val prev: Connection.c -> Protocol.response
@@ -318,21 +318,25 @@ module Playback : sig
   val seekid: Connection.c -> int -> float -> Protocol.response
 end = struct
 
+  (** Plays next song in the playlist. *)
   let next c =
     Client.write c "next";
     let response = Client.read c in
     Protocol.parse_response response
 
+  (** Plays previous song in the playlist. *)
   let prev c =
     Client.write c "prev";
     let response = Client.read c in
     Protocol.parse_response response
 
+  (** Stops playing.*)
   let stop c =
     Client.write c "stop";
     let response = Client.read c in
     Protocol.parse_response response
 
+  (** Toggles pause/resumers playing *)
   let pause c arg =
     let _ = match arg with
     | true -> Client.write c "pause 1"
@@ -340,29 +344,47 @@ end = struct
     in let response = Client.read c in
     Protocol.parse_response response
 
+  (** Begins playing the playlist at song number. *)
   let play c songpos =
     Client.write c (String.concat ["play "; string_of_int songpos]);
     let response = Client.read c in
     Protocol.parse_response response
 
+  (** Begins playing the playlist at song id. *)
   let playid c songid =
     Client.write c (String.concat ["playid "; string_of_int songpos]);
     let response = Client.read c in
     Protocol.parse_response response
 
+  (** Seeks to the position time of entry songpos in the playlist. *)
   let seek c songpos time =
-    Client.write c (String.concat ["play "; string_of_int songpos; " "; string_of_float time]);
+    Client.write c (String.concat ["seek ";
+                                   string_of_int songpos;
+                                   " ";
+                                   string_of_float time]);
     let response = Client.read c in
     Protocol.parse_response response
 
+  (** Seeks to the position time of song id. *)
   let seekid c songid time =
-    Client.write c (String.concat ["play "; string_of_int songid; " "; string_of_float time]);
+    Client.write c (String.concat ["seekid ";
+                                   string_of_int songid;
+                                   " ";
+                                   string_of_float time]);
+    let response = Client.read c in
+    Protocol.parse_response response
+
+  (** Seeks to the position time within the current song.
+   * TODO : If prefixed by '+' or '-', then the time is relative to the current
+   * playing position
+   * *)
+  let seekcur c time =
+    Client.write c (String.concat ["seekcur "; string_of_float time]);
     let response = Client.read c in
     Protocol.parse_response response
 end
 
 (* https://www.musicpd.org/doc/protocol/queue.html *)
-
 module Playlist : sig
 
 end = struct
