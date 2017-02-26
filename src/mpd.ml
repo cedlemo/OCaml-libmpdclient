@@ -309,12 +309,22 @@ end
 
 module Playback : sig
   val next: Connection.c -> Protocol.response
+  val prev: Connection.c -> Protocol.response
   val stop: Connection.c -> Protocol.response
   val pause: Connection.c -> bool -> Protocol.response
+  val play: Connection.c -> int -> Protocol.response
+  val playid: Connection.c -> int -> Protocol.response
+  val seek: Connection.c -> int -> float -> Protocol.response
+  val seekid: Connection.c -> int -> float -> Protocol.response
 end = struct
 
   let next c =
     Client.write c "next";
+    let response = Client.read c in
+    Protocol.parse_response response
+
+  let prev c =
+    Client.write c "prev";
     let response = Client.read c in
     Protocol.parse_response response
 
@@ -330,6 +340,25 @@ end = struct
     in let response = Client.read c in
     Protocol.parse_response response
 
+  let play c songpos =
+    Client.write c (String.concat ["play "; string_of_int songpos]);
+    let response = Client.read c in
+    Protocol.parse_response response
+
+  let playid c songid =
+    Client.write c (String.concat ["playid "; string_of_int songpos]);
+    let response = Client.read c in
+    Protocol.parse_response response
+
+  let seek c songpos time =
+    Client.write c (String.concat ["play "; string_of_int songpos; " "; string_of_float time]);
+    let response = Client.read c in
+    Protocol.parse_response response
+
+  let seekid c songid time =
+    Client.write c (String.concat ["play "; string_of_int songid; " "; string_of_float time]);
+    let response = Client.read c in
+    Protocol.parse_response response
 end
 
 (* https://www.musicpd.org/doc/protocol/queue.html *)
