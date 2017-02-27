@@ -346,31 +346,31 @@ end = struct
 
   (** Begins playing the playlist at song number. *)
   let play c songpos =
-    Client.write c (String.concat ["play "; string_of_int songpos]);
+    Client.write c (String.concat "" ["play "; string_of_int songpos]);
     let response = Client.read c in
     Protocol.parse_response response
 
   (** Begins playing the playlist at song id. *)
   let playid c songid =
-    Client.write c (String.concat ["playid "; string_of_int songpos]);
+    Client.write c (String.concat "" ["playid "; string_of_int songid]);
     let response = Client.read c in
     Protocol.parse_response response
 
   (** Seeks to the position time of entry songpos in the playlist. *)
   let seek c songpos time =
-    Client.write c (String.concat ["seek ";
-                                   string_of_int songpos;
-                                   " ";
-                                   string_of_float time]);
+    Client.write c (String.concat "" ["seek ";
+                                      string_of_int songpos;
+                                      " ";
+                                      string_of_float time]);
     let response = Client.read c in
     Protocol.parse_response response
 
   (** Seeks to the position time of song id. *)
   let seekid c songid time =
-    Client.write c (String.concat ["seekid ";
-                                   string_of_int songid;
-                                   " ";
-                                   string_of_float time]);
+    Client.write c (String.concat "" ["seekid ";
+                                      string_of_int songid;
+                                      " ";
+                                      string_of_float time]);
     let response = Client.read c in
     Protocol.parse_response response
 
@@ -379,7 +379,7 @@ end = struct
    * playing position
    * *)
   let seekcur c time =
-    Client.write c (String.concat ["seekcur "; string_of_float time]);
+    Client.write c (String.concat "" ["seekcur "; string_of_float time]);
     let response = Client.read c in
     Protocol.parse_response response
 end
