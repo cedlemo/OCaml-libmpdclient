@@ -13,7 +13,7 @@ Plugins: META (0.4), DevFiles (0.4)
 
 Library "libmpdclient"
   Path: src
-  Modules: Mpd,Protocol
+  Modules: Mpd,Protocol,Mpd_status
   BuildDepends: unix, str
 
 Executable mpdclient_test_unit
