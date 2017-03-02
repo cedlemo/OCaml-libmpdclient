@@ -11,7 +11,7 @@ let port = 6600
 
 let () =
    let connection = Mpd.Connection.initialize host port in
-   print_endline ("received: " ^ (Mpd.Client.read connection));
-   Mpd.Client.write connection (Sys.argv.(1) ^"\n");
-   print_endline ("received: " ^ (Mpd.Client.read connection));
+   print_endline ("received: " ^ (Mpd.Connection.read connection));
+   Mpd.Connection.write connection (Sys.argv.(1) ^"\n");
+   print_endline ("received: " ^ (Mpd.Connection.read connection));
    Mpd.Connection.close connection;

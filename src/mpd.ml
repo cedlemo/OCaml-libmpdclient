@@ -43,6 +43,9 @@ module Connection : sig
   val initialize : string -> int -> c
   val close : c -> unit
   val socket: c -> Unix.file_descr
+  val write: c -> string -> unit
+  val read: c -> string
+  val read_lines: c -> string list
 end = struct
 
   (** connection type *)
@@ -66,28 +69,16 @@ end = struct
 
   (** Get the socket on which the connection is based *)
   let socket { socket; _} = socket
-end
-
-module Status = struct
-  include Mpd_status
-end
-
-module Client : sig
-  val write: Connection.c -> string -> unit
-  val read: Connection.c -> string
-  val read_lines: Connection.c -> string list
-  val status: Connection.c -> Status.s
-end = struct
 
   (** Write to an Mpd connection *)
   let write c str =
-    let socket = Connection.socket c in
+    let socket = socket c in
     let len = String.length str in
     ignore(send socket str 0 len [])
 
   (** Read in an Mpd connection *)
   let read c =
-    let socket = Connection.socket c in
+    let socket = socket c in
     let _ = Unix.set_nonblock socket in
     let str = Bytes.create 128 in
     let rec _read s acc =
@@ -102,90 +93,103 @@ end = struct
   let read_lines c =
     let response = read c in
     Str.split (Str.regexp "\n") response
+end
 
-  let status c =
-    let _ = write c "status\n" in
-    let status_pairs = read_lines c in
+module Status = struct
+  include Mpd_status
+end
+
+module Client : sig
+  type c
+
+  val initialize: Connection.c -> c
+  val send_command: c -> string -> Protocol.response
+  (* TODO : val send_request: c -> string *)
+  val mpd_banner: c -> string
+  val status: c -> Status.s
+
+end = struct
+  type c = {connection : Connection.c; mpd_banner : string }
+
+  let initialize connection =
+    let message = Connection.read connection in
+    {connection = connection; mpd_banner = message}
+
+  let send_command client cmd =
+    let {connection = c; _} = client in
+    Connection.write c cmd;
+    let response = Connection.read c in
+    Protocol.parse_response response
+
+  let mpd_banner {mpd_banner = banner; _ } =
+    banner
+
+  let status client =
+    let {connection = c; _} = client in
+    let _ = Connection.write c "status\n" in
+    let status_pairs = Connection.read_lines c in
     Status.parse status_pairs
 end
 
 (** Controlling playback :
   * https://www.musicpd.org/doc/protocol/playback_commands.html *)
 module Playback : sig
-  val next: Connection.c -> Protocol.response
-  val prev: Connection.c -> Protocol.response
-  val stop: Connection.c -> Protocol.response
-  val pause: Connection.c -> bool -> Protocol.response
-  val play: Connection.c -> int -> Protocol.response
-  val playid: Connection.c -> int -> Protocol.response
-  val seek: Connection.c -> int -> float -> Protocol.response
-  val seekid: Connection.c -> int -> float -> Protocol.response
+  val next: Client.c -> Protocol.response
+  val prev: Client.c -> Protocol.response
+  val stop: Client.c -> Protocol.response
+  val pause: Client.c -> bool -> Protocol.response
+  val play: Client.c -> int -> Protocol.response
+  val playid: Client.c -> int -> Protocol.response
+  val seek: Client.c -> int -> float -> Protocol.response
+  val seekid: Client.c -> int -> float -> Protocol.response
 end = struct
 
   (** Plays next song in the playlist. *)
   let next c =
-    Client.write c "next";
-    let response = Client.read c in
-    Protocol.parse_response response
+    Client.send_command c "next"
 
   (** Plays previous song in the playlist. *)
   let prev c =
-    Client.write c "prev";
-    let response = Client.read c in
-    Protocol.parse_response response
+    Client.send_command c "prev"
 
   (** Stops playing.*)
   let stop c =
-    Client.write c "stop";
-    let response = Client.read c in
-    Protocol.parse_response response
+    Client.send_command c "stop"
 
   (** Toggles pause/resumers playing *)
   let pause c arg =
-    let _ = match arg with
-    | true -> Client.write c "pause 1"
-    | _    -> Client.write c "pause 2"
-    in let response = Client.read c in
-    Protocol.parse_response response
+    match arg with
+    | true -> Client.send_command c "pause 1"
+    | _    -> Client.send_command c "pause 2"
 
   (** Begins playing the playlist at song number. *)
   let play c songpos =
-    Client.write c (String.concat "" ["play "; string_of_int songpos]);
-    let response = Client.read c in
-    Protocol.parse_response response
+    Client.send_command c (String.concat "" ["play "; string_of_int songpos])
 
   (** Begins playing the playlist at song id. *)
   let playid c songid =
-    Client.write c (String.concat "" ["playid "; string_of_int songid]);
-    let response = Client.read c in
-    Protocol.parse_response response
+    Client.send_command c (String.concat "" ["playid "; string_of_int songid])
 
   (** Seeks to the position time of entry songpos in the playlist. *)
   let seek c songpos time =
-    Client.write c (String.concat "" ["seek ";
-                                      string_of_int songpos;
-                                      " ";
-                                      string_of_float time]);
-    let response = Client.read c in
-    Protocol.parse_response response
+    Client.send_command c (String.concat "" ["seek ";
+                                             string_of_int songpos;
+                                             " ";
+                                             string_of_float time])
 
   (** Seeks to the position time of song id. *)
   let seekid c songid time =
-    Client.write c (String.concat "" ["seekid ";
-                                      string_of_int songid;
-                                      " ";
-                                      string_of_float time]);
-    let response = Client.read c in
-    Protocol.parse_response response
+    Client.send_command c (String.concat "" ["seekid ";
+                                             string_of_int songid;
+                                             " ";
+                                             string_of_float time])
 
   (** Seeks to the position time within the current song.
    * TODO : If prefixed by '+' or '-', then the time is relative to the current
    * playing position
    * *)
   let seekcur c time =
-    Client.write c (String.concat "" ["seekcur "; string_of_float time]);
-    let response = Client.read c in
-    Protocol.parse_response response
+    Client.send_command c (String.concat "" ["seekcur "; string_of_float time])
 end
 
 (* https://www.musicpd.org/doc/protocol/queue.html *)

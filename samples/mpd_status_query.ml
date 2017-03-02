@@ -11,9 +11,9 @@ let port = 6600
 
 let () =
    let connection = Mpd.Connection.initialize host port in
-   print_endline ("received: " ^ (Mpd.Client.read connection));
-   Mpd.Client.write connection ("status\n");
-   let status = Mpd.Client.read_lines connection in
+   print_endline ("received: " ^ (Mpd.Connection.read connection));
+   Mpd.Connection.write connection ("status\n");
+   let status = Mpd.Connection.read_lines connection in
    let rec display_infos = function
      | [] -> Mpd.Connection.close connection
      | h :: q -> let _ = print_endline ("*>" ^ h) in display_infos q
