@@ -103,7 +103,7 @@ module Client : sig
 
   val initialize: Connection.c -> c
   val send_command: c -> string -> Protocol.response
-  (* TODO : val send_request: c -> string *)
+  val send_request: c -> string -> Protocol.response
   val mpd_banner: c -> string
   val status: c -> Status.s
 
@@ -116,7 +116,13 @@ end = struct
 
   let send_command client cmd =
     let {connection = c; _} = client in
-    Connection.write c cmd;
+    Connection.write c (cmd ^ "\n");
+    let response = Connection.read c in
+    Protocol.parse_response response
+
+  let send_request client request =
+    let {connection = c; _} = client in
+    Connection.write c (request ^ "\n");
     let response = Connection.read c in
     Protocol.parse_response response
 
@@ -124,10 +130,8 @@ end = struct
     banner
 
   let status client =
-    let {connection = c; _} = client in
-    let _ = Connection.write c "status\n" in
-    let response = Connection.read c in
-    match Protocol.parse_response response with
+    let response = send_request client "status" in
+    match response with
     | Ok (lines) -> let status_pairs = Connection.read_lines lines in
                     Status.parse status_pairs
     | Error (ack, ack_cmd_num, cmd, error) -> Status.generate_error error
