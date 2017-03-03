@@ -5,7 +5,6 @@
 
 
 (* https://www.musicpd.org/doc/protocol/tags.html
- * https://www.musicpd.org/doc/protocol/command_reference.html#status_commands
  * https://www.musicpd.org/doc/protocol/playback_option_commands.html
  * https://www.musicpd.org/doc/protocol/playback_commands.html
  * https://www.musicpd.org/doc/protocol/queue.html
@@ -25,18 +24,10 @@ open Unix
 open Protocol
 open Mpd_status
 
-(* TODO create Connection function that takes a host and a port
- * send_command
- * read_result
- *
- * TODO create a Client connection that takes a connection
- * mpd client api *)
-
 (** Libmpd client main module *)
 
-(** Connection module :
-   Offer functions in order to handle connections to the mpd server at the
-   socket level *)
+(** Offer functions and type in order to handle connections to the mpd server at
+   the socket level *)
 module Connection : sig
   type c
 
@@ -94,10 +85,16 @@ end = struct
     Str.split (Str.regexp "\n") response
 end
 
+(** Functions and type needed to store and manipulate an mpd status request
+  * information.
+  * https://www.musicpd.org/doc/protocol/command_reference.html#status_commands
+  *)
 module Status = struct
   include Mpd_status
 end
 
+(** Provides functions and type in order to communicate to the mpd server
+  * with commands and requests. *)
 module Client : sig
   type c
 
@@ -108,27 +105,37 @@ module Client : sig
   val status: c -> Status.s
 
 end = struct
+  (** Client type *)
   type c = {connection : Connection.c; mpd_banner : string }
 
+  (** Initialize the client with a connection. *)
   let initialize connection =
     let message = Connection.read connection in
     {connection = connection; mpd_banner = message}
 
+  (** Send to the mpd server a command. The response of the server is returned
+   * under the form of a Protocol.response type. *)
   let send_command client cmd =
     let {connection = c; _} = client in
     Connection.write c (cmd ^ "\n");
     let response = Connection.read c in
     Protocol.parse_response response
 
+  (** Send to the mpd server a request. The response of the server is returned
+   * under the form of a Protocol.response type. *)
   let send_request client request =
     let {connection = c; _} = client in
     Connection.write c (request ^ "\n");
     let response = Connection.read c in
     Protocol.parse_response response
 
+  (** Return the mpd banner that the server send at the first connection of the
+   * client. *)
   let mpd_banner {mpd_banner = banner; _ } =
     banner
 
+  (** Create a status request and returns the status under a Mpd.Status.s
+   * type.*)
   let status client =
     let response = send_request client "status" in
     match response with
@@ -137,7 +144,7 @@ end = struct
     | Error (ack, ack_cmd_num, cmd, error) -> Status.generate_error error
 end
 
-(** Controlling playback :
+(** Controlling playback functions.
   * https://www.musicpd.org/doc/protocol/playback_commands.html *)
 module Playback : sig
   val next: Client.c -> Protocol.response

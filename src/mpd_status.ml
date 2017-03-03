@@ -1,3 +1,4 @@
+(** Current state of the mpd server. *)
 type state = Play | Pause | Stop | ErrState
 
 let state_of_string str =
@@ -168,5 +169,7 @@ let updating_db {updating_db = u; _} =
 (** Get the error message if there is one *)
 let error {error = e; _} =
   e
+(** Build a status error message. When the status request return an error, this
+ * function is useful to generate an empty status with the error message set. *)
 let generate_error message  =
   {empty with error = message}
