@@ -14,7 +14,7 @@ let () =
    print_endline ("received: " ^ (Mpd.Connection.read connection));
    Mpd.Connection.write connection ("status\n");
    let status = Mpd.Connection.read connection in
-   let lines = Mpd.Connection.read_lines status in
+   let lines = Mpd.Utils.split_lines status in
    let rec display_infos = function
      | [] -> Mpd.Connection.close connection
      | h :: q -> let _ = print_endline ("*>" ^ h) in display_infos q

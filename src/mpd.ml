@@ -8,7 +8,6 @@
  * https://www.musicpd.org/doc/protocol/playback_option_commands.html
  * https://www.musicpd.org/doc/protocol/playback_commands.html
  * https://www.musicpd.org/doc/protocol/queue.html
- * https://www.musicpd.org/doc/protocol/playlist_files.html
  * https://www.musicpd.org/doc/protocol/database.html
  * https://www.musicpd.org/doc/protocol/mount.html
  * https://www.musicpd.org/doc/protocol/stickers.html
@@ -23,6 +22,11 @@ open Sys
 open Unix
 open Protocol
 open Mpd_status
+open Mpd_utils
+
+module Utils = struct
+  include Mpd_utils
+end
 
 (** Libmpd client main module *)
 
@@ -36,7 +40,6 @@ module Connection : sig
   val socket: c -> Unix.file_descr
   val write: c -> string -> unit
   val read: c -> string
-  val read_lines: string -> string list
 end = struct
 
   (** connection type *)
@@ -79,10 +82,6 @@ end = struct
         with
         | Unix_error(Unix.EAGAIN, _, _) -> if acc = [] then _read s acc else acc
     in String.concat "" (List.rev (_read socket []))
-
-  (** Read an Mpd response and returns a list of strings *)
-  let read_lines response =
-    Str.split (Str.regexp "\n") response
 end
 
 (** Functions and type needed to store and manipulate an mpd status request
@@ -139,7 +138,7 @@ end = struct
   let status client =
     let response = send_request client "status" in
     match response with
-    | Ok (lines) -> let status_pairs = Connection.read_lines lines in
+    | Ok (lines) -> let status_pairs = Utils.split_lines lines in
                     Status.parse status_pairs
     | Error (ack, ack_cmd_num, cmd, error) -> Status.generate_error error
 end
@@ -206,12 +205,34 @@ end = struct
 end
 
 (* https://www.musicpd.org/doc/protocol/queue.html *)
-module Playlist : sig
+module CurrentPlaylist : sig
 (* info: unit -> Playlist.p *) (* return current playlist information command is "playlistinfo"*)
+  val add: Client.c -> string -> Protocol.response
+  val addid: Client.c -> string -> int -> int
 end = struct
+  (** Adds the file URI to the playlist (directories add recursively). URI can also be a single file. *)
+  let add c uri =
+    Client.send_command c uri
 
+  let addid c uri position =
+    let cmd = String.concat " " ["addid"; uri; string_of_int position] in
+    let response = Client.send_command c cmd in
+    match response with
+    |Ok (song_id) -> let lines = Utils.split_lines song_id in
+      let rec parse lines =
+        match lines with
+        | [] -> -1
+        | line :: remain -> let { key = k; value = v} = Utils.read_key_val line in
+                            if (k = "Id") then int_of_string v
+                            else parse remain
+      in parse lines
+    |Error (_) -> -1
 end
 
+(* https://www.musicpd.org/doc/protocol/playlist_files.html *)
+module Playlists : sig
+end = struct
+end
 (* Song format example
  * file: Nile - What Should Not Be Unearthed (2015)/02 Negating The Abominable Coils Of Apep.mp3.mp3
  * Last-Modified: 2015-08-13T09:56:32Z
