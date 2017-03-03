@@ -45,7 +45,7 @@ module Connection : sig
   val socket: c -> Unix.file_descr
   val write: c -> string -> unit
   val read: c -> string
-  val read_lines: c -> string list
+  val read_lines: string -> string list
 end = struct
 
   (** connection type *)
@@ -90,8 +90,7 @@ end = struct
     in String.concat "" (List.rev (_read socket []))
 
   (** Read an Mpd response and returns a list of strings *)
-  let read_lines c =
-    let response = read c in
+  let read_lines response =
     Str.split (Str.regexp "\n") response
 end
 
@@ -127,8 +126,11 @@ end = struct
   let status client =
     let {connection = c; _} = client in
     let _ = Connection.write c "status\n" in
-    let status_pairs = Connection.read_lines c in
-    Status.parse status_pairs
+    let response = Connection.read c in
+    match Protocol.parse_response response with
+    | Ok (lines) -> let status_pairs = Connection.read_lines lines in
+                    Status.parse status_pairs
+    | Error (ack, ack_cmd_num, cmd, error) -> Status.generate_error error
 end
 
 (** Controlling playback :

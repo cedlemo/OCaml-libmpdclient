@@ -25,3 +25,4 @@ val mixrampdelay: s -> int
 val audio: s -> string
 val updating_db: s -> int
 val error: s -> string
+val generate_error: string -> s

@@ -168,3 +168,5 @@ let updating_db {updating_db = u; _} =
 (** Get the error message if there is one *)
 let error {error = e; _} =
   e
+let generate_error message  =
+  {empty with error = message}

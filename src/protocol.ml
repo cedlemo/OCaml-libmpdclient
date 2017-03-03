@@ -17,7 +17,7 @@ type ack_error =
   | Exist           (* 56 *)
 
 (** Type of the response of the mpd server. *)
-type response = Ok | Error of (ack_error * int * string * string)
+type response = Ok of string | Error of (ack_error * int * string * string)
 
 (** Get the error name of the error type. *)
 let error_name = function
@@ -70,5 +70,8 @@ let parse_error_response mpd_response =
 
 (** Parse the mpd server response *)
 let parse_response mpd_response =
-  if mpd_response = "OK\n" then Ok
-  else Error (parse_error_response mpd_response)
+  let ok_response_reg = Str.regexp "\\(\\(\n\\|.\\)*\\)OK\n" in
+  if (Str.string_match ok_response_reg mpd_response 0 == true) then
+    Ok (Str.matched_group 1 mpd_response)
+  else
+    Error (parse_error_response mpd_response)
