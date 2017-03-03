@@ -1,4 +1,3 @@
-(** Current state of the mpd server. *)
 type state = Play | Pause | Stop | ErrState
 
 let state_of_string str =
@@ -72,7 +71,6 @@ let read_key_val str =
   let v =  List.hd (List.rev two_str_list) in
   {key = List.hd two_str_list; value = v}
 
-(** Parse list of strings into a Mpd Status type *)
 let parse lines =
   let rec _parse pairs s =
     match pairs with
@@ -103,73 +101,72 @@ let parse lines =
       | "error" -> _parse remain { s with error = v }
       | _ -> _parse remain s
     in _parse lines empty
-(** Get the volume level from a Mpd Status *)
+
 let volume {volume = v; _} =
   v
-(** Find out if the player is in repeat mode *)
+
 let repeat {repeat = r; _} =
   r
-(** Find out if the player is in random mode *)
+
 let random {random = r; _} =
   r
-(** Find out if the player is in single mode *)
+
 let single {single = s; _} =
   s
-(** Find out if the player is in consume mode *)
+
 let consume {consume = c; _} =
   c
-(** Get the current playlist id *)
+
 let playlist {playlist = p; _} =
   p
-(** Get the current playlist length *)
+
 let playlistlength {playlistlength = p; _} =
   p
-(** Get the state of the player : Play / Pause / Stop *)
+
 let state {state = s; _} =
   s
-(** Get the song number of the current song stopped on or playing *)
+
 let song {song = s; _} =
   s
-(** Get the song id of the current song stopped on or playing *)
+
 let songid {songid = s; _} =
   s
-(** Get the next song number based on the current song stopped on or playing *)
+
 let nextsong {nextsong = n; _} =
   n
-(** Get the next song id based on the current song stopped on or playing *)
+
 let nextsongid {nextsongid = n; _} =
   n
-(** Get the total time elapsed (of current playing/paused song) *)
+
 let time {time = t; _} =
   t
-(** Get the total time elapsed within the current song, but with higher resolution *)
+
 let elapsed {elapsed = e; _} =
   e
-(** Returns the totatl duration of the current song in seconds *)
+
 let duration {duration = d; _} =
   d
-(** Get the instantaneous bitrate in kbps *)
+
 let bitrate {bitrate = b; _} =
   b
-(** Get the crossfade in seconds of the current song *)
+
 let xfade {xfade = x; _} =
   x
-(** Get the mixramp threshold in dB *)
+
 let mixrampdb {mixrampdb = m; _} =
   m
-(** Get the mixrampdelay in seconds *)
+
 let mixrampdelay {mixrampdelay = m; _} =
   m
-(** Get information of the audio file of the current song (sampleRate:bits:channels) *)
+
 let audio {audio = a; _} =
   a
-(** Get the job id *)
+
 let updating_db {updating_db = u; _} =
   u
-(** Get the error message if there is one *)
+
 let error {error = e; _} =
   e
-(** Build a status error message. When the status request return an error, this
- * function is useful to generate an empty status with the error message set. *)
+
 let generate_error message  =
   {empty with error = message}
