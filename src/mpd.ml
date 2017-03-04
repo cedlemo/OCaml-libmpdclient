@@ -209,6 +209,9 @@ module CurrentPlaylist : sig
   val addid: Client.c -> string -> int -> int
   val clear: Client.c -> Protocol.response
   val delete: Client.c -> int -> ?position_end:int -> unit -> Protocol.response
+  val deleteid: Client.c -> int -> Protocol.response
+  val move: Client.c -> int -> ?position_end:int -> int -> unit -> Protocol.response
+  val moveid: Client.c -> int -> int -> Protocol.response
 end = struct
   (** Adds the file URI to the playlist (directories add recursively). URI can also be a single file. *)
   let add c uri =
@@ -242,6 +245,34 @@ end = struct
                                        ":";
                                        string_of_int pos_end]
     in Client.send_command c cmd
+
+  (** Deletes the song SONGID from the playlist. *)
+  let deleteid c id =
+    Client.send_command c (String.concat " " ["deleteid"; string_of_int id])
+
+  (** Moves the song at FROM or range of songs at START:END to TO in
+  * the playlist. *)
+  let move c position_from ?position_end position_to () =
+    let cmd = match position_end with
+    |None -> String.concat " " ["move";
+                                string_of_int position_from;
+                                string_of_int position_to]
+    |Some pos_end -> String.concat "" ["move ";
+                                       string_of_int position_from;
+                                       ":";
+                                       string_of_int pos_end;
+                                       " ";
+                                       string_of_int position_to]
+    in Client.send_command c cmd
+
+  (** Moves the song with FROM (songid) to TO (playlist index) in the playlist.
+   * If TO is negative, it is relative to the current song in the playlist
+   * (if there is one). *)
+  let moveid c id position_to =
+    Client.send_command c (String.concat " " ["moveid";
+                                              string_of_int id;
+                                              string_of_int position_to])
+
 end
 
 (* https://www.musicpd.org/doc/protocol/playlist_files.html *)
