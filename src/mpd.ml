@@ -102,7 +102,7 @@ module Client : sig
   val send_request: c -> string -> Protocol.response
   val mpd_banner: c -> string
   val status: c -> Status.s
-
+  val close: c -> unit
 end = struct
   (** Client type *)
   type c = {connection : Connection.c; mpd_banner : string }
@@ -141,6 +141,14 @@ end = struct
     | Ok (lines) -> let status_pairs = Utils.split_lines lines in
                     Status.parse status_pairs
     | Error (ack, ack_cmd_num, cmd, error) -> Status.generate_error error
+
+  (** Closes the connection to MPD. MPD will try to send the remaining output
+   * buffer before it actually closes the connection, but that cannot be
+   * guaranteed. This command will not generate a response. *)
+  let close client =
+    let {connection = c; _} = client in
+    Connection.write c ("close\n");
+    Connection.close c;
 end
 
 (** Controlling playback functions.
