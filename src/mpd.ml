@@ -102,6 +102,8 @@ module Client : sig
   val send_request: c -> string -> Protocol.response
   val mpd_banner: c -> string
   val status: c -> Status.s
+  val ping: c -> Protocol.response
+  val password: c -> string -> Protocol.response
   val close: c -> unit
 end = struct
   (** Client type *)
@@ -141,6 +143,15 @@ end = struct
     | Ok (lines) -> let status_pairs = Utils.split_lines lines in
                     Status.parse status_pairs
     | Error (ack, ack_cmd_num, cmd, error) -> Status.generate_error error
+
+  (** Does nothing but return "OK". *)
+  let ping client =
+    send_command client "ping"
+
+  (** This is used for authentication with the server. PASSWORD is simply the
+   * plaintext password. *)
+  let password mdp =
+    send_request (String.concat " " ["password"; mdp])
 
   (** Closes the connection to MPD. MPD will try to send the remaining output
    * buffer before it actually closes the connection, but that cannot be
