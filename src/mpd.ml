@@ -172,28 +172,26 @@ end = struct
   let pause c arg =
     match arg with
     | true -> Client.send_command c "pause 1"
-    | _    -> Client.send_command c "pause 2"
+    | _    -> Client.send_command c "pause 0"
 
   (** Begins playing the playlist at song number. *)
   let play c songpos =
-    Client.send_command c (String.concat "" ["play "; string_of_int songpos])
+    Client.send_command c (String.concat " " ["play"; string_of_int songpos])
 
   (** Begins playing the playlist at song id. *)
   let playid c songid =
-    Client.send_command c (String.concat "" ["playid "; string_of_int songid])
+    Client.send_command c (String.concat " " ["playid"; string_of_int songid])
 
   (** Seeks to the position time of entry songpos in the playlist. *)
   let seek c songpos time =
-    Client.send_command c (String.concat "" ["seek ";
+    Client.send_command c (String.concat " " ["seek";
                                              string_of_int songpos;
-                                             " ";
                                              string_of_float time])
 
   (** Seeks to the position time of song id. *)
   let seekid c songid time =
-    Client.send_command c (String.concat "" ["seekid ";
+    Client.send_command c (String.concat " " ["seekid";
                                              string_of_int songid;
-                                             " ";
                                              string_of_float time])
 
   (** Seeks to the position time within the current song.
@@ -201,7 +199,7 @@ end = struct
    * playing position
    * *)
   let seekcur c time =
-    Client.send_command c (String.concat "" ["seekcur "; string_of_float time])
+    Client.send_command c (String.concat " " ["seekcur"; string_of_float time])
 end
 
 (* https://www.musicpd.org/doc/protocol/queue.html *)
