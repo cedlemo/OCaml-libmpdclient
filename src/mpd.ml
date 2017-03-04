@@ -207,6 +207,8 @@ module CurrentPlaylist : sig
 (* info: unit -> Playlist.p *) (* return current playlist information command is "playlistinfo"*)
   val add: Client.c -> string -> Protocol.response
   val addid: Client.c -> string -> int -> int
+  val clear: Client.c -> Protocol.response
+  val delete: Client.c -> int -> ?position_end:int -> unit -> Protocol.response
 end = struct
   (** Adds the file URI to the playlist (directories add recursively). URI can also be a single file. *)
   let add c uri =
@@ -225,6 +227,21 @@ end = struct
                             else parse remain
       in parse lines
     |Error (_) -> -1
+
+  (** Clears the current playlist. *)
+  let clear c =
+    Client.send_command c "clear"
+
+  (** Deletes a song or a set of songs from the playlist. The song or the range
+   * of songs are identified by the position in the playlist. *)
+  let delete c position ?position_end () =
+    let cmd = match position_end with
+    |None -> String.concat " " ["delete"; string_of_int position]
+    |Some pos_end -> String.concat "" ["delete ";
+                                       string_of_int position;
+                                       ":";
+                                       string_of_int pos_end]
+    in Client.send_command c cmd
 end
 
 (* https://www.musicpd.org/doc/protocol/playlist_files.html *)
