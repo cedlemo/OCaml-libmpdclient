@@ -5,29 +5,35 @@ open OUnit2
 open Mpd
 open Protocol
 
-let test_ok test_ctxt =  assert_equal true (let response = Protocol.parse_response "OK\n" in
+let test_simple_ok test_ctxt =  assert_equal true (let response = Protocol.parse_response "OK\n" in
 match response with
-| Ok -> true
+| Ok _ -> true
 | Error _ -> false
 )
 
+let test_request_ok test_ctxt =  assert_equal true (let response = Protocol.parse_response "test: this is a complex\nresponse: request\nOK\n" in
+match response with
+| Ok (mpd_response) -> if (mpd_response = "test: this is a complex\nresponse: request\n") then true else false
+| Error _ -> false
+)
 let test_error_50 test_ctxt =  assert_equal true (let response = Protocol.parse_response "ACK [50@1] {play} error while playing\n" in
 match response with
-| Ok -> false
+| Ok _ -> false
 | Error (er_val, cmd_num, cmd, message) -> er_val = No_exist && cmd_num = 1 && cmd = "play" &&
 message = "error while playing"
 )
 
 let test_error_1 test_ctxt =  assert_equal true (let response = Protocol.parse_response "ACK [1@12] {play} error while playing\n" in
 match response with
-| Ok -> false
+| Ok _ -> false
 | Error (er_val, cmd_num, cmd, message) -> er_val = Not_list && cmd_num = 12 && cmd = "play" &&
 message = "error while playing"
 )
 
 let mpd_responses_parsing_tests =
   "Mpd responses parsing tests" >:::
-    ["test OK" >:: test_ok;
+    ["test simple OK" >:: test_simple_ok;
+     "test request OK" >:: test_request_ok;
      "test error 50" >:: test_error_50;
      "test error 1" >:: test_error_1]
 
