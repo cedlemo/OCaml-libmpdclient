@@ -105,6 +105,7 @@ module Client : sig
   val ping: c -> Protocol.response
   val password: c -> string -> Protocol.response
   val close: c -> unit
+  val tagtypes: c -> string list
 end = struct
   (** Client type *)
   type c = {connection : Connection.c; mpd_banner : string }
@@ -150,8 +151,15 @@ end = struct
 
   (** This is used for authentication with the server. PASSWORD is simply the
    * plaintext password. *)
-  let password mdp =
-    send_request (String.concat " " ["password"; mdp])
+  let password client mdp =
+    send_request client (String.concat " " ["password"; mdp])
+
+  let tagtypes client =
+    let response = send_request client "tagtypes" in
+    match response with
+    | Ok (lines) -> let tagid_keys_vals = Utils.split_lines lines in
+                    List.rev (values_of_pairs tagid_keys_vals)
+    | Error (ack, ack_cmd_num, cmd, error) -> []
 
   (** Closes the connection to MPD. MPD will try to send the remaining output
    * buffer before it actually closes the connection, but that cannot be
