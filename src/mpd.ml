@@ -106,6 +106,9 @@ module Client : sig
   val password: c -> string -> Protocol.response
   val close: c -> unit
   val tagtypes: c -> string list
+  val tagtypes_disable: c -> string list -> Protocol.response
+  val tagtypes_clear: c -> Protocol.response
+  val tagtypes_all: c -> Protocol.response
 end = struct
   (** Client type *)
   type c = {connection : Connection.c; mpd_banner : string }
@@ -154,12 +157,39 @@ end = struct
   let password client mdp =
     send_request client (String.concat " " ["password"; mdp])
 
+  (** Shows a list of available tag types. It is an intersection of the
+   * metadata_to_use setting and this client's tag mask.
+   * About the tag mask: each client can decide to disable any number of tag
+   * types, which will be omitted from responses to this client. That is a good
+   * idea, because it makes responses smaller. The following tagtypes sub
+   * commands configure this list. *)
   let tagtypes client =
     let response = send_request client "tagtypes" in
     match response with
     | Ok (lines) -> let tagid_keys_vals = Utils.split_lines lines in
                     List.rev (values_of_pairs tagid_keys_vals)
     | Error (ack, ack_cmd_num, cmd, error) -> []
+
+  (** Remove one or more tags from the list of tag types the client is
+   * interested in. These will be omitted from responses to this client. *)
+  let tagtypes_disable client tagtypes =
+    send_command client (String.concat "" ["tagtypes disable ";
+                                           String.concat " " tagtypes])
+  (** Re-enable one or more tags from the list of tag types for this client.
+   * These will no longer be hidden from responses to this client. *)
+  let tagtypes_enable client tagtypes =
+    send_command client (String.concat "" ["tagtypes enable ";
+                                           String.concat " " tagtypes])
+
+  (** Clear the list of tag types this client is interested in. This means that
+   * MPD will not send any tags to this client. *)
+  let tagtypes_clear client =
+    send_command client "tagtypes clear"
+
+  (** Announce that this client is interested in all tag types. This is the
+   * default setting for new clients. *)
+  let tagtypes_all client =
+    send_command client "tagtypes all"
 
   (** Closes the connection to MPD. MPD will try to send the remaining output
    * buffer before it actually closes the connection, but that cannot be
