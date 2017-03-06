@@ -214,40 +214,40 @@ module Playback : sig
 end = struct
 
   (** Plays next song in the playlist. *)
-  let next c =
-    Client.send_command c "next"
+  let next client =
+    Client.send_command client "next"
 
   (** Plays previous song in the playlist. *)
-  let prev c =
-    Client.send_command c "prev"
+  let prev client =
+    Client.send_command client "prev"
 
   (** Stops playing.*)
-  let stop c =
-    Client.send_command c "stop"
+  let stop client =
+    Client.send_command client "stop"
 
   (** Toggles pause/resumers playing *)
-  let pause c arg =
+  let pause client arg =
     match arg with
-    | true -> Client.send_command c "pause 1"
-    | _    -> Client.send_command c "pause 0"
+    | true -> Client.send_command client "pause 1"
+    | _    -> Client.send_command client "pause 0"
 
   (** Begins playing the playlist at song number. *)
-  let play c songpos =
-    Client.send_command c (String.concat " " ["play"; string_of_int songpos])
+  let play client songpos =
+    Client.send_command client (String.concat " " ["play"; string_of_int songpos])
 
   (** Begins playing the playlist at song id. *)
-  let playid c songid =
-    Client.send_command c (String.concat " " ["playid"; string_of_int songid])
+  let playid client songid =
+    Client.send_command client (String.concat " " ["playid"; string_of_int songid])
 
   (** Seeks to the position time of entry songpos in the playlist. *)
-  let seek c songpos time =
-    Client.send_command c (String.concat " " ["seek";
+  let seek client songpos time =
+    Client.send_command client (String.concat " " ["seek";
                                              string_of_int songpos;
                                              string_of_float time])
 
   (** Seeks to the position time of song id. *)
-  let seekid c songid time =
-    Client.send_command c (String.concat " " ["seekid";
+  let seekid client songid time =
+    Client.send_command client (String.concat " " ["seekid";
                                              string_of_int songid;
                                              string_of_float time])
 
@@ -255,8 +255,8 @@ end = struct
    * TODO : If prefixed by '+' or '-', then the time is relative to the current
    * playing position
    * *)
-  let seekcur c time =
-    Client.send_command c (String.concat " " ["seekcur"; string_of_float time])
+  let seekcur client time =
+    Client.send_command client (String.concat " " ["seekcur"; string_of_float time])
 end
 
 (* https://www.musicpd.org/doc/protocol/queue.html *)
@@ -271,12 +271,12 @@ module CurrentPlaylist : sig
   val moveid: Client.c -> int -> int -> Protocol.response
 end = struct
   (** Adds the file URI to the playlist (directories add recursively). URI can also be a single file. *)
-  let add c uri =
-    Client.send_command c uri
+  let add client uri =
+    Client.send_command client uri
 
-  let addid c uri position =
+  let addid client uri position =
     let cmd = String.concat " " ["addid"; uri; string_of_int position] in
-    let response = Client.send_command c cmd in
+    let response = Client.send_command client cmd in
     match response with
     |Ok (song_id) -> let lines = Utils.split_lines song_id in
       let rec parse lines =
@@ -289,27 +289,27 @@ end = struct
     |Error (_) -> -1
 
   (** Clears the current playlist. *)
-  let clear c =
-    Client.send_command c "clear"
+  let clear client =
+    Client.send_command client "clear"
 
   (** Deletes a song or a set of songs from the playlist. The song or the range
    * of songs are identified by the position in the playlist. *)
-  let delete c position ?position_end () =
+  let delete client position ?position_end () =
     let cmd = match position_end with
     |None -> String.concat " " ["delete"; string_of_int position]
     |Some pos_end -> String.concat "" ["delete ";
                                        string_of_int position;
                                        ":";
                                        string_of_int pos_end]
-    in Client.send_command c cmd
+    in Client.send_command client cmd
 
   (** Deletes the song SONGID from the playlist. *)
-  let deleteid c id =
-    Client.send_command c (String.concat " " ["deleteid"; string_of_int id])
+  let deleteid client id =
+    Client.send_command client (String.concat " " ["deleteid"; string_of_int id])
 
   (** Moves the song at FROM or range of songs at START:END to TO in
   * the playlist. *)
-  let move c position_from ?position_end position_to () =
+  let move client position_from ?position_end position_to () =
     let cmd = match position_end with
     |None -> String.concat " " ["move";
                                 string_of_int position_from;
@@ -320,13 +320,13 @@ end = struct
                                        string_of_int pos_end;
                                        " ";
                                        string_of_int position_to]
-    in Client.send_command c cmd
+    in Client.send_command client cmd
 
   (** Moves the song with FROM (songid) to TO (playlist index) in the playlist.
    * If TO is negative, it is relative to the current song in the playlist
    * (if there is one). *)
-  let moveid c id position_to =
-    Client.send_command c (String.concat " " ["moveid";
+  let moveid client id position_to =
+    Client.send_command client (String.concat " " ["moveid";
                                               string_of_int id;
                                               string_of_int position_to])
 
