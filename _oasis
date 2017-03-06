@@ -44,6 +44,13 @@ Executable "mpd_status_query"
   CompiledObject: best
   BuildDepends: libmpdclient
 
+Executable "mpd_tagtypes_query"
+  Path: samples
+  MainIs: mpd_tagtypes_query.ml
+  Install: false
+  CompiledObject: best
+  BuildDepends: libmpdclient
+
 Executable "mpd_volume_query"
   Path: samples
   MainIs: mpd_volume_query.ml
