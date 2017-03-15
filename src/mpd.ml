@@ -46,17 +46,17 @@ end = struct
   type c =
     { hostname : string; port : int; ip : Unix.inet_addr; socket : Unix.file_descr }
 
-  (** Create the connection, exit if the connection can not be initialized. *)
+    (** Create the connection, exit if the connection can not be initialized. *)
   let initialize hostname port =
     let ip = try (Unix.gethostbyname hostname).h_addr_list.(0)
-             with Not_found ->
-               prerr_endline (hostname ^ ": Host not found");
+    with Not_found ->
+      prerr_endline (hostname ^ ": Host not found");
                exit 2
     in let socket = Unix.socket PF_INET SOCK_STREAM 0
     in let _ = Unix.connect socket (ADDR_INET(ip, port))
     in { hostname = hostname; port = port; ip = ip; socket = socket}
 
-  (** Close the connection *)
+    (** Close the connection *)
   let close { socket; _} =
     let _ = Unix.set_nonblock socket
     in Unix.close socket
@@ -70,30 +70,30 @@ end = struct
     let len = String.length str in
     ignore(send socket str 0 len [])
 
-  (** Read in an Mpd connection *)
+    (** Read in an Mpd connection *)
   let read c =
     let socket = socket c in
     let _ = Unix.set_nonblock socket in
     let str = Bytes.create 128 in
     let rec _read s acc =
-        try
-          let recvlen = Unix.recv s str 0 128 [] in
-          let recvstr = String.sub str 0 recvlen in _read s (recvstr :: acc)
-        with
+      try
+        let recvlen = Unix.recv s str 0 128 [] in
+        let recvstr = String.sub str 0 recvlen in _read s (recvstr :: acc)
+    with
         | Unix_error(Unix.EAGAIN, _, _) -> if acc = [] then _read s acc else acc
-    in String.concat "" (List.rev (_read socket []))
+        in String.concat "" (List.rev (_read socket []))
 end
 
 (** Functions and type needed to store and manipulate an mpd status request
-  * information.
-  * https://www.musicpd.org/doc/protocol/command_reference.html#status_commands
-  *)
+ * information.
+ * https://www.musicpd.org/doc/protocol/command_reference.html#status_commands
+ *)
 module Status = struct
   include Mpd_status
 end
 
 (** Provides functions and type in order to communicate to the mpd server
-  * with commands and requests. *)
+ * with commands and requests. *)
 module Client : sig
   type c
 
@@ -145,7 +145,7 @@ end = struct
     let response = send_request client "status" in
     match response with
     | Ok (lines) -> let status_pairs = Utils.split_lines lines in
-                    Status.parse status_pairs
+    Status.parse status_pairs
     | Error (ack, ack_cmd_num, cmd, error) -> Status.generate_error error
 
   (** Does nothing but return "OK". *)
@@ -167,7 +167,7 @@ end = struct
     let response = send_request client "tagtypes" in
     match response with
     | Ok (lines) -> let tagid_keys_vals = Utils.split_lines lines in
-                    List.rev (values_of_pairs tagid_keys_vals)
+    List.rev (values_of_pairs tagid_keys_vals)
     | Error (ack, ack_cmd_num, cmd, error) -> []
 
   (** Remove one or more tags from the list of tag types the client is
@@ -201,7 +201,7 @@ end = struct
 end
 
 (** Controlling playback functions.
-  * https://www.musicpd.org/doc/protocol/playback_commands.html *)
+ * https://www.musicpd.org/doc/protocol/playback_commands.html *)
 module Playback : sig
   val next: Client.c -> Protocol.response
   val prev: Client.c -> Protocol.response
@@ -261,7 +261,7 @@ end
 
 (* https://www.musicpd.org/doc/protocol/queue.html *)
 module CurrentPlaylist : sig
-(* info: unit -> Playlist.p *) (* return current playlist information command is "playlistinfo"*)
+  (* info: unit -> Playlist.p *) (* return current playlist information command is "playlistinfo"*)
   val add: Client.c -> string -> Protocol.response
   val addid: Client.c -> string -> int -> int
   val clear: Client.c -> Protocol.response
@@ -279,14 +279,14 @@ end = struct
     let response = Client.send_command client cmd in
     match response with
     |Ok (song_id) -> let lines = Utils.split_lines song_id in
-      let rec parse lines =
-        match lines with
+    let rec parse lines =
+      match lines with
         | [] -> -1
         | line :: remain -> let { key = k; value = v} = Utils.read_key_val line in
-                            if (k = "Id") then int_of_string v
+        if (k = "Id") then int_of_string v
                             else parse remain
-      in parse lines
-    |Error (_) -> -1
+        in parse lines
+        |Error (_) -> -1
 
   (** Clears the current playlist. *)
   let clear client =
@@ -301,14 +301,14 @@ end = struct
                                        string_of_int position;
                                        ":";
                                        string_of_int pos_end]
-    in Client.send_command client cmd
+  in Client.send_command client cmd
 
   (** Deletes the song SONGID from the playlist. *)
   let deleteid client id =
     Client.send_command client (String.concat " " ["deleteid"; string_of_int id])
 
   (** Moves the song at FROM or range of songs at START:END to TO in
-  * the playlist. *)
+   * the playlist. *)
   let move client position_from ?position_end position_to () =
     let cmd = match position_end with
     |None -> String.concat " " ["move";
@@ -320,7 +320,7 @@ end = struct
                                        string_of_int pos_end;
                                        " ";
                                        string_of_int position_to]
-    in Client.send_command client cmd
+  in Client.send_command client cmd
 
   (** Moves the song with FROM (songid) to TO (playlist index) in the playlist.
    * If TO is negative, it is relative to the current song in the playlist
@@ -349,4 +349,4 @@ end
  * duration: 254.093
  * pos: 1
  * id: 2
-*)
+ *)
