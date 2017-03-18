@@ -35,53 +35,54 @@ let parse lines =
     | [] -> s
     | p :: remain -> let { key = k; value = v} = Mpd_utils.read_key_val p in
     match k with
-      | "file" -> _parse remain { s with file = v }
-      | "Last-Modified" -> _parse remain { s with last_modified = v }
-      | "artist" -> _parse remain { s with artist = v }
-      | "title" -> _parse remain { s with title = v }
       | "album" -> _parse remain { s with album = v }
-      | "track" -> _parse remain { s with track = int_of_string v }
-      | "rate" -> _parse remain { s with rate = int_of_string v }
-      | "genre" -> _parse remain { s with album = v }
-      | "time" -> _parse remain { s with time = int_of_string v }
+      | "artist" -> _parse remain { s with artist = v }
       | "duration" -> _parse remain { s with duration = float_of_string v }
-      | "pos" -> _parse remain { s with pos = int_of_string v }
+      | "genre" -> _parse remain { s with album = v }
+      | "file" -> _parse remain { s with file = v }
       | "id" -> _parse remain { s with id = int_of_string v }
+      | "Last-Modified" -> _parse remain { s with last_modified = v }
+      | "pos" -> _parse remain { s with pos = int_of_string v }
+      | "rate" -> _parse remain { s with rate = int_of_string v }
+      | "time" -> _parse remain { s with time = int_of_string v }
+      | "title" -> _parse remain { s with title = v }
+      | "track" -> _parse remain { s with track = int_of_string v }
       | _ -> _parse remain s
     in _parse lines empty
-
-let file {file = f; _} =
-  f
-
-let last_modified {last_modified = l; _} =
-  l
-
-let artist {artist = a; _} =
-  a
-
-let title {title = t; _} =
-  t
 
 let album {album = a; _} =
   a
 
-let track {track = t; _} =
-  t
-
-let rate {rate = r; _} =
-  r
-
-let genre {genre = g; _} =
-  g
-
-let time {time = t; _} =
-  t
+let artist {artist = a; _} =
+  a
 
 let duration {duration = d; _} =
   d
 
-let pos {pos = p; _} =
-  p
+let file {file = f; _} =
+  f
+
+let genre {genre = g; _} =
+  g
 
 let id {id = i; _} =
   i
+
+let last_modified {last_modified = l; _} =
+  l
+
+let pos {pos = p; _} =
+  p
+
+let rate {rate = r; _} =
+  r
+
+let time {time = t; _} =
+  t
+
+let title {title = t; _} =
+  t
+
+let track {track = t; _} =
+  t
+
