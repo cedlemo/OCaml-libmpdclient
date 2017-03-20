@@ -58,6 +58,51 @@ let test_read_key_val test_ctxt =
   assert_equal "mykey" k;
   assert_equal "myvalue" v
 
+let song1 = "file: Bjork-Volta/11 Earth Intruders (Mark Stent Exten.m4a
+Last-Modified: 2009-09-21T14:25:52Z
+Artist: Björk
+Album: Volta
+Title: Earth Intruders (Mark Stent Extended Mix)
+Track: 11/13
+Genre: Alternative
+Date: 2007
+Composer: Björk
+Disc: 1/1
+AlbumArtist: Björk
+Time: 266
+duration: 266.472
+Pos: 10
+Id: 11"
+
+let song2 = "file: Nile - What Should Not Be Unearthed (2015)/08 Ushabti Reanimator.mp3
+Last-Modified: 2015-08-13T09:56:32Z
+Artist: Nile
+Title: Ushabti Reanimator
+Album: What Should Not Be Unearthed
+Track: 8
+Date: 2015
+Genre: Death Metal
+Time: 91
+duration: 90.958
+Pos: 19
+Id: 20"
+
+let test_song_parse test_ctxt =
+  let song = Mpd.Song.parse (Mpd_utils.split_lines song1) in
+  assert_equal "Björk" (Mpd.Song.artist song);
+  assert_equal "Volta" (Mpd.Song.album song);
+  assert_equal "Earth Intruders (Mark Stent Extended Mix)" (Mpd.Song.title song);
+  assert_equal "11/13" (Mpd.Song.track song);
+  assert_equal "Alternative" (Mpd.Song.genre song);
+  assert_equal "2007" (Mpd.Song.date song);
+  assert_equal "Björk" (Mpd.Song.composer song);
+  assert_equal "1/1" (Mpd.Song.disc song);
+  assert_equal "Björk" (Mpd.Song.albumartist song);
+  assert_equal "2009-09-21T14:25:52Z" (Mpd.Song.last_modified song);
+  assert_equal 266 (Mpd.Song.time song);
+  assert_equal 266.472 (Mpd.Song.duration song);
+  assert_equal 11 (Mpd.Song.id song)
+
 let mpd_responses_parsing_tests =
     "Mpd responses parsing tests" >:::
       ["test simple OK" >:: test_simple_ok;
@@ -66,7 +111,8 @@ let mpd_responses_parsing_tests =
      "test error 1" >:: test_error_1;
      "test Mpd.utils.num_on_num_parse simple int" >:: test_num_on_num_parse_simple_int;
      "test Mpd.utils.num_on_num_parse num_on_num" >:: test_num_on_num_parse_num_on_num;
-     "test Mpd.utils.read_key_value" >:: test_read_key_val]
+     "test Mpd.utils.read_key_value" >:: test_read_key_val;
+     "test Mpd.Song.parse" >:: test_song_parse ]
 
   let () =
     run_test_tt_main mpd_responses_parsing_tests
