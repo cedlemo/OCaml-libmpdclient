@@ -282,6 +282,7 @@ end
 (* https://www.musicpd.org/doc/protocol/queue.html *)
 module CurrentPlaylist : sig
   (* info: unit -> Playlist.p *) (* return current playlist information command is "playlistinfo"*)
+  type p
   val add: Client.c -> string -> Protocol.response
   val addid: Client.c -> string -> int -> int
   val clear: Client.c -> Protocol.response
@@ -289,7 +290,9 @@ module CurrentPlaylist : sig
   val deleteid: Client.c -> int -> Protocol.response
   val move: Client.c -> int -> ?position_end:int -> int -> unit -> Protocol.response
   val moveid: Client.c -> int -> int -> Protocol.response
+  val playlist: Client.c -> p
 end = struct
+  type p = Error of string | Playlist of Song.s list
   (** Adds the file URI to the playlist (directories add recursively). URI can also be a single file. *)
   let add client uri =
     Client.send_command client uri
@@ -350,6 +353,26 @@ end = struct
                                               string_of_int id;
                                               string_of_int position_to])
 
+  let get_song_id song =
+    let pattern = "\\([0-9]+\\):file:.*" in
+    let found = Str.string_match (Str.regexp pattern) song 0 in
+    if found then Str.matched_group 1 song
+    else "none"
+
+  let rec _build_songs_list client songs l =
+    match songs with
+    | [] -> Playlist (List.rev l)
+    | h :: q -> let song_infos_request = "playlistinfo " ^ (get_song_id h) in
+    match Client.send_request client song_infos_request with
+    | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> Error (ack_message)
+    | Protocol.Ok (song_infos) -> let song = Song.parse (Mpd_utils.split_lines song_infos) in
+     _build_songs_list client q (song :: l)
+
+  let playlist client =
+    match Client.send_request client "playlist" with
+    | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> Error (ack_message)
+    | Protocol.Ok (response) -> let songs = Mpd_utils.split_lines response in
+    _build_songs_list client songs []
 end
 
 (* https://www.musicpd.org/doc/protocol/playlist_files.html *)
