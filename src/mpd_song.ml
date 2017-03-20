@@ -55,28 +55,28 @@ let parse lines =
     | [] -> s
     | p :: remain -> let { key = k; value = v} = Mpd_utils.read_key_val p in
     match k with
-      | "album" -> _parse remain { s with album = v }
-      | "albumsort" -> _parse remain { s with albumsort = v }
-      | "albumartist" -> _parse remain { s with albumartist = v }
-      | "albumartistsort" -> _parse remain { s with albumartistsort = v }
-      | "artist" -> _parse remain { s with artist = v }
-      | "artistsort" -> _parse remain { s with artistsort = v }
-      | "comment" -> _parse remain { s with comment = v }
-      | "composer" -> _parse remain { s with composer = v }
-      | "date" -> _parse remain { s with date = v }
-      | "disc" -> _parse remain { s with disc = v }
+      | "Album" -> _parse remain { s with album = v }
+      | "AlbumSort" -> _parse remain { s with albumsort = v }
+      | "AlbumArtist" -> _parse remain { s with albumartist = v }
+      | "AlbumArtistSort" -> _parse remain { s with albumartistsort = v }
+      | "Artist" -> _parse remain { s with artist = v }
+      | "ArtistSort" -> _parse remain { s with artistsort = v }
+      | "Comment" -> _parse remain { s with comment = v }
+      | "Composer" -> _parse remain { s with composer = v }
+      | "Date" -> _parse remain { s with date = v }
+      | "Disc" -> _parse remain { s with disc = v }
       | "duration" -> _parse remain { s with duration = float_of_string v }
-      | "genre" -> _parse remain { s with album = v }
-      | "file" -> _parse remain { s with file = v }
-      | "id" -> _parse remain { s with id = int_of_string v }
+      | "Genre" -> _parse remain { s with genre = v }
+      | "File" -> _parse remain { s with file = v }
+      | "Id" -> _parse remain { s with id = int_of_string v }
       | "Last-Modified" -> _parse remain { s with last_modified = v }
-      | "name" -> _parse remain { s with title = v }
-      | "performer" -> _parse remain { s with performer = v }
-      | "pos" -> _parse remain { s with pos = int_of_string v }
-      | "rate" -> _parse remain { s with rate = int_of_string v }
-      | "time" -> _parse remain { s with time = int_of_string v }
-      | "title" -> _parse remain { s with title = v }
-      | "track" -> _parse remain { s with track = v }
+      | "Name" -> _parse remain { s with title = v }
+      | "Performer" -> _parse remain { s with performer = v }
+      | "Pos" -> _parse remain { s with pos = int_of_string v }
+      | "Rate" -> _parse remain { s with rate = int_of_string v }
+      | "Time" -> _parse remain { s with time = int_of_string v }
+      | "Title" -> _parse remain { s with title = v }
+      | "Track" -> _parse remain { s with track = v }
       | _ -> _parse remain s
     in _parse lines empty
 
