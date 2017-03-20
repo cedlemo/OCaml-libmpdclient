@@ -24,10 +24,10 @@ type pair = { key : string; value : string }
 (** Split a line with the form "k: v" in the value of type pair :
   * { key = k; value = v } *)
 let read_key_val str =
-  let pattern = Str.regexp ": " in
-  let two_str_list = Str.bounded_split pattern str 2 in
-  let v =  List.hd (List.rev two_str_list) in
-  {key = List.hd two_str_list; value = v}
+  let pattern = Str.regexp "\\(.*\\): \\(.*\\)" in
+  if Str.string_match pattern str 0 then let k = Str.matched_group 1 str in
+  let v = Str.matched_group 2 str in {key = k; value = v}
+  else {key = ""; value = ""}
 
 (** Returns all the values of a list of strings that have the key/value form. *)
 let values_of_pairs list_of_pairs =
