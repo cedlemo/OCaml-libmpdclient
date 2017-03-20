@@ -30,6 +30,8 @@ match response with
 message = "error while playing"
 )
 
+open Mpd_utils
+
 let test_num_on_num_parse_simple_int test_ctxt =
   let simple_int = "3" in
   match Mpd_utils.num_on_num_parse simple_int with
@@ -41,7 +43,7 @@ let test_num_on_num_parse_simple_int test_ctxt =
 let test_num_on_num_parse_num_on_num test_ctxt =
   let simple_int = "3/10" in
   match Mpd_utils.num_on_num_parse simple_int with
-  | Mpd_utils.Num_on_num (a, b) -> assert_equal  3 a
+  | Mpd_utils.Num_on_num (a, b) -> assert_equal 3 a
                                         ~msg:"Simple int value"
                                         ~printer:string_of_int;
                                     assert_equal  10 b
@@ -50,14 +52,21 @@ let test_num_on_num_parse_num_on_num test_ctxt =
 
   | _ -> assert_equal false true
 
-  let mpd_responses_parsing_tests =
+let test_read_key_val test_ctxt =
+  let key_val = "mykey: myvalue" in
+  let {key = k; value = v} = Mpd_utils.read_key_val key_val in
+  assert_equal "mykey" k;
+  assert_equal "myvalue" v
+
+let mpd_responses_parsing_tests =
     "Mpd responses parsing tests" >:::
       ["test simple OK" >:: test_simple_ok;
      "test request OK" >:: test_request_ok;
      "test error 50" >:: test_error_50;
      "test error 1" >:: test_error_1;
      "test Mpd.utils.num_on_num_parse simple int" >:: test_num_on_num_parse_simple_int;
-     "test Mpd.utils.num_on_num_parse num_on_num" >:: test_num_on_num_parse_num_on_num]
+     "test Mpd.utils.num_on_num_parse num_on_num" >:: test_num_on_num_parse_num_on_num;
+     "test Mpd.utils.read_key_value" >:: test_read_key_val]
 
   let () =
     run_test_tt_main mpd_responses_parsing_tests
