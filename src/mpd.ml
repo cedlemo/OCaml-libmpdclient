@@ -292,7 +292,7 @@ module CurrentPlaylist : sig
   val moveid: Client.c -> int -> int -> Protocol.response
   val playlist: Client.c -> p
 end = struct
-  type p = Error of string | Playlist of Song.s list
+  type p = PlaylistError of string | Playlist of Song.s list
   (** Adds the file URI to the playlist (directories add recursively). URI can also be a single file. *)
   let add client uri =
     Client.send_command client uri
@@ -364,13 +364,13 @@ end = struct
     | [] -> Playlist (List.rev l)
     | h :: q -> let song_infos_request = "playlistinfo " ^ (get_song_id h) in
     match Client.send_request client song_infos_request with
-    | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> Error (ack_message)
+    | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> PlaylistError (ack_message)
     | Protocol.Ok (song_infos) -> let song = Song.parse (Mpd_utils.split_lines song_infos) in
      _build_songs_list client q (song :: l)
 
   let playlist client =
     match Client.send_request client "playlist" with
-    | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> Error (ack_message)
+    | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> PlaylistError (ack_message)
     | Protocol.Ok (response) -> let songs = Mpd_utils.split_lines response in
     _build_songs_list client songs []
 end
