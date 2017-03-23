@@ -12,9 +12,9 @@ let port = 6600
 let () =
    let connection = Mpd.Connection.initialize host port in
    let client = Mpd.Client.initialize connection in
-   match Queue.playlist client with
-   | Queue.PlaylistError message -> print_endline message
-   | Queue.Playlist playlist -> let n = List.length playlist in
+   match MpdQueue.playlist client with
+   | MpdQueue.PlaylistError message -> print_endline message
+   | MpdQueue.Playlist playlist -> let n = List.length playlist in
    print_endline ("Number of songs : " ^ (string_of_int n));
    List.iter (fun song ->
      let id = string_of_int (Song.id song) in
