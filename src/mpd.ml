@@ -280,7 +280,7 @@ end = struct
 end
 
 (* https://www.musicpd.org/doc/protocol/queue.html *)
-module CurrentPlaylist : sig
+module Queue : sig
   (* info: unit -> Playlist.p *) (* return current playlist information command is "playlistinfo"*)
   type p = | PlaylistError of string | Playlist of Song.s list
 
