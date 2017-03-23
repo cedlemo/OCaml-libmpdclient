@@ -17,8 +17,8 @@ let () =
    | Mpd.Queue.Playlist playlist -> let n = List.length playlist in
    print_endline ("Number of songs : " ^ (string_of_int n));
    List.iter (fun song ->
-     let id = string_of_int (Mpd.Song.id song) in
-     let title = Mpd.Song.title song in
-     let album = Mpd.Song.album song in
+     let id = string_of_int (Song.id song) in
+     let title = Song.title song in
+     let album = Song.album song in
      print_endline (String.concat " " ["\t*"; id; title; album])) playlist;
    Mpd.Connection.close connection

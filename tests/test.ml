@@ -88,20 +88,20 @@ Pos: 19
 Id: 20"
 
 let test_song_parse test_ctxt =
-  let song = Mpd.Song.parse (Mpd_utils.split_lines song1) in
-  assert_equal "Björk" (Mpd.Song.artist song);
-  assert_equal "Volta" (Mpd.Song.album song);
-  assert_equal "Earth Intruders (Mark Stent Extended Mix)" (Mpd.Song.title song);
-  assert_equal "11/13" (Mpd.Song.track song);
-  assert_equal "Alternative" (Mpd.Song.genre song);
-  assert_equal "2007" (Mpd.Song.date song);
-  assert_equal "Björk" (Mpd.Song.composer song);
-  assert_equal "1/1" (Mpd.Song.disc song);
-  assert_equal "Björk" (Mpd.Song.albumartist song);
-  assert_equal "2009-09-21T14:25:52Z" (Mpd.Song.last_modified song);
-  assert_equal 266 (Mpd.Song.time song);
-  assert_equal 266.472 (Mpd.Song.duration song);
-  assert_equal 11 (Mpd.Song.id song)
+  let song = Song.parse (Mpd_utils.split_lines song1) in
+  assert_equal "Björk" (Song.artist song);
+  assert_equal "Volta" (Song.album song);
+  assert_equal "Earth Intruders (Mark Stent Extended Mix)" (Song.title song);
+  assert_equal "11/13" (Song.track song);
+  assert_equal "Alternative" (Song.genre song);
+  assert_equal "2007" (Song.date song);
+  assert_equal "Björk" (Song.composer song);
+  assert_equal "1/1" (Song.disc song);
+  assert_equal "Björk" (Song.albumartist song);
+  assert_equal "2009-09-21T14:25:52Z" (Song.last_modified song);
+  assert_equal 266 (Song.time song);
+  assert_equal 266.472 (Song.duration song);
+  assert_equal 11 (Song.id song)
 
 let mpd_responses_parsing_tests =
     "Mpd responses parsing tests" >:::

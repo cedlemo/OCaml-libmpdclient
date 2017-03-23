@@ -107,9 +107,6 @@ end
  * pos: 1
  * id: 2
  *)
-module Song = struct
-  include Mpd_song
-end
 
 (** Provides functions and type in order to communicate to the mpd server
  * with commands and requests. *)
