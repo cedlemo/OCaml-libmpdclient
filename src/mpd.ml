@@ -21,7 +21,7 @@
 open Sys
 open Unix
 open Protocol
-open Mpd_status
+open Status
 open Mpd_utils
 
 module Utils = struct
@@ -87,10 +87,10 @@ end
 (** Functions and type needed to store and manipulate an mpd status request
  * information.
  * https://www.musicpd.org/doc/protocol/command_reference.html#status_commands
- *)
 module Status = struct
   include Mpd_status
 end
+ *)
 
 (** Functions and type neede to store and manipulate song informations
  * Song format example

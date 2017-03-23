@@ -14,6 +14,6 @@ let () =
    let client = Mpd.Client.initialize connection in
    print_endline ("banner: " ^ (Mpd.Client.mpd_banner client));
    let s = Mpd.Client.status client in
-   let vol = Mpd.Status.volume s in
+   let vol = Status.volume s in
    print_endline (string_of_int vol);
    Mpd.Connection.close connection;
