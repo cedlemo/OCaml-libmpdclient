@@ -58,6 +58,13 @@ Executable "mpd_volume_query"
   CompiledObject: best
   BuildDepends: libmpdclient
 
+Executable "mpd_playlist_info"
+  Path: samples
+  MainIs: mpd_playlist_info.ml
+  Install: false
+  CompiledObject: best
+  BuildDepends: libmpdclient
+
 AlphaFeatures: ocamlbuild_more_args
 Document "libmpdclient_doc"
   Type: ocamlbuild (0.4)
