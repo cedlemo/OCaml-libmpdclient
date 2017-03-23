@@ -282,7 +282,8 @@ end
 (* https://www.musicpd.org/doc/protocol/queue.html *)
 module CurrentPlaylist : sig
   (* info: unit -> Playlist.p *) (* return current playlist information command is "playlistinfo"*)
-  type p
+  type p = | PlaylistError of string | Playlist of Song.s list
+
   val add: Client.c -> string -> Protocol.response
   val addid: Client.c -> string -> int -> int
   val clear: Client.c -> Protocol.response
@@ -292,7 +293,9 @@ module CurrentPlaylist : sig
   val moveid: Client.c -> int -> int -> Protocol.response
   val playlist: Client.c -> p
 end = struct
-  type p = PlaylistError of string | Playlist of Song.s list
+  type p =
+    | PlaylistError of string | Playlist of Song.s list
+
   (** Adds the file URI to the playlist (directories add recursively). URI can also be a single file. *)
   let add client uri =
     Client.send_command client uri
