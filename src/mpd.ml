@@ -217,65 +217,6 @@ end = struct
     Connection.close c;
 end
 
-(** Controlling playback functions.
- * https://www.musicpd.org/doc/protocol/playback_commands.html *)
-module Playback : sig
-  val next: Client.c -> Protocol.response
-  val prev: Client.c -> Protocol.response
-  val stop: Client.c -> Protocol.response
-  val pause: Client.c -> bool -> Protocol.response
-  val play: Client.c -> int -> Protocol.response
-  val playid: Client.c -> int -> Protocol.response
-  val seek: Client.c -> int -> float -> Protocol.response
-  val seekid: Client.c -> int -> float -> Protocol.response
-end = struct
-
-  (** Plays next song in the playlist. *)
-  let next client =
-    Client.send_command client "next"
-
-  (** Plays previous song in the playlist. *)
-  let prev client =
-    Client.send_command client "prev"
-
-  (** Stops playing.*)
-  let stop client =
-    Client.send_command client "stop"
-
-  (** Toggles pause/resumers playing *)
-  let pause client arg =
-    match arg with
-    | true -> Client.send_command client "pause 1"
-    | _    -> Client.send_command client "pause 0"
-
-  (** Begins playing the playlist at song number. *)
-  let play client songpos =
-    Client.send_command client (String.concat " " ["play"; string_of_int songpos])
-
-  (** Begins playing the playlist at song id. *)
-  let playid client songid =
-    Client.send_command client (String.concat " " ["playid"; string_of_int songid])
-
-  (** Seeks to the position time of entry songpos in the playlist. *)
-  let seek client songpos time =
-    Client.send_command client (String.concat " " ["seek";
-                                             string_of_int songpos;
-                                             string_of_float time])
-
-  (** Seeks to the position time of song id. *)
-  let seekid client songid time =
-    Client.send_command client (String.concat " " ["seekid";
-                                             string_of_int songid;
-                                             string_of_float time])
-
-  (** Seeks to the position time within the current song.
-   * TODO : If prefixed by '+' or '-', then the time is relative to the current
-   * playing position
-   * *)
-  let seekcur client time =
-    Client.send_command client (String.concat " " ["seekcur"; string_of_float time])
-end
-
 (* https://www.musicpd.org/doc/protocol/queue.html *)
 module Queue : sig
   (* info: unit -> Playlist.p *) (* return current playlist information command is "playlistinfo"*)
