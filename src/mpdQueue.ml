@@ -83,3 +83,11 @@ let playlist client =
   | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> PlaylistError (ack_message)
   | Protocol.Ok (response) -> let songs = Mpd_utils.split_lines response in
   _build_songs_list client songs []
+
+let playlistid client id =
+  let request = "playlistid " ^ (string_of_int id) in
+  match Mpd.Client.send_request client request with
+  | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> PlaylistError (ack_message)
+  | Protocol.Ok (response) -> let song = Song.parse (Mpd_utils.split_lines response) in
+  Playlist (song::[])
+

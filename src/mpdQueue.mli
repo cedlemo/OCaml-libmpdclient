@@ -1,7 +1,6 @@
 (* https://www.musicpd.org/doc/protocol/queue.html *)
 (* info: unit -> Playlist.p *) (* return current playlist information command is "playlistinfo"*)
 type p = | PlaylistError of string | Playlist of Song.s list
-
 (** Adds the file URI to the playlist (directories add recursively). URI can also be a single file. *)
 val add: Mpd.Client.c -> string -> Protocol.response
 val addid: Mpd.Client.c -> string -> int -> int
@@ -21,14 +20,12 @@ val move: Mpd.Client.c -> int -> ?position_end:int -> int -> unit -> Protocol.re
 val moveid: Mpd.Client.c -> int -> int -> Protocol.response
 (** Get the songs in the playlist *)
 val playlist: Mpd.Client.c -> p
+(** Get information for one song *)
+val playlistid: Mpd.Client.c -> int -> p
 (*
 playlistfind {TAG} {NEEDLE}
 
 Finds songs in the current playlist with strict matching.
-
-playlistid {SONGID}
-
-Displays a list of songs in the playlist. SONGID is optional and specifies a single song to display info for.
 
 playlistinfo [[SONGPOS] | [START:END]]
 
