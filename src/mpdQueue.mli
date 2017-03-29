@@ -19,5 +19,68 @@ val move: Mpd.Client.c -> int -> ?position_end:int -> int -> unit -> Protocol.re
  * If TO is negative, it is relative to the current song in the playlist
  * (if there is one). *)
 val moveid: Mpd.Client.c -> int -> int -> Protocol.response
+(** Get the songs in the playlist *)
 val playlist: Mpd.Client.c -> p
+(*
+playlistfind {TAG} {NEEDLE}
 
+Finds songs in the current playlist with strict matching.
+
+playlistid {SONGID}
+
+Displays a list of songs in the playlist. SONGID is optional and specifies a single song to display info for.
+
+playlistinfo [[SONGPOS] | [START:END]]
+
+Displays a list of all songs in the playlist, or if the optional argument is given, displays information only for the song SONGPOS or the range of songs START:END [6]
+
+playlistsearch {TAG} {NEEDLE}
+
+Searches case-insensitively for partial matches in the current playlist.
+
+plchanges {VERSION} [START:END]
+
+Displays changed songs currently in the playlist since VERSION. Start and end positions may be given to limit the output to changes in the given range.
+
+To detect songs that were deleted at the end of the playlist, use playlistlength returned by status command.
+
+plchangesposid {VERSION} [START:END]
+
+Displays changed songs currently in the playlist since VERSION. This function only returns the position and the id of the changed song, not the complete metadata. This is more bandwidth efficient.
+
+To detect songs that were deleted at the end of the playlist, use playlistlength returned by status command.
+
+prio {PRIORITY} {START:END...}
+
+Set the priority of the specified songs. A higher priority means that it will be played first when "random" mode is enabled.
+
+A priority is an integer between 0 and 255. The default priority of new songs is 0.
+
+prioid {PRIORITY} {ID...}
+
+Same as prio, but address the songs with their id.
+
+rangeid {ID} {START:END}
+
+[7] Specifies the portion of the song that shall be played. START and END are offsets in seconds (fractional seconds allowed); both are optional. Omitting both (i.e. sending just ":") means "remove the range, play everything". A song that is currently playing cannot be manipulated this way.
+
+shuffle [START:END]
+
+Shuffles the current playlist. START:END is optional and specifies a range of songs.
+
+swap {SONG1} {SONG2}
+
+Swaps the positions of SONG1 and SONG2.
+
+swapid {SONG1} {SONG2}
+
+Swaps the positions of SONG1 and SONG2 (both song ids).
+
+addtagid {SONGID} {TAG} {VALUE}
+
+Adds a tag to the specified song. Editing song tags is only possible for remote songs. This change is volatile: it may be overwritten by tags received from the server, and the data is gone when the song gets removed from the queue.
+
+cleartagid {SONGID} [TAG]
+
+Removes tags from the specified song. If TAG is not specified, then all tag values will be removed. Editing song tags is only possible for remote songs.
+*)
