@@ -23,6 +23,7 @@ open Unix
 open Protocol
 open Status
 open Mpd_utils
+open Lwt
 
 module Utils = struct
   include Mpd_utils
@@ -84,6 +85,75 @@ end = struct
         in String.concat "" (List.rev (_read socket []))
 end
 
+module LwtConnection : sig
+  type c
+
+  val initialize : string -> int -> c option Lwt.t
+  val write: c -> string -> unit Lwt.t
+  val read: c -> string Lwt.t
+  val close: c -> unit Lwt.t
+end = struct
+  (** Lwt connection type for thread usage *)
+  type c =
+    { hostname : string; port : int; ip : Unix.inet_addr; socket : Lwt_unix.file_descr }
+
+  let gethostbyname name =
+  Lwt.catch
+    (fun () ->
+    Lwt_unix.gethostbyname name
+    >>= fun entry ->
+      let addrs = Array.to_list entry.Unix.h_addr_list in
+      Lwt.return addrs
+  ) (function
+    | Not_found -> Lwt.return_nil
+    | e -> Lwt.fail e
+    )
+
+  let open_socket addr port =
+    let sock = Lwt_unix.socket Lwt_unix.PF_INET Lwt_unix.SOCK_STREAM 0 in
+    let sockaddr = Lwt_unix.ADDR_INET (addr, port) in
+    Lwt_unix.connect sock sockaddr
+    >>= fun () ->
+      Lwt.return sock
+
+  (** Create the connection in a Lwt thread, returns None if the connection
+   * can not be initialized. *)
+  let initialize hostname port =
+    gethostbyname hostname >>= fun addrs ->
+    match addrs with
+    | [] -> Lwt.return None
+    | addr :: others -> open_socket addr port
+                        >>= fun socket ->
+                          let conn = { hostname = hostname;
+                                       port = port;
+                                       ip = addr;
+                                       socket = socket
+                                     }
+    in Lwt.return (Some (conn))
+
+  (** Write in a Mpd connection throught a Lwt thread. *)
+  let write conn str =
+    let {socket = socket; _} = conn in
+    let len = String.length str in
+    Lwt_unix.send socket str 0 len []
+    >>=fun success ->
+      Lwt.return ()
+
+  let read conn =
+    let {socket = socket; _} = conn in
+    let maxlen = 8 in
+    let buffer = Bytes.create maxlen in
+    Lwt_unix.recv socket buffer 0 maxlen [] >|= String.sub buffer 0
+    (* Equivalent to
+     * let buf = Bytes.create 128 in
+     * Lwt_unix.recv sock buf 0 128 []
+     * >>= fun recvlen ->
+     *   String.sub buf 0 recvlen in *)
+
+  let close conn =
+    let {socket = socket; _} = conn in
+    Lwt_unix.close socket
+end
 (** Functions and type needed to store and manipulate an mpd status request
  * information.
  * https://www.musicpd.org/doc/protocol/command_reference.html#status_commands
