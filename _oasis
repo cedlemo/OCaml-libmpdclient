@@ -65,6 +65,14 @@ Executable "mpd_playlist_info"
   CompiledObject: best
   BuildDepends: libmpdclient
 
+Executable "mpd_lwt_client_idle"
+  Path: samples
+  MainIs: mpd_lwt_client_idle.ml
+  Install: false
+  CompiledObject: best
+  BuildDepends: libmpdclient
+
+
 AlphaFeatures: ocamlbuild_more_args
 Document "libmpdclient_doc"
   Type: ocamlbuild (0.4)
