@@ -91,6 +91,7 @@ module LwtConnection : sig
   val initialize : string -> int -> c option Lwt.t
   val write: c -> string -> unit Lwt.t
   val read: c -> string Lwt.t
+  val read_mpd_banner: c -> string Lwt.t
   val close: c -> unit Lwt.t
 end = struct
   (** Lwt connection type for thread usage *)
@@ -154,21 +155,40 @@ end = struct
     | Incomplete
     | Complete of string
 
-  let check_full_response mpd_data =
-    let response = Str.regexp "\\(\\(\n\\|.\\)*\\)OK\n" in
+  let check_full_response mpd_data pattern =
+    let response = Str.regexp pattern in
     match Str.string_match response mpd_data 0 with
     | true -> Complete (Str.matched_group 1 mpd_data)
     | false -> Incomplete
 
+  let full_mpd_event mpd_data =
+    let pattern = "changed: \\(\\(\n\\|.\\)*\\)OK\n" in
+    check_full_response mpd_data pattern
+
+  let full_mpd_banner mpd_data =
+    let pattern = "OK\\(\\(\n\\|.\\)*\\)\n" in
+    check_full_response mpd_data pattern
+
   let read connection =
     let rec _read connection acc =
       let response = String.concat "" (List.rev acc) in
-      match check_full_response response with
+      match full_mpd_event response with
       | Complete (s) -> Lwt.return s
       | Incomplete -> recvstr connection
                       >>= fun response ->
                       _read connection (response :: acc)
       in _read connection []
+
+  let read_mpd_banner connection =
+    let rec _read connection acc =
+      let response = String.concat "" (List.rev acc) in
+      match full_mpd_banner response with
+      | Complete (s) -> Lwt.return s
+      | Incomplete -> recvstr connection
+                      >>= fun response ->
+                      _read connection (response :: acc)
+      in _read connection []
+
 
   let close conn =
     let {socket = socket; _} = conn in
@@ -180,13 +200,14 @@ module LwtClient : sig
 
   val initialize: LwtConnection.c -> c Lwt.t
   val close: c -> unit Lwt.t
+  val mpd_banner: c -> string
   val idle: c -> (string -> bool Lwt.t) -> unit Lwt.t
 end = struct
   type c = {connection : LwtConnection.c; mpd_banner : string }
 
   (** Initialize the client with a connection. *)
   let initialize connection =
-    LwtConnection.read connection
+    LwtConnection.read_mpd_banner connection
     >>= fun message ->
     Lwt.return {connection = connection; mpd_banner = message}
 
@@ -194,6 +215,11 @@ end = struct
   let close client =
     let {connection = connection; _} = client in
     LwtConnection.close connection
+
+ (** Return the mpd banner that the server send at the first connection of the
+   * client. *)
+  let mpd_banner {mpd_banner = banner; _ } =
+    banner
 
   (** Loop on mpd event with the "idle" command
    * the on_event function take the event response as argument and return
