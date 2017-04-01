@@ -161,6 +161,14 @@ end = struct
     | true -> Complete (Str.matched_group 1 mpd_data)
     | false -> Incomplete
 
+  (* TODO :
+    * improve/fix the pattern used to match
+    * Client on
+    * MPD 0.20.0
+    * Not handled -player
+    * -
+    * remove the "\n" in the pattern *)
+
   let full_mpd_event mpd_data =
     let pattern = "changed: \\(\\(\n\\|.\\)*\\)OK\n" in
     check_full_response mpd_data pattern
