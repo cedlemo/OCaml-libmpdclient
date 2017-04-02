@@ -90,8 +90,8 @@ module LwtConnection : sig
 
   val initialize : string -> int -> c option Lwt.t
   val write: c -> string -> unit Lwt.t
-  val read: c -> string Lwt.t
   val read_mpd_banner: c -> string Lwt.t
+  val read_idle_events: c -> string Lwt.t
   val close: c -> unit Lwt.t
 end = struct
   (** Lwt connection type for thread usage *)
@@ -161,7 +161,7 @@ end = struct
     | true -> Complete (Str.matched_group 1 mpd_data)
     | false -> Incomplete
 
-    let full_mpd_event mpd_data =
+  let full_mpd_idle_event mpd_data =
     let pattern = "changed: \\(\\(\n\\|.\\)*\\)\nOK\n" in
     check_full_response mpd_data pattern
 
@@ -169,26 +169,25 @@ end = struct
     let pattern = "OK\\(\\(\n\\|.\\)*\\)\n" in
     check_full_response mpd_data pattern
 
-  let read connection =
+  let full_mpd_command_response mpd_data =
+    let pattern = "\\(\\(\n\\|.\\)*\\)OK\n" in
+    check_full_response mpd_data pattern
+
+  let read connection check_full_data =
     let rec _read connection acc =
       let response = String.concat "" (List.rev acc) in
-      match full_mpd_event response with
+      match check_full_data response with
       | Complete (s) -> Lwt.return s
       | Incomplete -> recvstr connection
                       >>= fun response ->
                       _read connection (response :: acc)
       in _read connection []
+
+  let read_idle_events connection =
+    read connection full_mpd_idle_event
 
   let read_mpd_banner connection =
-    let rec _read connection acc =
-      let response = String.concat "" (List.rev acc) in
-      match full_mpd_banner response with
-      | Complete (s) -> Lwt.return s
-      | Incomplete -> recvstr connection
-                      >>= fun response ->
-                      _read connection (response :: acc)
-      in _read connection []
-
+    read connection full_mpd_banner
 
   let close conn =
     let {socket = socket; _} = conn in
@@ -229,13 +228,22 @@ end = struct
     let cmd = "idle\n" in
     LwtConnection.write connection cmd
     >>= fun () ->
-      LwtConnection.read connection
+      LwtConnection.read_idle_events connection
       >>= fun response ->
         on_event response
         >>=fun stop ->
           match stop with
           | true -> Lwt.return ()
           | false -> idle client on_event
+
+  (** Send to the mpd server a command. The response of the server is returned
+   * under the form of a Protocol.response type.
+  let send_command client cmd =
+    let {connection = c; _} = client in
+    LwtConnection.write c (cmd ^ "\n");
+    let response = LwtConnection.read c in
+    Protocol.parse_response response
+   *)
 end
 (** Functions and type needed to store and manipulate an mpd status request
  * information.
