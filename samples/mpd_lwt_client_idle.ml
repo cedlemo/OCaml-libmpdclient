@@ -1,13 +1,16 @@
 open Lwt
 open Mpd
 
+(* Simple client that connects to a mpd server with the "idle" command and get
+ * all the events of the mpd server.*)
+
 let host = "127.0.0.1"
 let port = 6600
 
 let on_mpd_event event_name =
   match event_name with
-  | "player" -> print_endline "Player command has been executed"; Lwt.return false
-  | _ -> print_endline (("Not handled -" ^ event_name) ^ "-"); Lwt.return true
+  | "mixer" -> print_endline "Mixer related command has been executed"; Lwt.return true
+  | _ -> print_endline (("-" ^ event_name) ^ "-"); Lwt.return false
 
 let main_thread =
    Mpd.LwtConnection.initialize host port
