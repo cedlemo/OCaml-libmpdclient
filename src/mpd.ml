@@ -92,6 +92,7 @@ module LwtConnection : sig
   val write: c -> string -> unit Lwt.t
   val read_mpd_banner: c -> string Lwt.t
   val read_idle_events: c -> string Lwt.t
+  val read_command_response: c -> string Lwt.t
   val close: c -> unit Lwt.t
 end = struct
   (** Lwt connection type for thread usage *)
@@ -188,6 +189,9 @@ end = struct
 
   let read_mpd_banner connection =
     read connection full_mpd_banner
+
+  let read_command_response connection =
+    read connection full_mpd_command_response
 
   let close conn =
     let {socket = socket; _} = conn in
