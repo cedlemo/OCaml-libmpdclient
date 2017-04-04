@@ -206,6 +206,7 @@ module LwtClient : sig
   val mpd_banner: c -> string
   val idle: c -> (string -> bool Lwt.t) -> unit Lwt.t
   val send: c -> string -> Protocol.response Lwt.t
+  val status: c -> Status.s Lwt.t
 end = struct
   type c = {connection : LwtConnection.c; mpd_banner : string }
 
@@ -251,6 +252,18 @@ end = struct
       >>= fun response ->
         let parsed_response = Protocol.parse_response response in
         Lwt.return parsed_response
+
+  (** Create a status request and returns the status under a Mpd.Status.s Lwt.t
+   * type.*)
+  let status client =
+    send client "status"
+    >>= fun response ->
+      match response with
+      | Ok (lines) -> let status_pairs = Utils.split_lines lines in
+      let status = Status.parse status_pairs in Lwt.return status
+      | Error (ack, ack_cmd_num, cmd, error) -> let status = Status.generate_error error in
+      Lwt.return status
+
 end
 (** Functions and type needed to store and manipulate an mpd status request
  * information.
