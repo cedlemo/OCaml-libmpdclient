@@ -282,8 +282,7 @@ module Client : sig
   type c
 
   val initialize: Connection.c -> c
-  val send_command: c -> string -> Protocol.response
-  val send_request: c -> string -> Protocol.response
+  val send: c -> string -> Protocol.response
   val mpd_banner: c -> string
   val status: c -> Status.s
   val ping: c -> Protocol.response
@@ -302,19 +301,11 @@ end = struct
     let message = Connection.read connection in
     {connection = connection; mpd_banner = message}
 
-  (** Send to the mpd server a command. The response of the server is returned
-   * under the form of a Protocol.response type. *)
-  let send_command client cmd =
+  (** Send to the mpd server a command or a request. The response of the server
+   * is returned under the form of a Protocol.response type. *)
+  let send client mpd_cmd =
     let {connection = c; _} = client in
-    Connection.write c (cmd ^ "\n");
-    let response = Connection.read c in
-    Protocol.parse_response response
-
-  (** Send to the mpd server a request. The response of the server is returned
-   * under the form of a Protocol.response type. *)
-  let send_request client request =
-    let {connection = c; _} = client in
-    Connection.write c (request ^ "\n");
+    Connection.write c (mpd_cmd ^ "\n");
     let response = Connection.read c in
     Protocol.parse_response response
 
@@ -326,7 +317,7 @@ end = struct
   (** Create a status request and returns the status under a Mpd.Status.s
    * type.*)
   let status client =
-    let response = send_request client "status" in
+    let response = send client "status" in
     match response with
     | Ok (lines) -> let status_pairs = Utils.split_lines lines in
     Status.parse status_pairs
@@ -334,12 +325,12 @@ end = struct
 
   (** Does nothing but return "OK". *)
   let ping client =
-    send_command client "ping"
+    send client "ping"
 
   (** This is used for authentication with the server. PASSWORD is simply the
    * plaintext password. *)
   let password client mdp =
-    send_request client (String.concat " " ["password"; mdp])
+    send client (String.concat " " ["password"; mdp])
 
   (** Shows a list of available tag types. It is an intersection of the
    * metadata_to_use setting and this client's tag mask.
@@ -348,7 +339,7 @@ end = struct
    * idea, because it makes responses smaller. The following tagtypes sub
    * commands configure this list. *)
   let tagtypes client =
-    let response = send_request client "tagtypes" in
+    let response = send client "tagtypes" in
     match response with
     | Ok (lines) -> let tagid_keys_vals = Utils.split_lines lines in
     List.rev (values_of_pairs tagid_keys_vals)
@@ -357,23 +348,23 @@ end = struct
   (** Remove one or more tags from the list of tag types the client is
    * interested in. These will be omitted from responses to this client. *)
   let tagtypes_disable client tagtypes =
-    send_command client (String.concat "" ["tagtypes disable ";
-                                           String.concat " " tagtypes])
+    send client (String.concat "" ["tagtypes disable ";
+                                    String.concat " " tagtypes])
   (** Re-enable one or more tags from the list of tag types for this client.
    * These will no longer be hidden from responses to this client. *)
   let tagtypes_enable client tagtypes =
-    send_command client (String.concat "" ["tagtypes enable ";
-                                           String.concat " " tagtypes])
+    send client (String.concat "" ["tagtypes enable ";
+                                   String.concat " " tagtypes])
 
   (** Clear the list of tag types this client is interested in. This means that
    * MPD will not send any tags to this client. *)
   let tagtypes_clear client =
-    send_command client "tagtypes clear"
+    send client "tagtypes clear"
 
   (** Announce that this client is interested in all tag types. This is the
    * default setting for new clients. *)
   let tagtypes_all client =
-    send_command client "tagtypes all"
+    send client "tagtypes all"
    *)
 
   (** Closes the connection to MPD. MPD will try to send the remaining output
