@@ -205,7 +205,7 @@ module LwtClient : sig
   val close: c -> unit Lwt.t
   val mpd_banner: c -> string
   val idle: c -> (string -> bool Lwt.t) -> unit Lwt.t
-  val send_command: c -> string -> Protocol.response Lwt.t
+  val send: c -> string -> Protocol.response Lwt.t
 end = struct
   type c = {connection : LwtConnection.c; mpd_banner : string }
 
@@ -243,7 +243,7 @@ end = struct
 
   (** Send to the mpd server a command. The response of the server is returned
    * under the form of a Protocol.response type. *)
-  let send_command client cmd =
+  let send client cmd =
     let {connection = c; _} = client in
     LwtConnection.write c (cmd ^ "\n")
     >>= fun () ->
