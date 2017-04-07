@@ -207,6 +207,8 @@ module LwtClient : sig
   val idle: c -> (string -> bool Lwt.t) -> unit Lwt.t
   val send: c -> string -> Protocol.response Lwt.t
   val status: c -> Status.s Lwt.t
+  val ping: c -> Protocol.response Lwt.t
+  val password: c -> string -> Protocol.response Lwt.t
 end = struct
   type c = {connection : LwtConnection.c; mpd_banner : string }
 
@@ -263,6 +265,15 @@ end = struct
       let status = Status.parse status_pairs in Lwt.return status
       | Error (ack, ack_cmd_num, cmd, error) -> let status = Status.generate_error error in
       Lwt.return status
+
+  (** Does nothing but return "OK". *)
+  let ping client =
+    send client "ping"
+
+  (** This is used for authentication with the server. PASSWORD is simply the
+   * plaintext password. *)
+  let password client mdp =
+    send client (String.concat " " ["password"; mdp])
 
 end
 (** Functions and type needed to store and manipulate an mpd status request
