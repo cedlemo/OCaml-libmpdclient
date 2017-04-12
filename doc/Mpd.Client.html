@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Mpd.LwtClient.html">
+<link rel="Up" href="Mpd.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Mpd" rel="Chapter" href="Mpd.html">
+<link title="Protocol" rel="Chapter" href="Protocol.html">
+<link title="Playback" rel="Chapter" href="Playback.html">
+<link title="Status" rel="Chapter" href="Status.html">
+<link title="Song" rel="Chapter" href="Song.html">
+<link title="MpdQueue" rel="Chapter" href="MpdQueue.html">
+<link title="Mpd_utils" rel="Chapter" href="Mpd_utils.html"><title>Mpd.Client</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Mpd.LwtClient.html" title="Mpd.LwtClient">Previous</a>
+&nbsp;<a class="up" href="Mpd.html" title="Mpd">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Mpd.Client.html">Mpd.Client</a></h1>
+
+<pre><span class="keyword">module</span> Client: <code class="code"><span class="keyword">sig</span></code> <a href="Mpd.Client.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Provides functions and type in order to communicate to the mpd server
+ * with commands and requests.<br>
+</div>
+<hr width="100%">
+
+<pre><code><span id="TYPEc"><span class="keyword">type</span> <code class="type"></code>c</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTc.connection">connection</span>&nbsp;: <code class="type"><a href="Mpd.Connection.html#TYPEc">Mpd.Connection.c</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTc.mpd_banner">mpd_banner</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr></table>
+}
+
+<div class="info ">
+Client type<br>
+</div>
+
+
+<pre><span id="VALinitialize"><span class="keyword">val</span> initialize</span> : <code class="type"><a href="Mpd.Connection.html#TYPEc">Mpd.Connection.c</a> -> <a href="Mpd.Client.html#TYPEc">c</a></code></pre><div class="info ">
+Initialize the client with a connection.<br>
+</div>
+
+<pre><span id="VALsend"><span class="keyword">val</span> send</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">c</a> -> string -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
+Send to the mpd server a command or a request. The response of the server
+   * is returned under the form of a Protocol.response type.<br>
+</div>
+
+<pre><span id="VALmpd_banner"><span class="keyword">val</span> mpd_banner</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">c</a> -> string</code></pre><div class="info ">
+Return the mpd banner that the server send at the first connection of the
+   * client.<br>
+</div>
+
+<pre><span id="VALstatus"><span class="keyword">val</span> status</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">c</a> -> <a href="Status.html#TYPEs">Status.s</a></code></pre><div class="info ">
+Create a status request and returns the status under a Mpd.Status.s
+   * type.<br>
+</div>
+
+<pre><span id="VALping"><span class="keyword">val</span> ping</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">c</a> -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
+Does nothing but return "OK".<br>
+</div>
+
+<pre><span id="VALpassword"><span class="keyword">val</span> password</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">c</a> -> string -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
+This is used for authentication with the server. PASSWORD is simply the
+   * plaintext password.<br>
+</div>
+
+<pre><span id="VALtagtypes"><span class="keyword">val</span> tagtypes</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">c</a> -> string list</code></pre><div class="info ">
+Shows a list of available tag types. It is an intersection of the
+   * metadata_to_use setting and this client's tag mask.
+   * About the tag mask: each client can decide to disable any number of tag
+   * types, which will be omitted from responses to this client. That is a good
+   * idea, because it makes responses smaller. The following tagtypes sub
+   * commands configure this list.<br>
+</div>
+
+<pre><span id="VALclose"><span class="keyword">val</span> close</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">c</a> -> unit</code></pre><div class="info ">
+Closes the connection to MPD. MPD will try to send the remaining output
+   * buffer before it actually closes the connection, but that cannot be
+   * guaranteed. This command will not generate a response.<br>
+</div>
+</body></html>

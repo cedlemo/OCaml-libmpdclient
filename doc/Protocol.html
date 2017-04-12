@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Mpd.html">
+<link rel="next" href="Playback.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Mpd" rel="Chapter" href="Mpd.html">
+<link title="Protocol" rel="Chapter" href="Protocol.html">
+<link title="Playback" rel="Chapter" href="Playback.html">
+<link title="Status" rel="Chapter" href="Status.html">
+<link title="Song" rel="Chapter" href="Song.html">
+<link title="MpdQueue" rel="Chapter" href="MpdQueue.html">
+<link title="Mpd_utils" rel="Chapter" href="Mpd_utils.html"><title>Protocol</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Mpd.html" title="Mpd">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Playback.html" title="Playback">Next</a>
+</div>
+<h1>Module <a href="type_Protocol.html">Protocol</a></h1>
+
+<pre><span class="keyword">module</span> Protocol: <code class="code"><span class="keyword">sig</span></code> <a href="Protocol.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Define the Mpd response and error types<br>
+</div>
+<hr width="100%">
+
+<pre><code><span id="TYPEack_error"><span class="keyword">type</span> <code class="type"></code>ack_error</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTack_error.Not_list"><span class="constructor">Not_list</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTack_error.Arg"><span class="constructor">Arg</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTack_error.Password"><span class="constructor">Password</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTack_error.Permission"><span class="constructor">Permission</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTack_error.Unknown"><span class="constructor">Unknown</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTack_error.No_exist"><span class="constructor">No_exist</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTack_error.Playlist_max"><span class="constructor">Playlist_max</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTack_error.System"><span class="constructor">System</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTack_error.Playlist_load"><span class="constructor">Playlist_load</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTack_error.Update_already"><span class="constructor">Update_already</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTack_error.Player_sync"><span class="constructor">Player_sync</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTack_error.Exist"><span class="constructor">Exist</span></span></code></td>
+
+</tr></table>
+
+<div class="info ">
+Type of error that could occurs when a command is send to the mpd server.<br>
+</div>
+
+
+<pre><code><span id="TYPEresponse"><span class="keyword">type</span> <code class="type"></code>response</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTresponse.Ok"><span class="constructor">Ok</span></span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTresponse.Error"><span class="constructor">Error</span></span> <span class="keyword">of</span> <code class="type">(<a href="Protocol.html#TYPEack_error">ack_error</a> * int * string * string)</code></code></td>
+
+</tr></table>
+
+<div class="info ">
+Type of the response of the mpd server.<br>
+</div>
+
+
+<pre><span id="VALerror_name"><span class="keyword">val</span> error_name</span> : <code class="type"><a href="Protocol.html#TYPEack_error">ack_error</a> -> string</code></pre><div class="info ">
+Get the error name of the error type.<br>
+</div>
+
+<pre><span id="VALstr_error_to_val"><span class="keyword">val</span> str_error_to_val</span> : <code class="type">string -> <a href="Protocol.html#TYPEack_error">ack_error</a></code></pre><div class="info ">
+Returns the related type for the error returned by the server as a string.<br>
+</div>
+
+<pre><span id="VALparse_error_response"><span class="keyword">val</span> parse_error_response</span> : <code class="type">string -> <a href="Protocol.html#TYPEack_error">ack_error</a> * int * string * string</code></pre><div class="info ">
+Parse the error response of the mpd server into the error type.<br>
+</div>
+
+<pre><span id="VALparse_response"><span class="keyword">val</span> parse_response</span> : <code class="type">string -> <a href="Protocol.html#TYPEresponse">response</a></code></pre><div class="info ">
+Parse the mpd server response<br>
+</div>
+</body></html>

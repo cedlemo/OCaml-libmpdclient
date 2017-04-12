@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="next" href="Protocol.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Mpd" rel="Chapter" href="Mpd.html">
+<link title="Protocol" rel="Chapter" href="Protocol.html">
+<link title="Playback" rel="Chapter" href="Playback.html">
+<link title="Status" rel="Chapter" href="Status.html">
+<link title="Song" rel="Chapter" href="Song.html">
+<link title="MpdQueue" rel="Chapter" href="MpdQueue.html">
+<link title="Mpd_utils" rel="Chapter" href="Mpd_utils.html"><title>Mpd</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Protocol.html" title="Protocol">Next</a>
+</div>
+<h1>Module <a href="type_Mpd.html">Mpd</a></h1>
+
+<pre><span class="keyword">module</span> Mpd: <code class="code"><span class="keyword">sig</span></code> <a href="Mpd.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Libmpd client main module<br>
+</div>
+<hr width="100%">
+
+<pre><span class="keyword">module</span> <a href="Mpd.Utils.html">Utils</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Mpd.Utils.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><br>
+Libmpd client main module<br>
+
+<pre><span class="keyword">module</span> <a href="Mpd.Connection.html">Connection</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Mpd.Connection.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Offer functions and type in order to handle connections to the mpd server at
+   the socket level
+</div>
+
+<pre><span class="keyword">module</span> <a href="Mpd.LwtConnection.html">LwtConnection</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Mpd.LwtConnection.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
+<pre><span class="keyword">module</span> <a href="Mpd.LwtClient.html">LwtClient</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Mpd.LwtClient.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><br>
+Functions and type needed to store and manipulate an mpd status request
+ * information.
+ * https://www.musicpd.org/doc/protocol/command_reference.html#status_commands
+module Status = struct
+  include Mpd_status
+end<br>
+<br>
+Functions and type neede to store and manipulate song informations
+ * Song format example
+ * file: Nile - What Should Not Be Unearthed (2015)/02 Negating The Abominable Coils Of Apep.mp3.mp3
+ * Last-Modified: 2015-08-13T09:56:32Z
+ * artist: Nile
+ * title: Negating The Abominable Coils Of Apep
+ * album: What Should Not Be Unearthed
+ * track: 2
+ * rate: 2015
+ * genre: Death Metal
+ * time: 254
+ * duration: 254.093
+ * pos: 1
+ * id: 2<br>
+
+<pre><span class="keyword">module</span> <a href="Mpd.Client.html">Client</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Mpd.Client.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Provides functions and type in order to communicate to the mpd server
+ * with commands and requests.
+</div>
+</body></html>
