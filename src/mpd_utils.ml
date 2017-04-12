@@ -21,8 +21,7 @@ let num_on_num_parse numbers =
  * This type is used by Mpd.Utils.read_key_val. *)
 type pair = { key : string; value : string }
 
-(** Split a line with the form "k: v" in the value of type pair :
-  * { key = k; value = v } *)
+(** Split a line with the form "k: v" in the value of type pair *)
 let read_key_val str =
   let pattern = Str.regexp "\\(.*\\): \\(.*\\)" in
   if Str.string_match pattern str 0 then let k = Str.matched_group 1 str in
