@@ -12,6 +12,7 @@
 <link title="Status" rel="Chapter" href="Status.html">
 <link title="Song" rel="Chapter" href="Song.html">
 <link title="MpdQueue" rel="Chapter" href="MpdQueue.html">
+<link title="MpdLwtQueue" rel="Chapter" href="MpdLwtQueue.html">
 <link title="Mpd_utils" rel="Chapter" href="Mpd_utils.html"><title>Index of modules</title>
 </head>
 <body>
@@ -43,6 +44,11 @@ Offer functions and type in order to handle connections to the mpd server at
 Libmpd client main module
 </div>
 </td></tr>
+<tr><td><a href="MpdLwtQueue.html">MpdLwtQueue</a> </td>
+<td><div class="info">
+Module for Mpd current playlist manipulation in Lwt threads.
+</div>
+</td></tr>
 <tr><td><a href="MpdQueue.html">MpdQueue</a> </td>
 <td><div class="info">
 Adds the file URI to the playlist (directories add recursively).
@@ -66,7 +72,11 @@ Define the Mpd response and error types
 </td></tr>
 <tr><td align="left"><br>S</td></tr>
 <tr><td><a href="Song.html">Song</a> </td>
-<td></td></tr>
+<td><div class="info">
+Song module used to store and retrieve information of a song based on
+ * mpd tags.
+</div>
+</td></tr>
 <tr><td><a href="Status.html">Status</a> </td>
 <td><div class="info">
 Mpd_status is included in Mpd.Status.

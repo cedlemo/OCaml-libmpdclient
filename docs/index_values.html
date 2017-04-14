@@ -12,6 +12,7 @@
 <link title="Status" rel="Chapter" href="Status.html">
 <link title="Song" rel="Chapter" href="Song.html">
 <link title="MpdQueue" rel="Chapter" href="MpdQueue.html">
+<link title="MpdLwtQueue" rel="Chapter" href="MpdLwtQueue.html">
 <link title="Mpd_utils" rel="Chapter" href="Mpd_utils.html"><title>Index of values</title>
 </head>
 <body>
@@ -19,9 +20,22 @@
 &nbsp;</div>
 <h1>Index of values</h1>
 <table>
+<tr><td align="left"><br></td></tr>
+<tr><td><a href="MpdLwtQueue.html#VAL_build_songs_list">_build_songs_list</a> [<a href="MpdLwtQueue.html">MpdLwtQueue</a>]</td>
+<td></td></tr>
 <tr><td align="left"><br>A</td></tr>
+<tr><td><a href="MpdLwtQueue.html#VALadd">add</a> [<a href="MpdLwtQueue.html">MpdLwtQueue</a>]</td>
+<td><div class="info">
+Adds the file URI to the playlist (directories add recursively).
+</div>
+</td></tr>
 <tr><td><a href="MpdQueue.html#VALadd">add</a> [<a href="MpdQueue.html">MpdQueue</a>]</td>
 <td></td></tr>
+<tr><td><a href="MpdLwtQueue.html#VALaddid">addid</a> [<a href="MpdLwtQueue.html">MpdLwtQueue</a>]</td>
+<td><div class="info">
+Adds a song to the playlist (non-recursive) and returns the song id.
+</div>
+</td></tr>
 <tr><td><a href="MpdQueue.html#VALaddid">addid</a> [<a href="MpdQueue.html">MpdQueue</a>]</td>
 <td><div class="info">
 Clears the current playlist.
@@ -56,6 +70,11 @@ Get a boolean value from a string number.
 </div>
 </td></tr>
 <tr><td align="left"><br>C</td></tr>
+<tr><td><a href="MpdLwtQueue.html#VALclear">clear</a> [<a href="MpdLwtQueue.html">MpdLwtQueue</a>]</td>
+<td><div class="info">
+Clears the current playlist.
+</div>
+</td></tr>
 <tr><td><a href="MpdQueue.html#VALclear">clear</a> [<a href="MpdQueue.html">MpdQueue</a>]</td>
 <td><div class="info">
 Deletes a song or a set of songs from the playlist.
@@ -90,7 +109,17 @@ Get the current playlist id
 <tr><td align="left"><br>D</td></tr>
 <tr><td><a href="Song.html#VALdate">date</a> [<a href="Song.html">Song</a>]</td>
 <td></td></tr>
+<tr><td><a href="MpdLwtQueue.html#VALdelete">delete</a> [<a href="MpdLwtQueue.html">MpdLwtQueue</a>]</td>
+<td><div class="info">
+Deletes a song or a set of songs from the playlist.
+</div>
+</td></tr>
 <tr><td><a href="MpdQueue.html#VALdelete">delete</a> [<a href="MpdQueue.html">MpdQueue</a>]</td>
+<td><div class="info">
+Deletes the song SONGID from the playlist.
+</div>
+</td></tr>
+<tr><td><a href="MpdLwtQueue.html#VALdeleteid">deleteid</a> [<a href="MpdLwtQueue.html">MpdLwtQueue</a>]</td>
 <td><div class="info">
 Deletes the song SONGID from the playlist.
 </div>
@@ -117,7 +146,10 @@ Returns the totatl duration of the current song in seconds
 </div>
 </td></tr>
 <tr><td><a href="Song.html#VALempty">empty</a> [<a href="Song.html">Song</a>]</td>
-<td></td></tr>
+<td><div class="info">
+Empty song type
+</div>
+</td></tr>
 <tr><td><a href="Status.html#VALempty">empty</a> [<a href="Status.html">Status</a>]</td>
 <td><div class="info">
 Parse list of strings into a Mpd Status type
@@ -140,6 +172,8 @@ Get the error name of the error type.
 <tr><td><a href="Status.html#VALgenerate_error">generate_error</a> [<a href="Status.html">Status</a>]</td>
 <td></td></tr>
 <tr><td><a href="Song.html#VALgenre">genre</a> [<a href="Song.html">Song</a>]</td>
+<td></td></tr>
+<tr><td><a href="MpdLwtQueue.html#VALget_song_id">get_song_id</a> [<a href="MpdLwtQueue.html">MpdLwtQueue</a>]</td>
 <td></td></tr>
 <tr><td align="left"><br>I</td></tr>
 <tr><td><a href="Song.html#VALid">id</a> [<a href="Song.html">Song</a>]</td>
@@ -186,7 +220,18 @@ Get the mixrampdelay in seconds
 Get information of the audio file of the current song (sampleRate:bits:channels)
 </div>
 </td></tr>
+<tr><td><a href="MpdLwtQueue.html#VALmove">move</a> [<a href="MpdLwtQueue.html">MpdLwtQueue</a>]</td>
+<td><div class="info">
+Moves the song at FROM or range of songs at START:END to TO in
+ * the playlist.
+</div>
+</td></tr>
 <tr><td><a href="MpdQueue.html#VALmove">move</a> [<a href="MpdQueue.html">MpdQueue</a>]</td>
+<td><div class="info">
+Moves the song with FROM (songid) to TO (playlist index) in the playlist.
+</div>
+</td></tr>
+<tr><td><a href="MpdLwtQueue.html#VALmoveid">moveid</a> [<a href="MpdLwtQueue.html">MpdLwtQueue</a>]</td>
 <td><div class="info">
 Moves the song with FROM (songid) to TO (playlist index) in the playlist.
 </div>
@@ -233,7 +278,10 @@ Split string like "8/14" to 8 and 14, returns (-1, -1) if it fails.
 </td></tr>
 <tr><td align="left"><br>P</td></tr>
 <tr><td><a href="Song.html#VALparse">parse</a> [<a href="Song.html">Song</a>]</td>
-<td></td></tr>
+<td><div class="info">
+Parse a list of song attributes to a Song.s type
+</div>
+</td></tr>
 <tr><td><a href="Status.html#VALparse">parse</a> [<a href="Status.html">Status</a>]</td>
 <td><div class="info">
 Get the volume level from a Mpd Status
@@ -286,6 +334,11 @@ Begins playing the playlist at song id.
 Seeks to the position time of entry songpos in the playlist.
 </div>
 </td></tr>
+<tr><td><a href="MpdLwtQueue.html#VALplaylist">playlist</a> [<a href="MpdLwtQueue.html">MpdLwtQueue</a>]</td>
+<td><div class="info">
+Get a list of Song.s that represents all the songs in the current playlist.
+</div>
+</td></tr>
 <tr><td><a href="MpdQueue.html#VALplaylist">playlist</a> [<a href="MpdQueue.html">MpdQueue</a>]</td>
 <td><div class="info">
 Get information for one song
@@ -294,6 +347,11 @@ Get information for one song
 <tr><td><a href="Status.html#VALplaylist">playlist</a> [<a href="Status.html">Status</a>]</td>
 <td><div class="info">
 Get the current playlist length
+</div>
+</td></tr>
+<tr><td><a href="MpdLwtQueue.html#VALplaylistid">playlistid</a> [<a href="MpdLwtQueue.html">MpdLwtQueue</a>]</td>
+<td><div class="info">
+Get a list with the Song.s of the song id in the playlist
 </div>
 </td></tr>
 <tr><td><a href="MpdQueue.html#VALplaylistid">playlistid</a> [<a href="MpdQueue.html">MpdQueue</a>]</td>

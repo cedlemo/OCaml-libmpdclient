@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="MpdQueue.html">
+<link rel="next" href="Mpd_utils.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Mpd" rel="Chapter" href="Mpd.html">
+<link title="Protocol" rel="Chapter" href="Protocol.html">
+<link title="Playback" rel="Chapter" href="Playback.html">
+<link title="Status" rel="Chapter" href="Status.html">
+<link title="Song" rel="Chapter" href="Song.html">
+<link title="MpdQueue" rel="Chapter" href="MpdQueue.html">
+<link title="MpdLwtQueue" rel="Chapter" href="MpdLwtQueue.html">
+<link title="Mpd_utils" rel="Chapter" href="Mpd_utils.html"><title>MpdLwtQueue</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="MpdQueue.html" title="MpdQueue">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Mpd_utils.html" title="Mpd_utils">Next</a>
+</div>
+<h1>Module <a href="type_MpdLwtQueue.html">MpdLwtQueue</a></h1>
+
+<pre><span class="keyword">module</span> MpdLwtQueue: <code class="code"><span class="keyword">sig</span></code> <a href="MpdLwtQueue.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Module for Mpd current playlist manipulation in Lwt threads.<br>
+</div>
+<hr width="100%">
+
+<pre><code><span id="TYPEp"><span class="keyword">type</span> <code class="type"></code>p</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTp.PlaylistError"><span class="constructor">PlaylistError</span></span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTp.Playlist"><span class="constructor">Playlist</span></span> <span class="keyword">of</span> <code class="type"><a href="Song.html#TYPEs">Song.s</a> list</code></code></td>
+
+</tr></table>
+
+
+
+<pre><span id="VALadd"><span class="keyword">val</span> add</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> string -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
+Adds the file URI to the playlist (directories add recursively). URI can also be a single file.<br>
+</div>
+
+<pre><span id="VALaddid"><span class="keyword">val</span> addid</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> string -> int -> int Lwt.t</code></pre><div class="info ">
+Adds a song to the playlist (non-recursive) and returns the song id.
+  URI is always a single file or URL. For example:<br>
+</div>
+
+<pre><span id="VALclear"><span class="keyword">val</span> clear</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
+Clears the current playlist.<br>
+</div>
+
+<pre><span id="VALdelete"><span class="keyword">val</span> delete</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -><br>       int -> ?position_end:int -> unit -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
+Deletes a song or a set of songs from the playlist. The song or the range
+ * of songs are identified by the position in the playlist.<br>
+</div>
+
+<pre><span id="VALdeleteid"><span class="keyword">val</span> deleteid</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> int -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
+Deletes the song SONGID from the playlist.<br>
+</div>
+
+<pre><span id="VALmove"><span class="keyword">val</span> move</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -><br>       int -> ?position_end:int -> int -> unit -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
+Moves the song at FROM or range of songs at START:END to TO in
+ * the playlist.<br>
+</div>
+
+<pre><span id="VALmoveid"><span class="keyword">val</span> moveid</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> int -> int -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
+Moves the song with FROM (songid) to TO (playlist index) in the playlist.
+ * If TO is negative, it is relative to the current song in the playlist
+ * (if there is one).<br>
+</div>
+
+<pre><span id="VALget_song_id"><span class="keyword">val</span> get_song_id</span> : <code class="type">string -> string</code></pre>
+<pre><span id="VAL_build_songs_list"><span class="keyword">val</span> _build_songs_list</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> string list -> <a href="Song.html#TYPEs">Song.s</a> list -> <a href="MpdLwtQueue.html#TYPEp">p</a> Lwt.t</code></pre>
+<pre><span id="VALplaylist"><span class="keyword">val</span> playlist</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> <a href="MpdLwtQueue.html#TYPEp">p</a> Lwt.t</code></pre><div class="info ">
+Get a list of Song.s that represents all the songs in the current playlist.<br>
+</div>
+
+<pre><span id="VALplaylistid"><span class="keyword">val</span> playlistid</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> int -> <a href="MpdLwtQueue.html#TYPEp">p</a> Lwt.t</code></pre><div class="info ">
+Get a list with the Song.s of the song id in the playlist<br>
+</div>
+</body></html>

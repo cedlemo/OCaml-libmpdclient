@@ -16,6 +16,7 @@
 <link title="Status" rel="Chapter" href="Status.html">
 <link title="Song" rel="Chapter" href="Song.html">
 <link title="MpdQueue" rel="Chapter" href="MpdQueue.html">
+<link title="MpdLwtQueue" rel="Chapter" href="MpdLwtQueue.html">
 <link title="Mpd_utils" rel="Chapter" href="Mpd_utils.html"><title>Song</title>
 </head>
 <body>
@@ -25,13 +26,26 @@
 </div>
 <h1>Module <a href="type_Song.html">Song</a></h1>
 
-<pre><span class="keyword">module</span> Song: <code class="code"><span class="keyword">sig</span></code> <a href="Song.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
+<pre><span class="keyword">module</span> Song: <code class="code"><span class="keyword">sig</span></code> <a href="Song.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Song module used to store and retrieve information of a song based on
+ * mpd tags.<br>
+</div>
+<hr width="100%">
 
 <pre><span id="TYPEs"><span class="keyword">type</span> <code class="type"></code>s</span> </pre>
+<div class="info ">
+Song type<br>
+</div>
 
 
-<pre><span id="VALempty"><span class="keyword">val</span> empty</span> : <code class="type"><a href="Song.html#TYPEs">s</a></code></pre>
-<pre><span id="VALparse"><span class="keyword">val</span> parse</span> : <code class="type">string list -> <a href="Song.html#TYPEs">s</a></code></pre>
+<pre><span id="VALempty"><span class="keyword">val</span> empty</span> : <code class="type"><a href="Song.html#TYPEs">s</a></code></pre><div class="info ">
+Empty song type<br>
+</div>
+
+<pre><span id="VALparse"><span class="keyword">val</span> parse</span> : <code class="type">string list -> <a href="Song.html#TYPEs">s</a></code></pre><div class="info ">
+Parse a list of song attributes to a Song.s type<br>
+</div>
+
 <pre><span id="VALalbum"><span class="keyword">val</span> album</span> : <code class="type"><a href="Song.html#TYPEs">s</a> -> string</code></pre>
 <pre><span id="VALalbumsort"><span class="keyword">val</span> albumsort</span> : <code class="type"><a href="Song.html#TYPEs">s</a> -> string</code></pre>
 <pre><span id="VALalbumartist"><span class="keyword">val</span> albumartist</span> : <code class="type"><a href="Song.html#TYPEs">s</a> -> string</code></pre>
