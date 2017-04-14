@@ -65,6 +65,13 @@ Executable "mpd_playlist_info"
   CompiledObject: best
   BuildDepends: libmpdclient
 
+Executable "mpd_lwt_playlist_info"
+  Path: samples
+  MainIs: mpd_lwt_playlist_info.ml
+  Install: false
+  CompiledObject: best
+  BuildDepends: libmpdclient, lwt
+
 Executable "mpd_lwt_client_idle"
   Path: samples
   MainIs: mpd_lwt_client_idle.ml
