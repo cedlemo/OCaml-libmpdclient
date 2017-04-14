@@ -30,7 +30,7 @@ let clear client =
   Mpd.Client.send client "clear"
 
 (** Deletes a song or a set of songs from the playlist. The song or the range
- * of songs are identified by the position in the playlist. *)
+ of songs are identified by the position in the playlist. *)
 let delete client position ?position_end () =
   let cmd = match position_end with
   |None -> String.concat " " ["delete"; string_of_int position]
@@ -45,7 +45,7 @@ let deleteid client id =
   Mpd.Client.send client (String.concat " " ["deleteid"; string_of_int id])
 
 (** Moves the song at FROM or range of songs at START:END to TO in
- * the playlist. *)
+ the playlist. *)
 let move client position_from ?position_end position_to () =
   let cmd = match position_end with
   |None -> String.concat " " ["move";
@@ -60,8 +60,8 @@ let move client position_from ?position_end position_to () =
 in Mpd.Client.send client cmd
 
 (** Moves the song with FROM (songid) to TO (playlist index) in the playlist.
- * If TO is negative, it is relative to the current song in the playlist
- * (if there is one). *)
+ If TO is negative, it is relative to the current song in the playlist
+ (if there is one). *)
 let moveid client id position_to =
   Mpd.Client.send client (String.concat " " ["moveid";
                                             string_of_int id;
