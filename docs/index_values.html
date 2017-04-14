@@ -80,11 +80,6 @@ Clears the current playlist.
 Deletes a song or a set of songs from the playlist.
 </div>
 </td></tr>
-<tr><td><a href="Mpd.Client.html#VALclose">close</a> [<a href="Mpd.Client.html">Mpd.Client</a>]</td>
-<td><div class="info">
-Closes the connection to MPD.
-</div>
-</td></tr>
 <tr><td><a href="Mpd.LwtClient.html#VALclose">close</a> [<a href="Mpd.LwtClient.html">Mpd.LwtClient</a>]</td>
 <td><div class="info">
 Close the client
@@ -92,6 +87,11 @@ Close the client
 </td></tr>
 <tr><td><a href="Mpd.LwtConnection.html#VALclose">close</a> [<a href="Mpd.LwtConnection.html">Mpd.LwtConnection</a>]</td>
 <td></td></tr>
+<tr><td><a href="Mpd.Client.html#VALclose">close</a> [<a href="Mpd.Client.html">Mpd.Client</a>]</td>
+<td><div class="info">
+Closes the connection to MPD.
+</div>
+</td></tr>
 <tr><td><a href="Mpd.Connection.html#VALclose">close</a> [<a href="Mpd.Connection.html">Mpd.Connection</a>]</td>
 <td><div class="info">
 Close the connection
@@ -181,13 +181,8 @@ Get the error name of the error type.
 <tr><td><a href="Mpd.LwtClient.html#VALidle">idle</a> [<a href="Mpd.LwtClient.html">Mpd.LwtClient</a>]</td>
 <td><div class="info">
 Loop on mpd event with the "idle" command
-   * the on_event function take the event response as argument and return
-   * true to stop or false to continue the loop
-</div>
-</td></tr>
-<tr><td><a href="Mpd.Client.html#VALinitialize">initialize</a> [<a href="Mpd.Client.html">Mpd.Client</a>]</td>
-<td><div class="info">
-Initialize the client with a connection.
+   the on_event function take the event response as argument and return
+   true to stop or false to continue the loop
 </div>
 </td></tr>
 <tr><td><a href="Mpd.LwtClient.html#VALinitialize">initialize</a> [<a href="Mpd.LwtClient.html">Mpd.LwtClient</a>]</td>
@@ -198,7 +193,12 @@ Initialize the client with a connection.
 <tr><td><a href="Mpd.LwtConnection.html#VALinitialize">initialize</a> [<a href="Mpd.LwtConnection.html">Mpd.LwtConnection</a>]</td>
 <td><div class="info">
 Create the connection in a Lwt thread, returns None if the connection
-   * can not be initialized.
+   can not be initialized.
+</div>
+</td></tr>
+<tr><td><a href="Mpd.Client.html#VALinitialize">initialize</a> [<a href="Mpd.Client.html">Mpd.Client</a>]</td>
+<td><div class="info">
+Initialize the client with a connection.
 </div>
 </td></tr>
 <tr><td><a href="Mpd.Connection.html#VALinitialize">initialize</a> [<a href="Mpd.Connection.html">Mpd.Connection</a>]</td>
@@ -223,7 +223,7 @@ Get information of the audio file of the current song (sampleRate:bits:channels)
 <tr><td><a href="MpdLwtQueue.html#VALmove">move</a> [<a href="MpdLwtQueue.html">MpdLwtQueue</a>]</td>
 <td><div class="info">
 Moves the song at FROM or range of songs at START:END to TO in
- * the playlist.
+ the playlist.
 </div>
 </td></tr>
 <tr><td><a href="MpdQueue.html#VALmove">move</a> [<a href="MpdQueue.html">MpdQueue</a>]</td>
@@ -241,16 +241,16 @@ Moves the song with FROM (songid) to TO (playlist index) in the playlist.
 Get the songs in the playlist
 </div>
 </td></tr>
-<tr><td><a href="Mpd.Client.html#VALmpd_banner">mpd_banner</a> [<a href="Mpd.Client.html">Mpd.Client</a>]</td>
-<td><div class="info">
-Return the mpd banner that the server send at the first connection of the
-   * client.
-</div>
-</td></tr>
 <tr><td><a href="Mpd.LwtClient.html#VALmpd_banner">mpd_banner</a> [<a href="Mpd.LwtClient.html">Mpd.LwtClient</a>]</td>
 <td><div class="info">
 Return the mpd banner that the server send at the first connection of the
-   * client.
+   client.
+</div>
+</td></tr>
+<tr><td><a href="Mpd.Client.html#VALmpd_banner">mpd_banner</a> [<a href="Mpd.Client.html">Mpd.Client</a>]</td>
+<td><div class="info">
+Return the mpd banner that the server send at the first connection of the
+   client.
 </div>
 </td></tr>
 <tr><td align="left"><br>N</td></tr>
@@ -297,12 +297,12 @@ Parse the error response of the mpd server into the error type.
 Parse the mpd server response
 </div>
 </td></tr>
-<tr><td><a href="Mpd.Client.html#VALpassword">password</a> [<a href="Mpd.Client.html">Mpd.Client</a>]</td>
+<tr><td><a href="Mpd.LwtClient.html#VALpassword">password</a> [<a href="Mpd.LwtClient.html">Mpd.LwtClient</a>]</td>
 <td><div class="info">
 This is used for authentication with the server.
 </div>
 </td></tr>
-<tr><td><a href="Mpd.LwtClient.html#VALpassword">password</a> [<a href="Mpd.LwtClient.html">Mpd.LwtClient</a>]</td>
+<tr><td><a href="Mpd.Client.html#VALpassword">password</a> [<a href="Mpd.Client.html">Mpd.Client</a>]</td>
 <td><div class="info">
 This is used for authentication with the server.
 </div>
@@ -314,12 +314,12 @@ Begins playing the playlist at song number.
 </td></tr>
 <tr><td><a href="Song.html#VALperformer">performer</a> [<a href="Song.html">Song</a>]</td>
 <td></td></tr>
-<tr><td><a href="Mpd.Client.html#VALping">ping</a> [<a href="Mpd.Client.html">Mpd.Client</a>]</td>
+<tr><td><a href="Mpd.LwtClient.html#VALping">ping</a> [<a href="Mpd.LwtClient.html">Mpd.LwtClient</a>]</td>
 <td><div class="info">
 Does nothing but return "OK".
 </div>
 </td></tr>
-<tr><td><a href="Mpd.LwtClient.html#VALping">ping</a> [<a href="Mpd.LwtClient.html">Mpd.LwtClient</a>]</td>
+<tr><td><a href="Mpd.Client.html#VALping">ping</a> [<a href="Mpd.Client.html">Mpd.Client</a>]</td>
 <td><div class="info">
 Does nothing but return "OK".
 </div>
@@ -410,14 +410,14 @@ Seeks to the position time of song id.
 Seeks to the position time within the current song.
 </div>
 </td></tr>
-<tr><td><a href="Mpd.Client.html#VALsend">send</a> [<a href="Mpd.Client.html">Mpd.Client</a>]</td>
-<td><div class="info">
-Send to the mpd server a command or a request.
-</div>
-</td></tr>
 <tr><td><a href="Mpd.LwtClient.html#VALsend">send</a> [<a href="Mpd.LwtClient.html">Mpd.LwtClient</a>]</td>
 <td><div class="info">
 Send to the mpd server a command.
+</div>
+</td></tr>
+<tr><td><a href="Mpd.Client.html#VALsend">send</a> [<a href="Mpd.Client.html">Mpd.Client</a>]</td>
+<td><div class="info">
+Send to the mpd server a command or a request.
 </div>
 </td></tr>
 <tr><td><a href="Status.html#VALsingle">single</a> [<a href="Status.html">Status</a>]</td>
@@ -447,16 +447,16 @@ Get the next song number based on the current song stopped on or playing
 Get the song number of the current song stopped on or playing
 </div>
 </td></tr>
-<tr><td><a href="Mpd.Client.html#VALstatus">status</a> [<a href="Mpd.Client.html">Mpd.Client</a>]</td>
-<td><div class="info">
-Create a status request and returns the status under a Mpd.Status.s
-   * type.
-</div>
-</td></tr>
 <tr><td><a href="Mpd.LwtClient.html#VALstatus">status</a> [<a href="Mpd.LwtClient.html">Mpd.LwtClient</a>]</td>
 <td><div class="info">
 Create a status request and returns the status under a Mpd.Status.s Lwt.t
-   * type.
+   type.
+</div>
+</td></tr>
+<tr><td><a href="Mpd.Client.html#VALstatus">status</a> [<a href="Mpd.Client.html">Mpd.Client</a>]</td>
+<td><div class="info">
+Create a status request and returns the status under a Mpd.Status.s
+   type.
 </div>
 </td></tr>
 <tr><td><a href="Playback.html#VALstop">stop</a> [<a href="Playback.html">Playback</a>]</td>

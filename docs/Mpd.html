@@ -37,32 +37,18 @@ Offer functions and type in order to handle connections to the mpd server at
    the socket level
 </div>
 
-<pre><span class="keyword">module</span> <a href="Mpd.LwtConnection.html">LwtConnection</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Mpd.LwtConnection.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
-<pre><span class="keyword">module</span> <a href="Mpd.LwtClient.html">LwtClient</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Mpd.LwtClient.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><br>
-Functions and type needed to store and manipulate an mpd status request
- * information.
- * https://www.musicpd.org/doc/protocol/command_reference.html#status_commands
-module Status = struct
-  include Mpd_status
-end<br>
-<br>
-Functions and type neede to store and manipulate song informations
- * Song format example
- * file: Nile - What Should Not Be Unearthed (2015)/02 Negating The Abominable Coils Of Apep.mp3.mp3
- * Last-Modified: 2015-08-13T09:56:32Z
- * artist: Nile
- * title: Negating The Abominable Coils Of Apep
- * album: What Should Not Be Unearthed
- * track: 2
- * rate: 2015
- * genre: Death Metal
- * time: 254
- * duration: 254.093
- * pos: 1
- * id: 2<br>
-
 <pre><span class="keyword">module</span> <a href="Mpd.Client.html">Client</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Mpd.Client.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
 Provides functions and type in order to communicate to the mpd server
- * with commands and requests.
+ with commands and requests.
+</div>
+
+<pre><span class="keyword">module</span> <a href="Mpd.LwtConnection.html">LwtConnection</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Mpd.LwtConnection.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Offer functions and type in order to handle connections to the mpd server at
+   the socket level in Lwt thread.
+</div>
+
+<pre><span class="keyword">module</span> <a href="Mpd.LwtClient.html">LwtClient</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Mpd.LwtClient.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Provides functions and type in order to communicate to the mpd server
+ with commands and requests in Lwt threads.
 </div>
 </body></html>

@@ -5,7 +5,6 @@
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
 <link rel="Start" href="index.html">
 <link rel="previous" href="Mpd.LwtConnection.html">
-<link rel="next" href="Mpd.Client.html">
 <link rel="Up" href="Mpd.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
@@ -22,11 +21,14 @@
 <body>
 <div class="navbar"><a class="pre" href="Mpd.LwtConnection.html" title="Mpd.LwtConnection">Previous</a>
 &nbsp;<a class="up" href="Mpd.html" title="Mpd">Up</a>
-&nbsp;<a class="post" href="Mpd.Client.html" title="Mpd.Client">Next</a>
-</div>
+&nbsp;</div>
 <h1>Module <a href="type_Mpd.LwtClient.html">Mpd.LwtClient</a></h1>
 
-<pre><span class="keyword">module</span> LwtClient: <code class="code"><span class="keyword">sig</span></code> <a href="Mpd.LwtClient.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
+<pre><span class="keyword">module</span> LwtClient: <code class="code"><span class="keyword">sig</span></code> <a href="Mpd.LwtClient.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Provides functions and type in order to communicate to the mpd server
+ with commands and requests in Lwt threads.<br>
+</div>
+<hr width="100%">
 
 <pre><code><span id="TYPEc"><span class="keyword">type</span> <code class="type"></code>c</span> = {</code></pre><table class="typetable">
 <tr>
@@ -57,23 +59,23 @@ Close the client<br>
 
 <pre><span id="VALmpd_banner"><span class="keyword">val</span> mpd_banner</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">c</a> -> string</code></pre><div class="info ">
 Return the mpd banner that the server send at the first connection of the
-   * client.<br>
+   client.<br>
 </div>
 
 <pre><span id="VALidle"><span class="keyword">val</span> idle</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">c</a> -> (string -> bool Lwt.t) -> unit Lwt.t</code></pre><div class="info ">
 Loop on mpd event with the "idle" command
-   * the on_event function take the event response as argument and return
-   * true to stop or false to continue the loop<br>
+   the on_event function take the event response as argument and return
+   true to stop or false to continue the loop<br>
 </div>
 
 <pre><span id="VALsend"><span class="keyword">val</span> send</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">c</a> -> string -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
 Send to the mpd server a command. The response of the server is returned
-   * under the form of a Protocol.response type.<br>
+   under the form of a Protocol.response type.<br>
 </div>
 
 <pre><span id="VALstatus"><span class="keyword">val</span> status</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">c</a> -> <a href="Status.html#TYPEs">Status.s</a> Lwt.t</code></pre><div class="info ">
 Create a status request and returns the status under a Mpd.Status.s Lwt.t
-   * type.<br>
+   type.<br>
 </div>
 
 <pre><span id="VALping"><span class="keyword">val</span> ping</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">c</a> -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
@@ -82,6 +84,6 @@ Does nothing but return "OK".<br>
 
 <pre><span id="VALpassword"><span class="keyword">val</span> password</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">c</a> -> string -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
 This is used for authentication with the server. PASSWORD is simply the
-   * plaintext password.<br>
+   plaintext password.<br>
 </div>
 </body></html>

@@ -64,7 +64,7 @@ Clears the current playlist.<br>
 
 <pre><span id="VALdelete"><span class="keyword">val</span> delete</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -><br>       int -> ?position_end:int -> unit -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
 Deletes a song or a set of songs from the playlist. The song or the range
- * of songs are identified by the position in the playlist.<br>
+    of songs are identified by the position in the playlist.<br>
 </div>
 
 <pre><span id="VALdeleteid"><span class="keyword">val</span> deleteid</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> int -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
@@ -73,13 +73,13 @@ Deletes the song SONGID from the playlist.<br>
 
 <pre><span id="VALmove"><span class="keyword">val</span> move</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -><br>       int -> ?position_end:int -> int -> unit -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
 Moves the song at FROM or range of songs at START:END to TO in
- * the playlist.<br>
+ the playlist.<br>
 </div>
 
 <pre><span id="VALmoveid"><span class="keyword">val</span> moveid</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> int -> int -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
 Moves the song with FROM (songid) to TO (playlist index) in the playlist.
- * If TO is negative, it is relative to the current song in the playlist
- * (if there is one).<br>
+ If TO is negative, it is relative to the current song in the playlist
+ (if there is one).<br>
 </div>
 
 <pre><span id="VALget_song_id"><span class="keyword">val</span> get_song_id</span> : <code class="type">string -> string</code></pre>
