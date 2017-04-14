@@ -1,3 +1,4 @@
+(** Module for Mpd current playlist manipulation. *)
 open Mpd_utils
 
 type p =
