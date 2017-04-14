@@ -80,7 +80,7 @@ let rec _build_songs_list client songs l =
   | h :: q -> let song_infos_request = "playlistinfo " ^ (get_song_id h) in
     Mpd.LwtClient.send client song_infos_request
     >>= function
-    | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> Lwt.return (PlaylistError (ack_message))
+    | Protocol.Error (_, _, _, ack_message)-> Lwt.return (PlaylistError (ack_message))
     | Protocol.Ok (song_infos) -> let song = Song.parse (Mpd_utils.split_lines song_infos) in
       _build_songs_list client q (song :: l)
 
@@ -88,7 +88,7 @@ let rec _build_songs_list client songs l =
 let playlist client =
   Mpd.LwtClient.send client "playlist"
   >>= function
-  | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> Lwt.return (PlaylistError (ack_message))
+  | Protocol.Error (_, _, _, ack_message)-> Lwt.return (PlaylistError (ack_message))
   | Protocol.Ok (response) -> let songs = Mpd_utils.split_lines response in
   _build_songs_list client songs []
 

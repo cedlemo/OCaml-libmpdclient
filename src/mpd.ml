@@ -1,8 +1,4 @@
-(*
- * https://www.musicpd.org/doc/protocol/response_syntax.html#failure_response_syntax
- * ACK [error@command_listNum] {current_command} message_text\n
- * *)
-
+(** Libmpd client main module *)
 
 (* https://www.musicpd.org/doc/protocol/tags.html
  * https://www.musicpd.org/doc/protocol/playback_option_commands.html
@@ -16,8 +12,7 @@
  * https://www.musicpd.org/doc/protocol/reflection_commands.html
  * https://www.musicpd.org/doc/protocol/client_to_client.html
  * *)
-(* OK\n
- * ACK [error@command_listNum] {current_command} message_text\n *)
+
 open Sys
 open Unix
 open Protocol
@@ -28,8 +23,6 @@ open Lwt
 module Utils = struct
   include Mpd_utils
 end
-
-(** Libmpd client main module *)
 
 (** Offer functions and type in order to handle connections to the mpd server at
    the socket level *)
@@ -378,30 +371,4 @@ end = struct
    plaintext password. *)
   let password client mdp =
     send client (String.concat " " ["password"; mdp])
-
 end
-(* Functions and type needed to store and manipulate an mpd status request
- * information.
- * https://www.musicpd.org/doc/protocol/command_reference.html#status_commands
-module Status = struct
-  include Mpd_status
-end
- *)
-
-(* Functions and type neede to store and manipulate song informations
- * Song format example
- * file: Nile - What Should Not Be Unearthed (2015)/02 Negating The Abominable Coils Of Apep.mp3.mp3
- * Last-Modified: 2015-08-13T09:56:32Z
- * artist: Nile
- * title: Negating The Abominable Coils Of Apep
- * album: What Should Not Be Unearthed
- * track: 2
- * rate: 2015
- * genre: Death Metal
- * time: 254
- * duration: 254.093
- * pos: 1
- * id: 2
- *)
-
-
