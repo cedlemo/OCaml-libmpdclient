@@ -1,6 +1,15 @@
+(** Song module used to store and retrieve information of a song based on
+ * mpd tags. *)
+
+(** Song type *)
 type s
+
+(** Empty song type *)
 val empty: s
+
+(** Parse a list of song attributes to a Song.s type *)
 val parse: string list -> s
+
 val album: s -> string
 val albumsort: s -> string
 val albumartist: s -> string
