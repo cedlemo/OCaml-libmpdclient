@@ -47,7 +47,7 @@ end = struct
   type c =
     { hostname : string; port : int; ip : Unix.inet_addr; socket : Unix.file_descr }
 
-    (** Create the connection, exit if the connection can not be initialized. *)
+  (** Create the connection, exit if the connection can not be initialized. *)
   let initialize hostname port =
     let ip = try (Unix.gethostbyname hostname).h_addr_list.(0)
     with Not_found ->
@@ -57,7 +57,7 @@ end = struct
     in let _ = Unix.connect socket (ADDR_INET(ip, port))
     in { hostname = hostname; port = port; ip = ip; socket = socket}
 
-    (** Close the connection *)
+  (** Close the connection *)
   let close { socket; _} =
     let _ = Unix.set_nonblock socket
     in Unix.close socket
@@ -71,7 +71,7 @@ end = struct
     let len = String.length str in
     ignore(send socket str 0 len [])
 
-    (** Read in an Mpd connection *)
+  (** Read in an Mpd connection *)
   let read c =
     let socket = socket c in
     let _ = Unix.set_nonblock socket in
@@ -85,6 +85,106 @@ end = struct
         in String.concat "" (List.rev (_read socket []))
 end
 
+module Client : sig
+  type c
+
+  val initialize: Connection.c -> c
+  val send: c -> string -> Protocol.response
+  val mpd_banner: c -> string
+  val status: c -> Status.s
+  val ping: c -> Protocol.response
+  val password: c -> string -> Protocol.response
+  val close: c -> unit
+  val tagtypes: c -> string list
+  (* val tagtypes_disable: c -> string list -> Protocol.response
+  val tagtypes_clear: c -> Protocol.response
+  val tagtypes_all: c -> Protocol.response *)
+end = struct
+  (** Client type *)
+  type c = {connection : Connection.c; mpd_banner : string }
+
+  (** Initialize the client with a connection. *)
+  let initialize connection =
+    let message = Connection.read connection in
+    {connection = connection; mpd_banner = message}
+
+  (** Send to the mpd server a command or a request. The response of the server
+   is returned under the form of a Protocol.response type. *)
+  let send client mpd_cmd =
+    let {connection = c; _} = client in
+    Connection.write c (mpd_cmd ^ "\n");
+    let response = Connection.read c in
+    Protocol.parse_response response
+
+  (** Return the mpd banner that the server send at the first connection of the
+   client. *)
+  let mpd_banner {mpd_banner = banner; _ } =
+    banner
+
+  (** Create a status request and returns the status under a Mpd.Status.s
+   type.*)
+  let status client =
+    let response = send client "status" in
+    match response with
+    | Ok (lines) -> let status_pairs = Utils.split_lines lines in
+    Status.parse status_pairs
+    | Error (ack, ack_cmd_num, cmd, error) -> Status.generate_error error
+
+  (** Does nothing but return "OK". *)
+  let ping client =
+    send client "ping"
+
+  (** This is used for authentication with the server. PASSWORD is simply the
+   plaintext password. *)
+  let password client mdp =
+    send client (String.concat " " ["password"; mdp])
+
+  (** Shows a list of available tag types. It is an intersection of the
+   metadata_to_use setting and this client's tag mask.
+   About the tag mask: each client can decide to disable any number of tag
+   types, which will be omitted from responses to this client. That is a good
+   idea, because it makes responses smaller. The following tagtypes sub
+   commands configure this list. *)
+  let tagtypes client =
+    let response = send client "tagtypes" in
+    match response with
+    | Ok (lines) -> let tagid_keys_vals = Utils.split_lines lines in
+    List.rev (values_of_pairs tagid_keys_vals)
+    | Error (ack, ack_cmd_num, cmd, error) -> []
+  (*
+  (** Remove one or more tags from the list of tag types the client is
+   * interested in. These will be omitted from responses to this client. *)
+  let tagtypes_disable client tagtypes =
+    send client (String.concat "" ["tagtypes disable ";
+                                    String.concat " " tagtypes])
+  (** Re-enable one or more tags from the list of tag types for this client.
+   * These will no longer be hidden from responses to this client. *)
+  let tagtypes_enable client tagtypes =
+    send client (String.concat "" ["tagtypes enable ";
+                                   String.concat " " tagtypes])
+
+  (** Clear the list of tag types this client is interested in. This means that
+   * MPD will not send any tags to this client. *)
+  let tagtypes_clear client =
+    send client "tagtypes clear"
+
+  (** Announce that this client is interested in all tag types. This is the
+   * default setting for new clients. *)
+  let tagtypes_all client =
+    send client "tagtypes all"
+   *)
+
+  (** Closes the connection to MPD. MPD will try to send the remaining output
+   buffer before it actually closes the connection, but that cannot be
+   guaranteed. This command will not generate a response. *)
+  let close client =
+    let {connection = c; _} = client in
+    Connection.write c ("close\n");
+    Connection.close c;
+end
+
+(** Offer functions and type in order to handle connections to the mpd server at
+   the socket level in Lwt thread. *)
 module LwtConnection : sig
   type c
 
@@ -119,7 +219,7 @@ end = struct
       Lwt.return sock
 
   (** Create the connection in a Lwt thread, returns None if the connection
-   * can not be initialized. *)
+   can not be initialized. *)
   let initialize hostname port =
     gethostbyname hostname >>= fun addrs ->
     match addrs with
@@ -198,6 +298,8 @@ end = struct
     Lwt_unix.close socket
 end
 
+(** Provides functions and type in order to communicate to the mpd server
+ with commands and requests in Lwt threads. *)
 module LwtClient : sig
   type c
 
@@ -224,13 +326,13 @@ end = struct
     LwtConnection.close connection
 
  (** Return the mpd banner that the server send at the first connection of the
-   * client. *)
+   client. *)
   let mpd_banner {mpd_banner = banner; _ } =
     banner
 
   (** Loop on mpd event with the "idle" command
-   * the on_event function take the event response as argument and return
-   * true to stop or false to continue the loop *)
+   the on_event function take the event response as argument and return
+   true to stop or false to continue the loop *)
   let rec idle client on_event =
     let {connection = connection; _} = client in
     let cmd = "idle\n" in
@@ -245,7 +347,7 @@ end = struct
           | false -> idle client on_event
 
   (** Send to the mpd server a command. The response of the server is returned
-   * under the form of a Protocol.response type. *)
+   under the form of a Protocol.response type. *)
   let send client cmd =
     let {connection = c; _} = client in
     LwtConnection.write c (cmd ^ "\n")
@@ -256,7 +358,7 @@ end = struct
         Lwt.return parsed_response
 
   (** Create a status request and returns the status under a Mpd.Status.s Lwt.t
-   * type.*)
+   type.*)
   let status client =
     send client "status"
     >>= fun response ->
@@ -271,12 +373,12 @@ end = struct
     send client "ping"
 
   (** This is used for authentication with the server. PASSWORD is simply the
-   * plaintext password. *)
+   plaintext password. *)
   let password client mdp =
     send client (String.concat " " ["password"; mdp])
 
 end
-(** Functions and type needed to store and manipulate an mpd status request
+(* Functions and type needed to store and manipulate an mpd status request
  * information.
  * https://www.musicpd.org/doc/protocol/command_reference.html#status_commands
 module Status = struct
@@ -284,7 +386,7 @@ module Status = struct
 end
  *)
 
-(** Functions and type neede to store and manipulate song informations
+(* Functions and type neede to store and manipulate song informations
  * Song format example
  * file: Nile - What Should Not Be Unearthed (2015)/02 Negating The Abominable Coils Of Apep.mp3.mp3
  * Last-Modified: 2015-08-13T09:56:32Z
@@ -301,101 +403,5 @@ end
  *)
 
 (** Provides functions and type in order to communicate to the mpd server
- * with commands and requests. *)
-module Client : sig
-  type c
+ with commands and requests. *)
 
-  val initialize: Connection.c -> c
-  val send: c -> string -> Protocol.response
-  val mpd_banner: c -> string
-  val status: c -> Status.s
-  val ping: c -> Protocol.response
-  val password: c -> string -> Protocol.response
-  val close: c -> unit
-  val tagtypes: c -> string list
-  (* val tagtypes_disable: c -> string list -> Protocol.response
-  val tagtypes_clear: c -> Protocol.response
-  val tagtypes_all: c -> Protocol.response *)
-end = struct
-  (** Client type *)
-  type c = {connection : Connection.c; mpd_banner : string }
-
-  (** Initialize the client with a connection. *)
-  let initialize connection =
-    let message = Connection.read connection in
-    {connection = connection; mpd_banner = message}
-
-  (** Send to the mpd server a command or a request. The response of the server
-   * is returned under the form of a Protocol.response type. *)
-  let send client mpd_cmd =
-    let {connection = c; _} = client in
-    Connection.write c (mpd_cmd ^ "\n");
-    let response = Connection.read c in
-    Protocol.parse_response response
-
-  (** Return the mpd banner that the server send at the first connection of the
-   * client. *)
-  let mpd_banner {mpd_banner = banner; _ } =
-    banner
-
-  (** Create a status request and returns the status under a Mpd.Status.s
-   * type.*)
-  let status client =
-    let response = send client "status" in
-    match response with
-    | Ok (lines) -> let status_pairs = Utils.split_lines lines in
-    Status.parse status_pairs
-    | Error (ack, ack_cmd_num, cmd, error) -> Status.generate_error error
-
-  (** Does nothing but return "OK". *)
-  let ping client =
-    send client "ping"
-
-  (** This is used for authentication with the server. PASSWORD is simply the
-   * plaintext password. *)
-  let password client mdp =
-    send client (String.concat " " ["password"; mdp])
-
-  (** Shows a list of available tag types. It is an intersection of the
-   * metadata_to_use setting and this client's tag mask.
-   * About the tag mask: each client can decide to disable any number of tag
-   * types, which will be omitted from responses to this client. That is a good
-   * idea, because it makes responses smaller. The following tagtypes sub
-   * commands configure this list. *)
-  let tagtypes client =
-    let response = send client "tagtypes" in
-    match response with
-    | Ok (lines) -> let tagid_keys_vals = Utils.split_lines lines in
-    List.rev (values_of_pairs tagid_keys_vals)
-    | Error (ack, ack_cmd_num, cmd, error) -> []
-  (*
-  (** Remove one or more tags from the list of tag types the client is
-   * interested in. These will be omitted from responses to this client. *)
-  let tagtypes_disable client tagtypes =
-    send client (String.concat "" ["tagtypes disable ";
-                                    String.concat " " tagtypes])
-  (** Re-enable one or more tags from the list of tag types for this client.
-   * These will no longer be hidden from responses to this client. *)
-  let tagtypes_enable client tagtypes =
-    send client (String.concat "" ["tagtypes enable ";
-                                   String.concat " " tagtypes])
-
-  (** Clear the list of tag types this client is interested in. This means that
-   * MPD will not send any tags to this client. *)
-  let tagtypes_clear client =
-    send client "tagtypes clear"
-
-  (** Announce that this client is interested in all tag types. This is the
-   * default setting for new clients. *)
-  let tagtypes_all client =
-    send client "tagtypes all"
-   *)
-
-  (** Closes the connection to MPD. MPD will try to send the remaining output
-   * buffer before it actually closes the connection, but that cannot be
-   * guaranteed. This command will not generate a response. *)
-  let close client =
-    let {connection = c; _} = client in
-    Connection.write c ("close\n");
-    Connection.close c;
-end
