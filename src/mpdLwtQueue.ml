@@ -9,6 +9,9 @@ type p =
 let add client uri =
   Mpd.LwtClient.send client uri
 
+(** Adds a song to the playlist (non-recursive) and returns the song id.
+  URI is always a single file or URL. For example:
+*)
 let addid client uri position =
   let cmd = String.concat " " ["addid"; uri; string_of_int position] in
   Mpd.LwtClient.send client cmd
@@ -81,6 +84,7 @@ let rec _build_songs_list client songs l =
     | Protocol.Ok (song_infos) -> let song = Song.parse (Mpd_utils.split_lines song_infos) in
       _build_songs_list client q (song :: l)
 
+(** Get a list of Song.s that represents all the songs in the current playlist. *)
 let playlist client =
   Mpd.LwtClient.send client "playlist"
   >>= function
@@ -88,6 +92,7 @@ let playlist client =
   | Protocol.Ok (response) -> let songs = Mpd_utils.split_lines response in
   _build_songs_list client songs []
 
+(** Get a list with the Song.s of the song id in the playlist *)
 let playlistid client id =
   let request = "playlistid " ^ (string_of_int id) in
   Mpd.LwtClient.send client request
