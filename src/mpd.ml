@@ -85,6 +85,8 @@ end = struct
         in String.concat "" (List.rev (_read socket []))
 end
 
+(** Provides functions and type in order to communicate to the mpd server
+ with commands and requests. *)
 module Client : sig
   type c
 
@@ -402,6 +404,4 @@ end
  * id: 2
  *)
 
-(** Provides functions and type in order to communicate to the mpd server
- with commands and requests. *)
 
