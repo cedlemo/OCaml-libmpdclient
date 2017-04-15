@@ -1,7 +1,7 @@
 (* https://github.com/sol/mpd/blob/master/src/ack.h *)
 (** Define the Mpd response and error types *)
 
-(** Type of error that could occurs when a command is send to the mpd server. *)
+(** Type of error that could occur when a command is sent to the mpd server. *)
 type ack_error =
   | Not_list        (* 1 *)
   | Arg             (* 2 *)
