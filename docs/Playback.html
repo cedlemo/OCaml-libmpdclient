@@ -28,45 +28,45 @@
 
 <pre><span class="keyword">module</span> Playback: <code class="code"><span class="keyword">sig</span></code> <a href="Playback.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
 Controlling playback functions.
- * https://www.musicpd.org/doc/protocol/playback_commands.html<br>
+  https://www.musicpd.org/doc/protocol/playback_commands.html<br>
 </div>
 <hr width="100%">
 
 <pre><span id="VALnext"><span class="keyword">val</span> next</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
-Plays next song in the playlist.
-<p>
-Plays previous song in the playlist.<br>
+Plays next song in the playlist.<br>
 </div>
 
 <pre><span id="VALprev"><span class="keyword">val</span> prev</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
-Stops playing.<br>
+Plays previous song in the playlist.<br>
 </div>
 
 <pre><span id="VALstop"><span class="keyword">val</span> stop</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
-Toggles pause/resumers playing<br>
+Stops playing.<br>
 </div>
 
 <pre><span id="VALpause"><span class="keyword">val</span> pause</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> bool -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
-Begins playing the playlist at song number.<br>
+Toggles pause/resumers playing<br>
 </div>
 
 <pre><span id="VALplay"><span class="keyword">val</span> play</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> int -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
-Begins playing the playlist at song id.<br>
+Begins playing the playlist at song number.<br>
 </div>
 
 <pre><span id="VALplayid"><span class="keyword">val</span> playid</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> int -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
-Seeks to the position time of entry songpos in the playlist.<br>
+Begins playing the playlist at song id.<br>
 </div>
 
 <pre><span id="VALseek"><span class="keyword">val</span> seek</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> int -> float -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
-Seeks to the position time of song id.<br>
+Seeks to the position time of entry songpos in the playlist.<br>
 </div>
 
 <pre><span id="VALseekid"><span class="keyword">val</span> seekid</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> int -> float -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
-Seeks to the position time within the current song.
- * TODO : If prefixed by '+' or '-', then the time is relative to the current
- * playing position
- *<br>
+Seeks to the position time of song id.<br>
 </div>
 
-<pre><span id="VALseekcur"><span class="keyword">val</span> seekcur</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> float -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre></body></html>
+<pre><span id="VALseekcur"><span class="keyword">val</span> seekcur</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> float -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
+Seeks to the position time within the current song.
+ TODO : If prefixed by '+' or '-', then the time is relative to the current
+ playing position<br>
+</div>
+</body></html>

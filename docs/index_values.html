@@ -309,7 +309,7 @@ This is used for authentication with the server.
 </td></tr>
 <tr><td><a href="Playback.html#VALpause">pause</a> [<a href="Playback.html">Playback</a>]</td>
 <td><div class="info">
-Begins playing the playlist at song number.
+Toggles pause/resumers playing
 </div>
 </td></tr>
 <tr><td><a href="Song.html#VALperformer">performer</a> [<a href="Song.html">Song</a>]</td>
@@ -326,12 +326,12 @@ Does nothing but return "OK".
 </td></tr>
 <tr><td><a href="Playback.html#VALplay">play</a> [<a href="Playback.html">Playback</a>]</td>
 <td><div class="info">
-Begins playing the playlist at song id.
+Begins playing the playlist at song number.
 </div>
 </td></tr>
 <tr><td><a href="Playback.html#VALplayid">playid</a> [<a href="Playback.html">Playback</a>]</td>
 <td><div class="info">
-Seeks to the position time of entry songpos in the playlist.
+Begins playing the playlist at song id.
 </div>
 </td></tr>
 <tr><td><a href="MpdLwtQueue.html#VALplaylist">playlist</a> [<a href="MpdLwtQueue.html">MpdLwtQueue</a>]</td>
@@ -365,7 +365,7 @@ Get the state of the player : Play / Pause / Stop
 <td></td></tr>
 <tr><td><a href="Playback.html#VALprev">prev</a> [<a href="Playback.html">Playback</a>]</td>
 <td><div class="info">
-Stops playing.
+Plays previous song in the playlist.
 </div>
 </td></tr>
 <tr><td align="left"><br>R</td></tr>
@@ -400,14 +400,17 @@ Find out if the player is in random mode
 <tr><td align="left"><br>S</td></tr>
 <tr><td><a href="Playback.html#VALseek">seek</a> [<a href="Playback.html">Playback</a>]</td>
 <td><div class="info">
-Seeks to the position time of song id.
+Seeks to the position time of entry songpos in the playlist.
 </div>
 </td></tr>
 <tr><td><a href="Playback.html#VALseekcur">seekcur</a> [<a href="Playback.html">Playback</a>]</td>
-<td></td></tr>
-<tr><td><a href="Playback.html#VALseekid">seekid</a> [<a href="Playback.html">Playback</a>]</td>
 <td><div class="info">
 Seeks to the position time within the current song.
+</div>
+</td></tr>
+<tr><td><a href="Playback.html#VALseekid">seekid</a> [<a href="Playback.html">Playback</a>]</td>
+<td><div class="info">
+Seeks to the position time of song id.
 </div>
 </td></tr>
 <tr><td><a href="Mpd.LwtClient.html#VALsend">send</a> [<a href="Mpd.LwtClient.html">Mpd.LwtClient</a>]</td>
@@ -461,7 +464,7 @@ Create a status request and returns the status under a Mpd.Status.s
 </td></tr>
 <tr><td><a href="Playback.html#VALstop">stop</a> [<a href="Playback.html">Playback</a>]</td>
 <td><div class="info">
-Toggles pause/resumers playing
+Stops playing.
 </div>
 </td></tr>
 <tr><td><a href="Protocol.html#VALstr_error_to_val">str_error_to_val</a> [<a href="Protocol.html">Protocol</a>]</td>
