@@ -2,9 +2,9 @@ Name: libmpdclient
 Version: 0.1
 Synopsis: A mpd client library.
 Authors: cedlemo <cedlemo@gmx.com>
-License: LGPL with OCaml linking exception
+License: GPL-3
 
-Description: This is an attempt to write a library in order to access to the mpd server.
+Description: This is an attempt to write a client library for the mpd server protocol.
 Homepage: https://github.com/cedlemo/OCaml-libmpdclient
 
 OASISFormat: 0.4
