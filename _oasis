@@ -13,7 +13,7 @@ Plugins: META (0.4), DevFiles (0.4)
 
 Library "libmpdclient"
   Path: src
-  Modules: Mpd,Protocol,Playback,Status,Song,MpdQueue,MpdLwtQueue,Mpd_utils
+  Modules: Mpd,Protocol,Playback,LwtPlayback,Status,Song,MpdQueue,MpdLwtQueue,Mpd_utils
   BuildDepends: unix, str, lwt, lwt.unix
 
 Executable mpdclient_test_unit
