@@ -2,33 +2,51 @@
 
 This is an attempt to write a library in order to access to the mpd server.
 This lib is based on the mpd protocol ([specifications](https://www.musicpd.org/doc/protocol/)).
-Later it should be inspired by the C [libmpdclient](https://www.musicpd.org/libs/libmpdclient/) and its organisation.
 
-## API :
+## Parts :
+
+*  Querying MPD's status     (*done*)
+*  Playback options	     (*almost*)
+*  Controlling playback	     (*to do*)
+*  The current playlist	     (*almost*)
+*  Stored playlists          (*to do*)
+*  The music database        (*to do*)
+*  Mounts and neighbors      (*to do*)
+*  Stickers                  (*to do*)
+*  Connection settings       (*to do*)
+*  Partition commands        (*to do*)
+*  Audio output devices      (*to do*)
+*  Reflection                (*to do*)
+*  Client to client          (*to do*)
+
+### API :
 
 *  https://cedlemo.github.io/OCaml-libmpdclient/
 
-## Build and install
+
+## Install
+
+#### Build and install
 
     oasis setup -setup-update dynamic
     ./configure
     make
     make install
 
-## Build and create doc
+#### Build and create doc
 
     oasis setup -setup-update dynamic
     ./configure
     make
     make install
 
-## Build and test
+#### Build and test
 
     oasis setup -setup-update dynamic
     ./configure --enable-tests
     make test
 
-## Test sample :
+#### Test sample :
 
     ./try_mpd_queries.native "play"
     received: OK MPD 0.19.0
