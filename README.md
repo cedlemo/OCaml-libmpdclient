@@ -6,8 +6,8 @@ This lib is based on the mpd protocol ([specifications](https://www.musicpd.org/
 ## Parts :
 
 *  Querying MPD's status     (*done*)
+*  Controlling playback	     (*done*)
 *  Playback options	     (*almost*)
-*  Controlling playback	     (*to do*)
 *  The current playlist	     (*almost*)
 *  Stored playlists          (*to do*)
 *  The music database        (*to do*)
