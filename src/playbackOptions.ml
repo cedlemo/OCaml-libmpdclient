@@ -16,4 +16,8 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
+let consume client state =
+  match state with
+  | true  -> Mpd.Client.send client "consume 1"
+  | false -> Mpd.Client.send client "consume 0"
 
