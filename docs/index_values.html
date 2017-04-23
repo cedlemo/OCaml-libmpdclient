@@ -9,6 +9,8 @@
 <link title="Mpd" rel="Chapter" href="Mpd.html">
 <link title="Protocol" rel="Chapter" href="Protocol.html">
 <link title="Playback" rel="Chapter" href="Playback.html">
+<link title="PlaybackOptions" rel="Chapter" href="PlaybackOptions.html">
+<link title="LwtPlayback" rel="Chapter" href="LwtPlayback.html">
 <link title="Status" rel="Chapter" href="Status.html">
 <link title="Song" rel="Chapter" href="Song.html">
 <link title="MpdQueue" rel="Chapter" href="MpdQueue.html">
@@ -104,6 +106,16 @@ Close the connection
 <tr><td><a href="Status.html#VALconsume">consume</a> [<a href="Status.html">Status</a>]</td>
 <td><div class="info">
 Get the current playlist id
+</div>
+</td></tr>
+<tr><td><a href="PlaybackOptions.html#VALconsume">consume</a> [<a href="PlaybackOptions.html">PlaybackOptions</a>]</td>
+<td><div class="info">
+Sets consume state to STATE, STATE should be false or true.
+</div>
+</td></tr>
+<tr><td><a href="PlaybackOptions.html#VALcrossfade">crossfade</a> [<a href="PlaybackOptions.html">PlaybackOptions</a>]</td>
+<td><div class="info">
+Sets crossfading between songs.
 </div>
 </td></tr>
 <tr><td align="left"><br>D</td></tr>
@@ -215,9 +227,19 @@ Create the connection, exit if the connection can not be initialized.
 Get the mixrampdelay in seconds
 </div>
 </td></tr>
+<tr><td><a href="PlaybackOptions.html#VALmixrampdb">mixrampdb</a> [<a href="PlaybackOptions.html">PlaybackOptions</a>]</td>
+<td><div class="info">
+Sets the threshold at which songs will be overlapped.
+</div>
+</td></tr>
 <tr><td><a href="Status.html#VALmixrampdelay">mixrampdelay</a> [<a href="Status.html">Status</a>]</td>
 <td><div class="info">
 Get information of the audio file of the current song (sampleRate:bits:channels)
+</div>
+</td></tr>
+<tr><td><a href="PlaybackOptions.html#VALmixrampdelay">mixrampdelay</a> [<a href="PlaybackOptions.html">PlaybackOptions</a>]</td>
+<td><div class="info">
+Additional time subtracted from the overlap calculated by mixrampdb.
 </div>
 </td></tr>
 <tr><td><a href="MpdLwtQueue.html#VALmove">move</a> [<a href="MpdLwtQueue.html">MpdLwtQueue</a>]</td>
@@ -256,6 +278,11 @@ Return the mpd banner that the server send at the first connection of the
 <tr><td align="left"><br>N</td></tr>
 <tr><td><a href="Song.html#VALname">name</a> [<a href="Song.html">Song</a>]</td>
 <td></td></tr>
+<tr><td><a href="LwtPlayback.html#VALnext">next</a> [<a href="LwtPlayback.html">LwtPlayback</a>]</td>
+<td><div class="info">
+Plays next song in the playlist.
+</div>
+</td></tr>
 <tr><td><a href="Playback.html#VALnext">next</a> [<a href="Playback.html">Playback</a>]</td>
 <td><div class="info">
 Plays next song in the playlist.
@@ -307,6 +334,11 @@ This is used for authentication with the server.
 This is used for authentication with the server.
 </div>
 </td></tr>
+<tr><td><a href="LwtPlayback.html#VALpause">pause</a> [<a href="LwtPlayback.html">LwtPlayback</a>]</td>
+<td><div class="info">
+Toggles pause/resumers playing
+</div>
+</td></tr>
 <tr><td><a href="Playback.html#VALpause">pause</a> [<a href="Playback.html">Playback</a>]</td>
 <td><div class="info">
 Toggles pause/resumers playing
@@ -324,9 +356,19 @@ Does nothing but return "OK".
 Does nothing but return "OK".
 </div>
 </td></tr>
+<tr><td><a href="LwtPlayback.html#VALplay">play</a> [<a href="LwtPlayback.html">LwtPlayback</a>]</td>
+<td><div class="info">
+Begins playing the playlist at song number.
+</div>
+</td></tr>
 <tr><td><a href="Playback.html#VALplay">play</a> [<a href="Playback.html">Playback</a>]</td>
 <td><div class="info">
 Begins playing the playlist at song number.
+</div>
+</td></tr>
+<tr><td><a href="LwtPlayback.html#VALplayid">playid</a> [<a href="LwtPlayback.html">LwtPlayback</a>]</td>
+<td><div class="info">
+Begins playing the playlist at song id.
 </div>
 </td></tr>
 <tr><td><a href="Playback.html#VALplayid">playid</a> [<a href="Playback.html">Playback</a>]</td>
@@ -363,6 +405,11 @@ Get the state of the player : Play / Pause / Stop
 </td></tr>
 <tr><td><a href="Song.html#VALpos">pos</a> [<a href="Song.html">Song</a>]</td>
 <td></td></tr>
+<tr><td><a href="LwtPlayback.html#VALprev">prev</a> [<a href="LwtPlayback.html">LwtPlayback</a>]</td>
+<td><div class="info">
+Plays previous song in the playlist.
+</div>
+</td></tr>
 <tr><td><a href="Playback.html#VALprev">prev</a> [<a href="Playback.html">Playback</a>]</td>
 <td><div class="info">
 Plays previous song in the playlist.
@@ -372,6 +419,11 @@ Plays previous song in the playlist.
 <tr><td><a href="Status.html#VALrandom">random</a> [<a href="Status.html">Status</a>]</td>
 <td><div class="info">
 Find out if the player is in single mode
+</div>
+</td></tr>
+<tr><td><a href="PlaybackOptions.html#VALrandom">random</a> [<a href="PlaybackOptions.html">PlaybackOptions</a>]</td>
+<td><div class="info">
+Sets random state to STATE, STATE should be true or false
 </div>
 </td></tr>
 <tr><td><a href="Song.html#VALrate">rate</a> [<a href="Song.html">Song</a>]</td>
@@ -397,15 +449,35 @@ Split a line with the form "k: v" in the value of type pair
 Find out if the player is in random mode
 </div>
 </td></tr>
+<tr><td><a href="PlaybackOptions.html#VALrepeat">repeat</a> [<a href="PlaybackOptions.html">PlaybackOptions</a>]</td>
+<td><div class="info">
+Sets repeat state to STATE, STATE should be false or true.
+</div>
+</td></tr>
 <tr><td align="left"><br>S</td></tr>
+<tr><td><a href="LwtPlayback.html#VALseek">seek</a> [<a href="LwtPlayback.html">LwtPlayback</a>]</td>
+<td><div class="info">
+Seeks to the position time of entry songpos in the playlist.
+</div>
+</td></tr>
 <tr><td><a href="Playback.html#VALseek">seek</a> [<a href="Playback.html">Playback</a>]</td>
 <td><div class="info">
 Seeks to the position time of entry songpos in the playlist.
 </div>
 </td></tr>
+<tr><td><a href="LwtPlayback.html#VALseekcur">seekcur</a> [<a href="LwtPlayback.html">LwtPlayback</a>]</td>
+<td><div class="info">
+Seeks to the position time within the current song.
+</div>
+</td></tr>
 <tr><td><a href="Playback.html#VALseekcur">seekcur</a> [<a href="Playback.html">Playback</a>]</td>
 <td><div class="info">
 Seeks to the position time within the current song.
+</div>
+</td></tr>
+<tr><td><a href="LwtPlayback.html#VALseekid">seekid</a> [<a href="LwtPlayback.html">LwtPlayback</a>]</td>
+<td><div class="info">
+Seeks to the position time of song id.
 </div>
 </td></tr>
 <tr><td><a href="Playback.html#VALseekid">seekid</a> [<a href="Playback.html">Playback</a>]</td>
@@ -421,6 +493,11 @@ Send to the mpd server a command.
 <tr><td><a href="Mpd.Client.html#VALsend">send</a> [<a href="Mpd.Client.html">Mpd.Client</a>]</td>
 <td><div class="info">
 Send to the mpd server a command or a request.
+</div>
+</td></tr>
+<tr><td><a href="PlaybackOptions.html#VALsetvol">setvol</a> [<a href="PlaybackOptions.html">PlaybackOptions</a>]</td>
+<td><div class="info">
+Sets volume to VOL, the range of volume is 0-100.
 </div>
 </td></tr>
 <tr><td><a href="Status.html#VALsingle">single</a> [<a href="Status.html">Status</a>]</td>
@@ -460,6 +537,11 @@ Create a status request and returns the status under a Mpd.Status.s Lwt.t
 <td><div class="info">
 Create a status request and returns the status under a Mpd.Status.s
    type.
+</div>
+</td></tr>
+<tr><td><a href="LwtPlayback.html#VALstop">stop</a> [<a href="LwtPlayback.html">LwtPlayback</a>]</td>
+<td><div class="info">
+Stops playing.
 </div>
 </td></tr>
 <tr><td><a href="Playback.html#VALstop">stop</a> [<a href="Playback.html">Playback</a>]</td>

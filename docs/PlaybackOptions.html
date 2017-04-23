@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Playback.html">
+<link rel="next" href="LwtPlayback.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Mpd" rel="Chapter" href="Mpd.html">
+<link title="Protocol" rel="Chapter" href="Protocol.html">
+<link title="Playback" rel="Chapter" href="Playback.html">
+<link title="PlaybackOptions" rel="Chapter" href="PlaybackOptions.html">
+<link title="LwtPlayback" rel="Chapter" href="LwtPlayback.html">
+<link title="Status" rel="Chapter" href="Status.html">
+<link title="Song" rel="Chapter" href="Song.html">
+<link title="MpdQueue" rel="Chapter" href="MpdQueue.html">
+<link title="MpdLwtQueue" rel="Chapter" href="MpdLwtQueue.html">
+<link title="Mpd_utils" rel="Chapter" href="Mpd_utils.html"><title>PlaybackOptions</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Playback.html" title="Playback">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="LwtPlayback.html" title="LwtPlayback">Next</a>
+</div>
+<h1>Module <a href="type_PlaybackOptions.html">PlaybackOptions</a></h1>
+
+<pre><span class="keyword">module</span> PlaybackOptions: <code class="code"><span class="keyword">sig</span></code> <a href="PlaybackOptions.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+functions that configure all the playbackoptions<br>
+</div>
+<hr width="100%">
+
+<pre><span id="VALconsume"><span class="keyword">val</span> consume</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> bool -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
+Sets consume state to STATE, STATE should be false or true.
+    When consume is activated, each song played is removed from playlist.<br>
+</div>
+
+<pre><span id="VALcrossfade"><span class="keyword">val</span> crossfade</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> int -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
+Sets crossfading between songs.<br>
+</div>
+
+<pre><span id="VALmixrampdb"><span class="keyword">val</span> mixrampdb</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> int -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
+Sets the threshold at which songs will be overlapped.
+    Like crossfading but doesn't fade the track volume, just overlaps. The
+    songs need to have MixRamp tags added by an external tool. 0dB is the
+    normalized maximum volume so use negative values, I prefer -17dB.
+    In the absence of mixramp tags crossfading will be used.
+    See http://sourceforge.net/projects/mixramp<br>
+</div>
+
+<pre><span id="TYPEmixrampd_t"><span class="keyword">type</span> <code class="type"></code>mixrampd_t</span> </pre>
+<div class="info ">
+Type for the command mixrampdelay, it can be integers for seconds or nan.<br>
+</div>
+
+
+<pre><span id="VALmixrampdelay"><span class="keyword">val</span> mixrampdelay</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> <a href="PlaybackOptions.html#TYPEmixrampd_t">mixrampd_t</a> -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
+Additional time subtracted from the overlap calculated by mixrampdb. A
+    value of "nan" disables MixRamp overlapping and falls back to crossfading.<br>
+</div>
+
+<pre><span id="VALrandom"><span class="keyword">val</span> random</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> bool -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
+Sets random state to STATE, STATE should be true or false<br>
+</div>
+
+<pre><span id="VALrepeat"><span class="keyword">val</span> repeat</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> bool -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
+Sets repeat state to STATE, STATE should be false or true.<br>
+</div>
+
+<pre><span id="VALsetvol"><span class="keyword">val</span> setvol</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> int -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
+Sets volume to VOL, the range of volume is 0-100.<br>
+</div>
+</body></html>
