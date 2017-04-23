@@ -39,3 +39,6 @@ type mixrampd_t
 (** Additional time subtracted from the overlap calculated by mixrampdb. A
     value of "nan" disables MixRamp overlapping and falls back to crossfading. *)
 val mixrampdelay: Mpd.Client.c -> mixrampd_t -> Protocol.response
+
+(** Sets random state to STATE, STATE should be true or false *)
+val random: Mpd.Client.c -> bool -> Protocol.response

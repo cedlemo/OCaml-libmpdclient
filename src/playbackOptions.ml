@@ -38,4 +38,9 @@ let mixrampdelay client delay =
   | Nan -> Mpd.Client.send client "mixrampdelay nan"
   | Seconds (s) -> Mpd.Client.send client (String.concat " " ["mixrampdb";
                                                               string_of_int s])
+let random client state =
+  match state with
+  | true  -> Mpd.Client.send client "random 1"
+  | false -> Mpd.Client.send client "random 0"
+
 
