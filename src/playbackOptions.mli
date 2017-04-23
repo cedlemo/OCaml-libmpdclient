@@ -45,3 +45,6 @@ val random: Mpd.Client.c -> bool -> Protocol.response
 
 (** Sets repeat state to STATE, STATE should be false or true. *)
 val repeat: Mpd.Client.c -> bool -> Protocol.response
+
+(** Sets volume to VOL, the range of volume is 0-100. *)
+val setvol: Mpd.Client.c -> int -> Protocol.response

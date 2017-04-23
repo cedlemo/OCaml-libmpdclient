@@ -48,4 +48,9 @@ let repeat client state =
   | true  -> Mpd.Client.send client "repeat 1"
   | false -> Mpd.Client.send client "repeat 0"
 
+let setvol client volume =
+  Mpd.Client.send client (String.concat " " ["setvol";
+                                             string_of_int volume])
+
+
 
