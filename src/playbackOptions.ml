@@ -57,3 +57,16 @@ let single client state =
   | true  -> Mpd.Client.send client "single 1"
   | false -> Mpd.Client.send client "single 0"
 
+type gain_mode_t =
+  | Off
+  | Track
+  | Album
+  | Auto
+
+let replay_gain_mode client mode =
+  match mode with
+  | Off -> Mpd.Client.send client "replay_gain_mode off"
+  | Track -> Mpd.Client.send client "replay_gain_mode track"
+  | Album -> Mpd.Client.send client "replay_gain_mode album"
+  | Auto -> Mpd.Client.send client "replay_gain_mode auto"
+

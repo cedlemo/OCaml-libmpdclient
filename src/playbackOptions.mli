@@ -53,3 +53,12 @@ val setvol: Mpd.Client.c -> int -> Protocol.response
     activated, playback is stopped after current song, or song is repeated if
     the 'repeat' mode is enabled. *)
 val single: Mpd.Client.c -> bool -> Protocol.response
+
+(** gain_mode type for the command replay_gain_mode. *)
+type gain_mode_t
+
+(** Sets the replay gain mode. One of off, track, album, auto.
+    Changing the mode during playback may take several seconds, because the
+    new settings does not affect the buffered data.
+    This command triggers the options idle event. *)
+val replay_gain_mode: Mpd.Client.c -> gain_mode_t -> Protocol.response
