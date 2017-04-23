@@ -52,5 +52,8 @@ let setvol client volume =
   Mpd.Client.send client (String.concat " " ["setvol";
                                              string_of_int volume])
 
-
+let single client state =
+  match state with
+  | true  -> Mpd.Client.send client "single 1"
+  | false -> Mpd.Client.send client "single 0"
 

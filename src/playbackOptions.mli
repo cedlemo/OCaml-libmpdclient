@@ -48,3 +48,8 @@ val repeat: Mpd.Client.c -> bool -> Protocol.response
 
 (** Sets volume to VOL, the range of volume is 0-100. *)
 val setvol: Mpd.Client.c -> int -> Protocol.response
+
+(** Sets single state to STATE, STATE should be 0 or 1. When single is
+    activated, playback is stopped after current song, or song is repeated if
+    the 'repeat' mode is enabled. *)
+val single: Mpd.Client.c -> bool -> Protocol.response
