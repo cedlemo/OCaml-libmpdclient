@@ -24,3 +24,11 @@ val consume: Mpd.Client.c -> bool -> Protocol.response
 
 (** Sets crossfading between songs. *)
 val crossfade: Mpd.Client.c -> int -> Protocol.response
+
+(** Sets the threshold at which songs will be overlapped.
+    Like crossfading but doesn't fade the track volume, just overlaps. The
+    songs need to have MixRamp tags added by an external tool. 0dB is the
+    normalized maximum volume so use negative values, I prefer -17dB.
+    In the absence of mixramp tags crossfading will be used.
+    See http://sourceforge.net/projects/mixramp *)
+val mixrampdb: Mpd.Client.c -> int -> Protocol.response

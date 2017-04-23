@@ -24,3 +24,7 @@ let consume client state =
 let crossfade client seconds =
   Mpd.Client.send client (String.concat " " ["crossfade";
                                              string_of_int seconds])
+
+let mixrampdb client seconds =
+  Mpd.Client.send client (String.concat " " ["mixrampdb";
+                                             string_of_int seconds])
