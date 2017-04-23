@@ -21,3 +21,6 @@
 (** Sets consume state to STATE, STATE should be false or true.
     When consume is activated, each song played is removed from playlist. *)
 val consume: Mpd.Client.c -> bool -> Protocol.response
+
+(** Sets crossfading between songs. *)
+val crossfade: Mpd.Client.c -> int -> Protocol.response

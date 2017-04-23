@@ -21,3 +21,6 @@ let consume client state =
   | true  -> Mpd.Client.send client "consume 1"
   | false -> Mpd.Client.send client "consume 0"
 
+let crossfade client seconds =
+  Mpd.Client.send client (String.concat " " ["crossfade";
+                                             string_of_int seconds])
