@@ -32,3 +32,10 @@ val crossfade: Mpd.Client.c -> int -> Protocol.response
     In the absence of mixramp tags crossfading will be used.
     See http://sourceforge.net/projects/mixramp *)
 val mixrampdb: Mpd.Client.c -> int -> Protocol.response
+
+(** Type for the command mixrampdelay, it can be integers for seconds or nan. *)
+type mixrampd_t
+
+(** Additional time subtracted from the overlap calculated by mixrampdb. A
+    value of "nan" disables MixRamp overlapping and falls back to crossfading. *)
+val mixrampdelay: Mpd.Client.c -> mixrampd_t -> Protocol.response

@@ -28,3 +28,14 @@ let crossfade client seconds =
 let mixrampdb client seconds =
   Mpd.Client.send client (String.concat " " ["mixrampdb";
                                              string_of_int seconds])
+
+type mixrampd_t =
+  | Nan
+  | Seconds of int
+
+let mixrampdelay client delay =
+  match delay with
+  | Nan -> Mpd.Client.send client "mixrampdelay nan"
+  | Seconds (s) -> Mpd.Client.send client (String.concat " " ["mixrampdb";
+                                                              string_of_int s])
+
