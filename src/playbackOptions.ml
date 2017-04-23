@@ -43,4 +43,9 @@ let random client state =
   | true  -> Mpd.Client.send client "random 1"
   | false -> Mpd.Client.send client "random 0"
 
+let repeat client state =
+  match state with
+  | true  -> Mpd.Client.send client "repeat 1"
+  | false -> Mpd.Client.send client "repeat 0"
+
 

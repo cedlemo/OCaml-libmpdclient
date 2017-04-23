@@ -42,3 +42,6 @@ val mixrampdelay: Mpd.Client.c -> mixrampd_t -> Protocol.response
 
 (** Sets random state to STATE, STATE should be true or false *)
 val random: Mpd.Client.c -> bool -> Protocol.response
+
+(** Sets repeat state to STATE, STATE should be false or true. *)
+val repeat: Mpd.Client.c -> bool -> Protocol.response
