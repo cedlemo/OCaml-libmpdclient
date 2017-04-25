@@ -4,8 +4,8 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
 <link rel="Start" href="index.html">
-<link rel="previous" href="Playback.html">
-<link rel="next" href="LwtPlayback.html">
+<link rel="previous" href="LwtPlayback.html">
+<link rel="next" href="LwtPlaybackOptions.html">
 <link rel="Up" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
@@ -13,8 +13,9 @@
 <link title="Mpd" rel="Chapter" href="Mpd.html">
 <link title="Protocol" rel="Chapter" href="Protocol.html">
 <link title="Playback" rel="Chapter" href="Playback.html">
-<link title="PlaybackOptions" rel="Chapter" href="PlaybackOptions.html">
 <link title="LwtPlayback" rel="Chapter" href="LwtPlayback.html">
+<link title="PlaybackOptions" rel="Chapter" href="PlaybackOptions.html">
+<link title="LwtPlaybackOptions" rel="Chapter" href="LwtPlaybackOptions.html">
 <link title="Status" rel="Chapter" href="Status.html">
 <link title="Song" rel="Chapter" href="Song.html">
 <link title="MpdQueue" rel="Chapter" href="MpdQueue.html">
@@ -22,9 +23,9 @@
 <link title="Mpd_utils" rel="Chapter" href="Mpd_utils.html"><title>PlaybackOptions</title>
 </head>
 <body>
-<div class="navbar"><a class="pre" href="Playback.html" title="Playback">Previous</a>
+<div class="navbar"><a class="pre" href="LwtPlayback.html" title="LwtPlayback">Previous</a>
 &nbsp;<a class="up" href="index.html" title="Index">Up</a>
-&nbsp;<a class="post" href="LwtPlayback.html" title="LwtPlayback">Next</a>
+&nbsp;<a class="post" href="LwtPlaybackOptions.html" title="LwtPlaybackOptions">Next</a>
 </div>
 <h1>Module <a href="type_PlaybackOptions.html">PlaybackOptions</a></h1>
 
@@ -72,5 +73,24 @@ Sets repeat state to STATE, STATE should be false or true.<br>
 
 <pre><span id="VALsetvol"><span class="keyword">val</span> setvol</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> int -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
 Sets volume to VOL, the range of volume is 0-100.<br>
+</div>
+
+<pre><span id="VALsingle"><span class="keyword">val</span> single</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> bool -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
+Sets single state to STATE, STATE should be 0 or 1. When single is
+    activated, playback is stopped after current song, or song is repeated if
+    the 'repeat' mode is enabled.<br>
+</div>
+
+<pre><span id="TYPEgain_mode_t"><span class="keyword">type</span> <code class="type"></code>gain_mode_t</span> </pre>
+<div class="info ">
+gain_mode type for the command replay_gain_mode.<br>
+</div>
+
+
+<pre><span id="VALreplay_gain_mode"><span class="keyword">val</span> replay_gain_mode</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> <a href="PlaybackOptions.html#TYPEgain_mode_t">gain_mode_t</a> -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
+Sets the replay gain mode. One of off, track, album, auto.
+    Changing the mode during playback may take several seconds, because the
+    new settings does not affect the buffered data.
+    This command triggers the options idle event.<br>
 </div>
 </body></html>

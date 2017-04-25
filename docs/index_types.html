@@ -9,8 +9,9 @@
 <link title="Mpd" rel="Chapter" href="Mpd.html">
 <link title="Protocol" rel="Chapter" href="Protocol.html">
 <link title="Playback" rel="Chapter" href="Playback.html">
-<link title="PlaybackOptions" rel="Chapter" href="PlaybackOptions.html">
 <link title="LwtPlayback" rel="Chapter" href="LwtPlayback.html">
+<link title="PlaybackOptions" rel="Chapter" href="PlaybackOptions.html">
+<link title="LwtPlaybackOptions" rel="Chapter" href="LwtPlaybackOptions.html">
 <link title="Status" rel="Chapter" href="Status.html">
 <link title="Song" rel="Chapter" href="Song.html">
 <link title="MpdQueue" rel="Chapter" href="MpdQueue.html">
@@ -46,6 +47,17 @@ Client type
 connection type
 </div>
 </td></tr>
+<tr><td align="left"><br>G</td></tr>
+<tr><td><a href="LwtPlaybackOptions.html#TYPEgain_mode_t">gain_mode_t</a> [<a href="LwtPlaybackOptions.html">LwtPlaybackOptions</a>]</td>
+<td><div class="info">
+gain_mode type for the command replay_gain_mode.
+</div>
+</td></tr>
+<tr><td><a href="PlaybackOptions.html#TYPEgain_mode_t">gain_mode_t</a> [<a href="PlaybackOptions.html">PlaybackOptions</a>]</td>
+<td><div class="info">
+gain_mode type for the command replay_gain_mode.
+</div>
+</td></tr>
 <tr><td align="left"><br>I</td></tr>
 <tr><td><a href="Mpd_utils.html#TYPEitem_id">item_id</a> [<a href="Mpd_utils.html">Mpd_utils</a>]</td>
 <td><div class="info">
@@ -53,6 +65,11 @@ Type that can save the id of an element which can be an int or two int
 </div>
 </td></tr>
 <tr><td align="left"><br>M</td></tr>
+<tr><td><a href="LwtPlaybackOptions.html#TYPEmixrampd_t">mixrampd_t</a> [<a href="LwtPlaybackOptions.html">LwtPlaybackOptions</a>]</td>
+<td><div class="info">
+Type for the command mixrampdelay, it can be integers for seconds or nan.
+</div>
+</td></tr>
 <tr><td><a href="PlaybackOptions.html#TYPEmixrampd_t">mixrampd_t</a> [<a href="PlaybackOptions.html">PlaybackOptions</a>]</td>
 <td><div class="info">
 Type for the command mixrampdelay, it can be integers for seconds or nan.

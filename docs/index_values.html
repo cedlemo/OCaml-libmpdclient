@@ -9,8 +9,9 @@
 <link title="Mpd" rel="Chapter" href="Mpd.html">
 <link title="Protocol" rel="Chapter" href="Protocol.html">
 <link title="Playback" rel="Chapter" href="Playback.html">
-<link title="PlaybackOptions" rel="Chapter" href="PlaybackOptions.html">
 <link title="LwtPlayback" rel="Chapter" href="LwtPlayback.html">
+<link title="PlaybackOptions" rel="Chapter" href="PlaybackOptions.html">
+<link title="LwtPlaybackOptions" rel="Chapter" href="LwtPlaybackOptions.html">
 <link title="Status" rel="Chapter" href="Status.html">
 <link title="Song" rel="Chapter" href="Song.html">
 <link title="MpdQueue" rel="Chapter" href="MpdQueue.html">
@@ -108,9 +109,19 @@ Close the connection
 Get the current playlist id
 </div>
 </td></tr>
+<tr><td><a href="LwtPlaybackOptions.html#VALconsume">consume</a> [<a href="LwtPlaybackOptions.html">LwtPlaybackOptions</a>]</td>
+<td><div class="info">
+Sets consume state to STATE, STATE should be false or true.
+</div>
+</td></tr>
 <tr><td><a href="PlaybackOptions.html#VALconsume">consume</a> [<a href="PlaybackOptions.html">PlaybackOptions</a>]</td>
 <td><div class="info">
 Sets consume state to STATE, STATE should be false or true.
+</div>
+</td></tr>
+<tr><td><a href="LwtPlaybackOptions.html#VALcrossfade">crossfade</a> [<a href="LwtPlaybackOptions.html">LwtPlaybackOptions</a>]</td>
+<td><div class="info">
+Sets crossfading between songs.
 </div>
 </td></tr>
 <tr><td><a href="PlaybackOptions.html#VALcrossfade">crossfade</a> [<a href="PlaybackOptions.html">PlaybackOptions</a>]</td>
@@ -227,6 +238,11 @@ Create the connection, exit if the connection can not be initialized.
 Get the mixrampdelay in seconds
 </div>
 </td></tr>
+<tr><td><a href="LwtPlaybackOptions.html#VALmixrampdb">mixrampdb</a> [<a href="LwtPlaybackOptions.html">LwtPlaybackOptions</a>]</td>
+<td><div class="info">
+Sets the threshold at which songs will be overlapped.
+</div>
+</td></tr>
 <tr><td><a href="PlaybackOptions.html#VALmixrampdb">mixrampdb</a> [<a href="PlaybackOptions.html">PlaybackOptions</a>]</td>
 <td><div class="info">
 Sets the threshold at which songs will be overlapped.
@@ -235,6 +251,11 @@ Sets the threshold at which songs will be overlapped.
 <tr><td><a href="Status.html#VALmixrampdelay">mixrampdelay</a> [<a href="Status.html">Status</a>]</td>
 <td><div class="info">
 Get information of the audio file of the current song (sampleRate:bits:channels)
+</div>
+</td></tr>
+<tr><td><a href="LwtPlaybackOptions.html#VALmixrampdelay">mixrampdelay</a> [<a href="LwtPlaybackOptions.html">LwtPlaybackOptions</a>]</td>
+<td><div class="info">
+Additional time subtracted from the overlap calculated by mixrampdb.
 </div>
 </td></tr>
 <tr><td><a href="PlaybackOptions.html#VALmixrampdelay">mixrampdelay</a> [<a href="PlaybackOptions.html">PlaybackOptions</a>]</td>
@@ -421,6 +442,11 @@ Plays previous song in the playlist.
 Find out if the player is in single mode
 </div>
 </td></tr>
+<tr><td><a href="LwtPlaybackOptions.html#VALrandom">random</a> [<a href="LwtPlaybackOptions.html">LwtPlaybackOptions</a>]</td>
+<td><div class="info">
+Sets random state to STATE, STATE should be true or false
+</div>
+</td></tr>
 <tr><td><a href="PlaybackOptions.html#VALrandom">random</a> [<a href="PlaybackOptions.html">PlaybackOptions</a>]</td>
 <td><div class="info">
 Sets random state to STATE, STATE should be true or false
@@ -449,9 +475,24 @@ Split a line with the form "k: v" in the value of type pair
 Find out if the player is in random mode
 </div>
 </td></tr>
+<tr><td><a href="LwtPlaybackOptions.html#VALrepeat">repeat</a> [<a href="LwtPlaybackOptions.html">LwtPlaybackOptions</a>]</td>
+<td><div class="info">
+Sets repeat state to STATE, STATE should be false or true.
+</div>
+</td></tr>
 <tr><td><a href="PlaybackOptions.html#VALrepeat">repeat</a> [<a href="PlaybackOptions.html">PlaybackOptions</a>]</td>
 <td><div class="info">
 Sets repeat state to STATE, STATE should be false or true.
+</div>
+</td></tr>
+<tr><td><a href="LwtPlaybackOptions.html#VALreplay_gain_mode">replay_gain_mode</a> [<a href="LwtPlaybackOptions.html">LwtPlaybackOptions</a>]</td>
+<td><div class="info">
+Sets the replay gain mode.
+</div>
+</td></tr>
+<tr><td><a href="PlaybackOptions.html#VALreplay_gain_mode">replay_gain_mode</a> [<a href="PlaybackOptions.html">PlaybackOptions</a>]</td>
+<td><div class="info">
+Sets the replay gain mode.
 </div>
 </td></tr>
 <tr><td align="left"><br>S</td></tr>
@@ -495,6 +536,11 @@ Send to the mpd server a command.
 Send to the mpd server a command or a request.
 </div>
 </td></tr>
+<tr><td><a href="LwtPlaybackOptions.html#VALsetvol">setvol</a> [<a href="LwtPlaybackOptions.html">LwtPlaybackOptions</a>]</td>
+<td><div class="info">
+Sets volume to VOL, the range of volume is 0-100.
+</div>
+</td></tr>
 <tr><td><a href="PlaybackOptions.html#VALsetvol">setvol</a> [<a href="PlaybackOptions.html">PlaybackOptions</a>]</td>
 <td><div class="info">
 Sets volume to VOL, the range of volume is 0-100.
@@ -503,6 +549,16 @@ Sets volume to VOL, the range of volume is 0-100.
 <tr><td><a href="Status.html#VALsingle">single</a> [<a href="Status.html">Status</a>]</td>
 <td><div class="info">
 Find out if the player is in consume mode
+</div>
+</td></tr>
+<tr><td><a href="LwtPlaybackOptions.html#VALsingle">single</a> [<a href="LwtPlaybackOptions.html">LwtPlaybackOptions</a>]</td>
+<td><div class="info">
+Sets single state to STATE, STATE should be 0 or 1.
+</div>
+</td></tr>
+<tr><td><a href="PlaybackOptions.html#VALsingle">single</a> [<a href="PlaybackOptions.html">PlaybackOptions</a>]</td>
+<td><div class="info">
+Sets single state to STATE, STATE should be 0 or 1.
 </div>
 </td></tr>
 <tr><td><a href="Mpd.Connection.html#VALsocket">socket</a> [<a href="Mpd.Connection.html">Mpd.Connection</a>]</td>
