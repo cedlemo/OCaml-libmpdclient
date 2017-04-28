@@ -44,20 +44,12 @@ val playlistid: Mpd.Client.c -> int -> p
 val playlistfind: Mpd.Client.c -> string -> string -> p
 (** Searches case-insensitively for partial matches in the current playlist. *)
 val playlistsearch: Mpd.Client.c -> string -> string -> p
+(** Swaps the positions of SONG1 and SONG2. *)
+val swap: Mpd.Client.c -> int -> int -> Protocol.response
 (*
-plchanges {VERSION} [START:END]
-
-Displays changed songs currently in the playlist since VERSION. Start and end positions may be given to limit the output to changes in the given range.
-
-To detect songs that were deleted at the end of the playlist, use playlistlength returned by status command.
-
-plchangesposid {VERSION} [START:END]
-
-Displays changed songs currently in the playlist since VERSION. This function only returns the position and the id of the changed song, not the complete metadata. This is more bandwidth efficient.
-
-To detect songs that were deleted at the end of the playlist, use playlistlength returned by status command.
-
-prio {PRIORITY} {START:END...}
+  plchanges {VERSION} [START:END]
+  plchangesposid {VERSION} [START:END]
+  prio {PRIORITY} {START:END...}
 
 Set the priority of the specified songs. A higher priority means that it will be played first when "random" mode is enabled.
 
@@ -74,10 +66,6 @@ rangeid {ID} {START:END}
 shuffle [START:END]
 
 Shuffles the current playlist. START:END is optional and specifies a range of songs.
-
-swap {SONG1} {SONG2}
-
-Swaps the positions of SONG1 and SONG2.
 
 swapid {SONG1} {SONG2}
 

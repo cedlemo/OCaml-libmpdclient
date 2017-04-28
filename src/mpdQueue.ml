@@ -129,3 +129,9 @@ let playlistsearch client tag needle =
   | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> PlaylistError (ack_message)
   | Protocol.Ok (response) -> let songs = Mpd_utils.split_lines response in
     _build_songs_list client songs []
+
+let swap client pos1 pos2 =
+  let request = String.concat " " ["swap";
+                                   string_of_int pos1;
+                                   string_of_int pos2] in
+  Mpd.Client.send client request
