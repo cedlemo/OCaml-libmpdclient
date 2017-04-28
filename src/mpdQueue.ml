@@ -106,7 +106,7 @@ let playlist client =
   match Mpd.Client.send client "playlist" with
   | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> PlaylistError (ack_message)
   | Protocol.Ok (response) -> let songs = Mpd_utils.split_lines response in
-  _build_songs_list client songs []
+    _build_songs_list client songs []
 
 (** Get a list with the Song.s of the song id in the playlist *)
 let playlistid client id =
@@ -115,3 +115,10 @@ let playlistid client id =
   | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> PlaylistError (ack_message)
   | Protocol.Ok (response) -> let song = Song.parse (Mpd_utils.split_lines response) in
   Playlist (song::[])
+
+let playlistfind client tag needle =
+  let request = String.concat " " ["playlistfind"; tag; needle] in
+  match Mpd.Client.send client request with
+  | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> PlaylistError (ack_message)
+  | Protocol.Ok (response) -> let songs = Mpd_utils.split_lines response in
+    _build_songs_list client songs []

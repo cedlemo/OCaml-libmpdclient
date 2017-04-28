@@ -40,11 +40,10 @@ val moveid: Mpd.Client.c -> int -> int -> Protocol.response
 val playlist: Mpd.Client.c -> p
 (** Get information for one song *)
 val playlistid: Mpd.Client.c -> int -> p
+(** Finds songs in the current playlist with strict matching.*)
+val playlistfind: Mpd.Client.c -> string -> string -> p
+
 (*
-playlistfind {TAG} {NEEDLE}
-
-Finds songs in the current playlist with strict matching.
-
 playlistinfo [[SONGPOS] | [START:END]]
 
 Displays a list of all songs in the playlist, or if the optional argument is given, displays information only for the song SONGPOS or the range of songs START:END [6]
