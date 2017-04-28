@@ -42,16 +42,9 @@ val playlist: Mpd.Client.c -> p
 val playlistid: Mpd.Client.c -> int -> p
 (** Finds songs in the current playlist with strict matching.*)
 val playlistfind: Mpd.Client.c -> string -> string -> p
-
+(** Searches case-insensitively for partial matches in the current playlist. *)
+val playlistsearch: Mpd.Client.c -> string -> string -> p
 (*
-playlistinfo [[SONGPOS] | [START:END]]
-
-Displays a list of all songs in the playlist, or if the optional argument is given, displays information only for the song SONGPOS or the range of songs START:END [6]
-
-playlistsearch {TAG} {NEEDLE}
-
-Searches case-insensitively for partial matches in the current playlist.
-
 plchanges {VERSION} [START:END]
 
 Displays changed songs currently in the playlist since VERSION. Start and end positions may be given to limit the output to changes in the given range.
