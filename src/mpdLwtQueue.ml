@@ -122,3 +122,13 @@ let playlistfind client tag needle =
     let songs = Mpd_utils.split_lines response in
     _build_songs_list client songs []
 
+let playlistsearch client tag needle =
+  let request = String.concat " " ["playlistsearch"; tag; needle] in
+  Mpd.LwtClient.send client request
+  >>= function
+  | Protocol.Error (_, _, _, ack_message)->
+    Lwt.return (PlaylistError (ack_message))
+  | Protocol.Ok (response) ->
+    let songs = Mpd_utils.split_lines response in
+    _build_songs_list client songs []
+

@@ -70,3 +70,7 @@ val playlistid:
 val playlistfind:
   Mpd.LwtClient.c -> string -> string -> p Lwt.t
 
+(** Searches case-insensitively for partial matches in the current playlist. *)
+val playlistsearch:
+  Mpd.LwtClient.c -> string -> string -> p Lwt.t
+
