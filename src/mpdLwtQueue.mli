@@ -65,3 +65,8 @@ val playlist:
 (** Get a list with the Song.s of the song id in the playlist *)
 val playlistid:
   Mpd.LwtClient.c -> int -> p Lwt.t
+
+(** Finds songs in the current playlist with strict matching.*)
+val playlistfind:
+  Mpd.LwtClient.c -> string -> string -> p Lwt.t
+
