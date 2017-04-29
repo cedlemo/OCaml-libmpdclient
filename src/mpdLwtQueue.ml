@@ -16,21 +16,16 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-(** Module for Mpd current playlist manipulation in Lwt threads. *)
-
 open Mpd_utils
 open Lwt.Infix
 
 type p =
-  | PlaylistError of string | Playlist of Song.s list
+  | PlaylistError of string
+  | Playlist of Song.s list
 
-(** Adds the file URI to the playlist (directories add recursively). URI can also be a single file. *)
 let add client uri =
   Mpd.LwtClient.send client uri
 
-(** Adds a song to the playlist (non-recursive) and returns the song id.
-  URI is always a single file or URL. For example:
-*)
 let addid client uri position =
   let cmd = String.concat " " ["addid"; uri; string_of_int position] in
   Mpd.LwtClient.send client cmd
@@ -41,16 +36,15 @@ let addid client uri position =
       | [] -> Lwt.return (-1)
       | line :: remain -> let { key = k; value = v} = Mpd_utils.read_key_val line in
         if (k = "Id") then Lwt.return (int_of_string v)
-        else Lwt.return remain >>= fun lines -> parse lines
+        else Lwt.return remain
+          >>= fun lines ->
+          parse lines
     in parse lines
   | Protocol.Error (_) -> Lwt.return (-1)
 
-(** Clears the current playlist. *)
 let clear client =
   Mpd.LwtClient.send client "clear"
 
-(** Deletes a song or a set of songs from the playlist. The song or the range
-    of songs are identified by the position in the playlist. *)
 let delete client position ?position_end () =
   let cmd = match position_end with
   |None -> String.concat " " ["delete"; string_of_int position]
@@ -58,14 +52,11 @@ let delete client position ?position_end () =
                                      string_of_int position;
                                      ":";
                                      string_of_int pos_end]
-in Mpd.LwtClient.send client cmd
+  in Mpd.LwtClient.send client cmd
 
-(** Deletes the song SONGID from the playlist. *)
 let deleteid client id =
   Mpd.LwtClient.send client (String.concat " " ["deleteid"; string_of_int id])
 
-(** Moves the song at FROM or range of songs at START:END to TO in
- the playlist. *)
 let move client position_from ?position_end position_to () =
   let cmd = match position_end with
   |None -> String.concat " " ["move";
@@ -77,11 +68,8 @@ let move client position_from ?position_end position_to () =
                                      string_of_int pos_end;
                                      " ";
                                      string_of_int position_to]
-in Mpd.LwtClient.send client cmd
+  in Mpd.LwtClient.send client cmd
 
-(** Moves the song with FROM (songid) to TO (playlist index) in the playlist.
- If TO is negative, it is relative to the current song in the playlist
- (if there is one). *)
 let moveid client id position_to =
   Mpd.LwtClient.send client (String.concat " " ["moveid";
                                                 string_of_int id;
@@ -99,23 +87,27 @@ let rec _build_songs_list client songs l =
   | h :: q -> let song_infos_request = "playlistinfo " ^ (get_song_id h) in
     Mpd.LwtClient.send client song_infos_request
     >>= function
-    | Protocol.Error (_, _, _, ack_message)-> Lwt.return (PlaylistError (ack_message))
-    | Protocol.Ok (song_infos) -> let song = Song.parse (Mpd_utils.split_lines song_infos) in
+    | Protocol.Error (_, _, _, ack_message)->
+      Lwt.return (PlaylistError (ack_message))
+    | Protocol.Ok (song_infos) ->
+      let song = Song.parse (Mpd_utils.split_lines song_infos) in
       _build_songs_list client q (song :: l)
 
-(** Get a list of Song.s that represents all the songs in the current playlist. *)
 let playlist client =
   Mpd.LwtClient.send client "playlist"
   >>= function
-  | Protocol.Error (_, _, _, ack_message)-> Lwt.return (PlaylistError (ack_message))
-  | Protocol.Ok (response) -> let songs = Mpd_utils.split_lines response in
-  _build_songs_list client songs []
+  | Protocol.Error (_, _, _, ack_message)->
+    Lwt.return (PlaylistError (ack_message))
+  | Protocol.Ok (response) ->
+    let songs = Mpd_utils.split_lines response in
+    _build_songs_list client songs []
 
-(** Get a list with the Song.s of the song id in the playlist *)
 let playlistid client id =
   let request = "playlistid " ^ (string_of_int id) in
   Mpd.LwtClient.send client request
   >>= function
-  | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> Lwt.return (PlaylistError (ack_message))
-  | Protocol.Ok (response) -> let song = Song.parse (Mpd_utils.split_lines response) in
-  Lwt.return (Playlist (song::[]))
+  | Protocol.Error (_, _, _, ack_message)->
+    Lwt.return (PlaylistError (ack_message))
+  | Protocol.Ok (response) ->
+    let song = Song.parse (Mpd_utils.split_lines response) in
+    Lwt.return (Playlist (song::[]))
