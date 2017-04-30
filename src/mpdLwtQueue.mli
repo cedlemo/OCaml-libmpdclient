@@ -78,4 +78,10 @@ val playlistsearch:
 val swap:
   Mpd.LwtClient.c -> int -> int -> Protocol.response Lwt.t
 
+(** Shuffles the current playlist. START:END is optional and specifies a range
+    of songs. *)
+val shuffle:
+  Mpd.LwtClient.c -> ?range:(int * int) -> unit -> Protocol.response Lwt.t
+
+
 
