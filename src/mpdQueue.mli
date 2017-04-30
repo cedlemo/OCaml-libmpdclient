@@ -64,12 +64,14 @@ val swap: Mpd.Client.c -> int -> int -> Protocol.response
 (** Shuffles the current playlist. START:END is optional and specifies a range
     of songs. *)
 val shuffle: Mpd.Client.c -> ?range:(int * int) -> unit -> Protocol.response
+
 (*
   plchanges {VERSION} [START:END]
   plchangesposid {VERSION} [START:END]
   prio {PRIORITY} {START:END...}
 
-Set the priority of the specified songs. A higher priority means that it will be played first when "random" mode is enabled.
+Set the priority of the specified songs. A higher priority means that it will
+be played first when "random" mode is enabled.
 
 A priority is an integer between 0 and 255. The default priority of new songs is 0.
 
@@ -79,11 +81,10 @@ Same as prio, but address the songs with their id.
 
 rangeid {ID} {START:END}
 
-[7] Specifies the portion of the song that shall be played. START and END are offsets in seconds (fractional seconds allowed); both are optional. Omitting both (i.e. sending just ":") means "remove the range, play everything". A song that is currently playing cannot be manipulated this way.
-
-shuffle [START:END]
-
-
+[7] Specifies the portion of the song that shall be played. START and END are
+offsets in seconds (fractional seconds allowed); both are optional. Omitting
+both (i.e. sending just ":") means "remove the range, play everything". A song
+that is currently playing cannot be manipulated this way.
 
 swapid {SONG1} {SONG2}
 
