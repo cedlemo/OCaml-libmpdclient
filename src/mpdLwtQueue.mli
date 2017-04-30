@@ -74,3 +74,8 @@ val playlistfind:
 val playlistsearch:
   Mpd.LwtClient.c -> string -> string -> p Lwt.t
 
+(** Swaps the positions of SONG1 and SONG2. *)
+val swap:
+  Mpd.LwtClient.c -> int -> int -> Protocol.response Lwt.t
+
+

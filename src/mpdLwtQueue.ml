@@ -132,3 +132,9 @@ let playlistsearch client tag needle =
     let songs = Mpd_utils.split_lines response in
     _build_songs_list client songs []
 
+let swap client pos1 pos2 =
+  Mpd.LwtClient.send client (String.concat " " ["swap";
+                                                string_of_int pos1;
+                                                string_of_int pos2])
+
+
