@@ -60,6 +60,10 @@ val playlistsearch: Mpd.Client.c -> string -> string -> p
 
 (** Swaps the positions of SONG1 and SONG2. *)
 val swap: Mpd.Client.c -> int -> int -> Protocol.response
+
+(** Shuffles the current playlist. START:END is optional and specifies a range
+    of songs. *)
+val shuffle: Mpd.Client.c -> ?range:(int * int) -> unit -> Protocol.response
 (*
   plchanges {VERSION} [START:END]
   plchangesposid {VERSION} [START:END]
@@ -79,7 +83,7 @@ rangeid {ID} {START:END}
 
 shuffle [START:END]
 
-Shuffles the current playlist. START:END is optional and specifies a range of songs.
+
 
 swapid {SONG1} {SONG2}
 

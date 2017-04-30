@@ -135,3 +135,10 @@ let swap client pos1 pos2 =
                                    string_of_int pos1;
                                    string_of_int pos2] in
   Mpd.Client.send client request
+
+let shuffle client ?range () =
+  let request = match range with
+    |None -> "shuffle"
+    |Some (s, e) -> String.concat " " ["shuffle"; string_of_int s; string_of_int e]
+  in Mpd.Client.send client request
+
