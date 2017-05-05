@@ -65,13 +65,16 @@ val swap: Mpd.Client.c -> int -> int -> Protocol.response
     of songs. *)
 val shuffle: Mpd.Client.c -> ?range:(int * int) -> unit -> Protocol.response
 
+(** Set the priority of the specified songs. A higher priority means that it
+    will be played first when "random" mode is enabled.
+    A priority is an integer between 0 and 255. The default priority of new
+    songs is 0. *)
+val prio: Mpd.Client.c -> int -> ?range:(int * int) -> unit -> Protocol.response
+
 (*
   plchanges {VERSION} [START:END]
   plchangesposid {VERSION} [START:END]
   prio {PRIORITY} {START:END...}
-
-Set the priority of the specified songs. A higher priority means that it will
-be played first when "random" mode is enabled.
 
 A priority is an integer between 0 and 255. The default priority of new songs is 0.
 
