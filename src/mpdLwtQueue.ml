@@ -163,3 +163,9 @@ let prioid client priority ids =
   let ids' = String.concat " " (List.map (fun i -> string_of_int i) ids) in
   let request = String.concat " " ["prioid"; priority'; ids'] in
   Mpd.LwtClient.send client request
+
+let swapid client id1 id2 =
+  let request = String.concat " " ["swapid";
+                                   string_of_int id1;
+                                   string_of_int id2 ] in
+  Mpd.LwtClient.send client request

@@ -93,4 +93,7 @@ val prio:
 (** Same as prio, but address the songs with their id. *)
 val prioid: Mpd.LwtClient.c -> int -> int list -> Protocol.response Lwt.t
 
+(** Swaps the positions of SONG1 and SONG2 (both song ids). *)
+val swapid: Mpd.LwtClient.c -> int -> int -> Protocol.response Lwt.t
+
 
