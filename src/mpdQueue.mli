@@ -73,27 +73,19 @@ val prio: Mpd.Client.c -> int -> ?range:(int * int) -> unit -> Protocol.response
 
 (** Same as prio, but address the songs with their id. *)
 val prioid: Mpd.Client.c -> int -> int list -> Protocol.response
+
+(** Swaps the positions of SONG1 and SONG2 (both song ids). *)
+val swapid: Mpd.Client.c -> int -> int -> Protocol.response
+
 (*
   plchanges {VERSION} [START:END]
   plchangesposid {VERSION} [START:END]
-  prio {PRIORITY} {START:END...}
+  rangeid {ID} {START:END}
 
-A priority is an integer between 0 and 255. The default priority of new songs is 0.
-
-prioid {PRIORITY} {ID...}
-
-Same as prio, but address the songs with their id.
-
-rangeid {ID} {START:END}
-
-[7] Specifies the portion of the song that shall be played. START and END are
-offsets in seconds (fractional seconds allowed); both are optional. Omitting
-both (i.e. sending just ":") means "remove the range, play everything". A song
-that is currently playing cannot be manipulated this way.
-
-swapid {SONG1} {SONG2}
-
-Swaps the positions of SONG1 and SONG2 (both song ids).
+  [7] Specifies the portion of the song that shall be played. START and END are
+  offsets in seconds (fractional seconds allowed); both are optional. Omitting
+  both (i.e. sending just ":") means "remove the range, play everything". A song
+  that is currently playing cannot be manipulated this way.
 
 addtagid {SONGID} {TAG} {VALUE}
 
