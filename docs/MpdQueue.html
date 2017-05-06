@@ -47,45 +47,77 @@ Adds the file URI to the playlist (directories add recursively). URI can also be
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
 <code><span id="TYPEELTp.Playlist"><span class="constructor">Playlist</span></span> <span class="keyword">of</span> <code class="type"><a href="Song.html#TYPEs">Song.s</a> list</code></code></td>
-<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
-Adds the file URI to the playlist (directories add recursively). URI can also be a single file.<br>
-</div>
-</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+
 </tr></table>
 
 
 
-<pre><span id="VALadd"><span class="keyword">val</span> add</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> string -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre>
-<pre><span id="VALaddid"><span class="keyword">val</span> addid</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> string -> int -> int</code></pre><div class="info ">
+<pre><span id="VALadd"><span class="keyword">val</span> add</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> string -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
+Adds the file URI to the playlist (directories add recursively). URI can also be a single file.<br>
+</div>
+
+<pre><span id="VALaddid"><span class="keyword">val</span> addid</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> string -> int -> int</code></pre>
+<pre><span id="VALclear"><span class="keyword">val</span> clear</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
 Clears the current playlist.<br>
 </div>
 
-<pre><span id="VALclear"><span class="keyword">val</span> clear</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
-Deletes a song or a set of songs from the playlist. The song or the range
- * of songs are identified by the position in the playlist.<br>
-</div>
-
 <pre><span id="VALdelete"><span class="keyword">val</span> delete</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> int -> ?position_end:int -> unit -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
-Deletes the song SONGID from the playlist.<br>
+Deletes a song or a set of songs from the playlist. The song or the range
+    of songs are identified by the position in the playlist.<br>
 </div>
 
 <pre><span id="VALdeleteid"><span class="keyword">val</span> deleteid</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> int -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
-Moves the song at FROM or range of songs at START:END to TO in
- * the playlist.<br>
+Deletes the song SONGID from the playlist.<br>
 </div>
 
 <pre><span id="VALmove"><span class="keyword">val</span> move</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> int -> ?position_end:int -> int -> unit -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
-Moves the song with FROM (songid) to TO (playlist index) in the playlist.
- * If TO is negative, it is relative to the current song in the playlist
- * (if there is one).<br>
+Moves the song at FROM or range of songs at START:END to TO in
+    the playlist.<br>
 </div>
 
 <pre><span id="VALmoveid"><span class="keyword">val</span> moveid</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> int -> int -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
-Get the songs in the playlist<br>
+Moves the song with FROM (songid) to TO (playlist index) in the playlist.
+    If TO is negative, it is relative to the current song in the playlist
+    (if there is one).<br>
 </div>
 
 <pre><span id="VALplaylist"><span class="keyword">val</span> playlist</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> <a href="MpdQueue.html#TYPEp">p</a></code></pre><div class="info ">
+Get the songs in the playlist<br>
+</div>
+
+<pre><span id="VALplaylistid"><span class="keyword">val</span> playlistid</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> int -> <a href="MpdQueue.html#TYPEp">p</a></code></pre><div class="info ">
 Get information for one song<br>
 </div>
 
-<pre><span id="VALplaylistid"><span class="keyword">val</span> playlistid</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> int -> <a href="MpdQueue.html#TYPEp">p</a></code></pre></body></html>
+<pre><span id="VALplaylistfind"><span class="keyword">val</span> playlistfind</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> string -> string -> <a href="MpdQueue.html#TYPEp">p</a></code></pre><div class="info ">
+Finds songs in the current playlist with strict matching.<br>
+</div>
+
+<pre><span id="VALplaylistsearch"><span class="keyword">val</span> playlistsearch</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> string -> string -> <a href="MpdQueue.html#TYPEp">p</a></code></pre><div class="info ">
+Searches case-insensitively for partial matches in the current playlist.<br>
+</div>
+
+<pre><span id="VALswap"><span class="keyword">val</span> swap</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> int -> int -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
+Swaps the positions of SONG1 and SONG2.<br>
+</div>
+
+<pre><span id="VALshuffle"><span class="keyword">val</span> shuffle</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> ?range:int * int -> unit -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
+Shuffles the current playlist. START:END is optional and specifies a range
+    of songs.<br>
+</div>
+
+<pre><span id="VALprio"><span class="keyword">val</span> prio</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> int -> ?range:int * int -> unit -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
+Set the priority of the specified songs. A higher priority means that it
+    will be played first when "random" mode is enabled.
+    A priority is an integer between 0 and 255. The default priority of new
+    songs is 0.<br>
+</div>
+
+<pre><span id="VALprioid"><span class="keyword">val</span> prioid</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> int -> int list -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
+Same as prio, but address the songs with their id.<br>
+</div>
+
+<pre><span id="VALswapid"><span class="keyword">val</span> swapid</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> int -> int -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
+Swaps the positions of SONG1 and SONG2 (both song ids).<br>
+</div>
+</body></html>
