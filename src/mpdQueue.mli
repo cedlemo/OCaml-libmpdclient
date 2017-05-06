@@ -87,11 +87,13 @@ val swapid: Mpd.Client.c -> int -> int -> Protocol.response
   both (i.e. sending just ":") means "remove the range, play everything". A song
   that is currently playing cannot be manipulated this way.
 
-addtagid {SONGID} {TAG} {VALUE}
+  addtagid {SONGID} {TAG} {VALUE}
 
-Adds a tag to the specified song. Editing song tags is only possible for remote songs. This change is volatile: it may be overwritten by tags received from the server, and the data is gone when the song gets removed from the queue.
+  Adds a tag to the specified song. Editing song tags is only possible for
+  remote songs. This change is volatile: it may be overwritten by tags received
+  from the server, and the data is gone when the song gets removed from the queue.
 
-cleartagid {SONGID} [TAG]
+  cleartagid {SONGID} [TAG]
 
-Removes tags from the specified song. If TAG is not specified, then all tag values will be removed. Editing song tags is only possible for remote songs.
+  Removes tags from the specified song. If TAG is not specified, then all tag values will be removed. Editing song tags is only possible for remote songs.
 *)
