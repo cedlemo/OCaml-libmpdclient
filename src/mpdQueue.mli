@@ -71,6 +71,8 @@ val shuffle: Mpd.Client.c -> ?range:(int * int) -> unit -> Protocol.response
     songs is 0. *)
 val prio: Mpd.Client.c -> int -> ?range:(int * int) -> unit -> Protocol.response
 
+(** Same as prio, but address the songs with their id. *)
+val prioid: Mpd.Client.c -> int -> int list -> Protocol.response
 (*
   plchanges {VERSION} [START:END]
   plchangesposid {VERSION} [START:END]

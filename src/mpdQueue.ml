@@ -136,3 +136,12 @@ let prio client priority ?range () =
     | Some (s, e) -> let r = String.concat ":" [string_of_int s; string_of_int e] in
       String.concat " " ["prio"; r]
   in Mpd.Client.send client request
+
+let prioid client priority ids =
+  let priority' = string_of_int ( if priority > 255 then 255
+                                  else if priority < 0 then 0
+                                  else priority)
+  in
+  let ids' = String.concat " " (List.map (fun i -> string_of_int i) ids) in
+  let request = String.concat " " ["prioid"; priority'; ids'] in
+  Mpd.Client.send client request
