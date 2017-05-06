@@ -83,5 +83,12 @@ val swap:
 val shuffle:
   Mpd.LwtClient.c -> ?range:(int * int) -> unit -> Protocol.response Lwt.t
 
+(** Set the priority of the specified songs. A higher priority means that it
+    will be played first when "random" mode is enabled.
+    A priority is an integer between 0 and 255. The default priority of new
+    songs is 0. *)
+val prio:
+  Mpd.LwtClient.c -> int -> ?range:(int * int) -> unit -> Protocol.response Lwt.t
+
 
 
