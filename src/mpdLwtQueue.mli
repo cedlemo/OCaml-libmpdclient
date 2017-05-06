@@ -90,5 +90,7 @@ val shuffle:
 val prio:
   Mpd.LwtClient.c -> int -> ?range:(int * int) -> unit -> Protocol.response Lwt.t
 
+(** Same as prio, but address the songs with their id. *)
+val prioid: Mpd.LwtClient.c -> int -> int list -> Protocol.response Lwt.t
 
 
