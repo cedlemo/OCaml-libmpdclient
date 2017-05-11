@@ -169,3 +169,14 @@ let swapid client id1 id2 =
                                    string_of_int id1;
                                    string_of_int id2 ] in
   Mpd.LwtClient.send client request
+
+let rangeid client id ?range () =
+  let id' = string_of_int id in
+  let cmd = "rangeid" in
+  let request = match range with
+    | None -> String.concat " " [cmd; id'; ":"]
+    | Some (s, e) ->
+      let r = String.concat ":" [string_of_float s; string_of_float e] in
+      String.concat " " [cmd; r]
+  in
+  Mpd.LwtClient.send client request

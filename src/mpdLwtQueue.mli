@@ -96,4 +96,11 @@ val prioid: Mpd.LwtClient.c -> int -> int list -> Protocol.response Lwt.t
 (** Swaps the positions of SONG1 and SONG2 (both song ids). *)
 val swapid: Mpd.LwtClient.c -> int -> int -> Protocol.response Lwt.t
 
+(** Specifies the portion of the song that shall be played. START and END are
+  offsets in seconds (fractional seconds allowed); both are optional. Omitting
+  both (i.e. sending just ":") means "remove the range, play everything". A song
+  that is currently playing cannot be manipulated this way. *)
+val rangeid:
+  Mpd.LwtClient.c -> int -> ?range:(float * float) -> unit -> Protocol.response Lwt.t
+
 
