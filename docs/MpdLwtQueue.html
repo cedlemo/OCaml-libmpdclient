@@ -129,4 +129,16 @@ Same as prio, but address the songs with their id.<br>
 <pre><span id="VALswapid"><span class="keyword">val</span> swapid</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> int -> int -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
 Swaps the positions of SONG1 and SONG2 (both song ids).<br>
 </div>
+
+<pre><span id="VALrangeid"><span class="keyword">val</span> rangeid</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -><br>       int -> ?range:float * float -> unit -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
+Specifies the portion of the song that shall be played. START and END are
+  offsets in seconds (fractional seconds allowed); both are optional. Omitting
+  both (i.e. sending just ":") means "remove the range, play everything". A song
+  that is currently playing cannot be manipulated this way.<br>
+</div>
+
+<pre><span id="VALcleartagid"><span class="keyword">val</span> cleartagid</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> int -> string -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
+Removes tags from the specified song. If TAG is not specified, then all tag
+    values will be removed. Editing song tags is only possible for remote songs.<br>
+</div>
 </body></html>
