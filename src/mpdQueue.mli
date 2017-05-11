@@ -77,16 +77,18 @@ val prioid: Mpd.Client.c -> int -> int list -> Protocol.response
 (** Swaps the positions of SONG1 and SONG2 (both song ids). *)
 val swapid: Mpd.Client.c -> int -> int -> Protocol.response
 
+(** Specifies the portion of the song that shall be played. START and END are
+  offsets in seconds (fractional seconds allowed); both are optional. Omitting
+  both (i.e. sending just ":") means "remove the range, play everything". A song
+  that is currently playing cannot be manipulated this way. *)
+val rangeid:
+  Mpd.Client.c -> int -> ?range:(float * float) -> unit -> Protocol.response
+
 (*
   plchanges {VERSION} [START:END]
   plchangesposid {VERSION} [START:END]
-  rangeid {ID} {START:END}
 
-  [7] Specifies the portion of the song that shall be played. START and END are
-  offsets in seconds (fractional seconds allowed); both are optional. Omitting
-  both (i.e. sending just ":") means "remove the range, play everything". A song
-  that is currently playing cannot be manipulated this way.
-
+  [7]
   addtagid {SONGID} {TAG} {VALUE}
 
   Adds a tag to the specified song. Editing song tags is only possible for
