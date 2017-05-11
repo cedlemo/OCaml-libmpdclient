@@ -84,6 +84,9 @@ val swapid: Mpd.Client.c -> int -> int -> Protocol.response
 val rangeid:
   Mpd.Client.c -> int -> ?range:(float * float) -> unit -> Protocol.response
 
+(** Removes tags from the specified song. If TAG is not specified, then all tag
+    values will be removed. Editing song tags is only possible for remote songs.
+*)
 val cleartagid:
   Mpd.Client.c -> int -> string -> Protocol.response
 
@@ -91,8 +94,4 @@ val cleartagid:
   plchanges {VERSION} [START:END]
   plchangesposid {VERSION} [START:END]
   addtagid {SONGID} {TAG} {VALUE}
-
-  cleartagid {SONGID} [TAG]
-
-  Removes tags from the specified song. If TAG is not specified, then all tag values will be removed. Editing song tags is only possible for remote songs.
 *)
