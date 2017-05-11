@@ -180,3 +180,9 @@ let rangeid client id ?range () =
       String.concat " " [cmd; r]
   in
   Mpd.LwtClient.send client request
+
+let cleartagid client id tag =
+  let request = String.concat " " ["cleartagid";
+                                   string_of_int id;
+                                   tag] in
+  Mpd.LwtClient.send client request

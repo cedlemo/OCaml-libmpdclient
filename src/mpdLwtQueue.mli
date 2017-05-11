@@ -103,4 +103,8 @@ val swapid: Mpd.LwtClient.c -> int -> int -> Protocol.response Lwt.t
 val rangeid:
   Mpd.LwtClient.c -> int -> ?range:(float * float) -> unit -> Protocol.response Lwt.t
 
-
+(** Removes tags from the specified song. If TAG is not specified, then all tag
+    values will be removed. Editing song tags is only possible for remote songs.
+*)
+val cleartagid:
+  Mpd.LwtClient.c -> int -> string -> Protocol.response Lwt.t
