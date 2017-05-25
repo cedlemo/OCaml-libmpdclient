@@ -61,6 +61,7 @@ let bool_of_int_str b =
   | "0" -> false
   | _   -> true
 
+(** Get the file path from the ouput of the command "listplaylist name"*)
 let read_file_paths data =
   let lines = split_lines data in
   let pattern = Str.regexp "\\(file\\): \\(.*\\)" in
