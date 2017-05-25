@@ -121,16 +121,33 @@ let test_song_parse test_ctxt =
   assert_equal 266.472 (Song.duration song);
   assert_equal 11 (Song.id song)
 
+let playlist_info_list_data = "file: Wardruna-Runaljod-Yggdrasil-2013/01. Rotlaust Tre Fell_[plixid.com].mp3
+file: Wardruna-Runaljod-Yggdrasil-2013/02. Fehu_[plixid.com].mp3
+file: Wardruna-Runaljod-Yggdrasil-2013/03. NaudiR_[plixid.com].mp3
+file: Wardruna-Runaljod-Yggdrasil-2013/04. EhwaR_[plixid.com].mp3
+file: Wardruna-Runaljod-Yggdrasil-2013/05. AnsuR_[plixid.com].mp3
+file: Wardruna-Runaljod-Yggdrasil-2013/06. IwaR_[plixid.com].mp3
+file: Wardruna-Runaljod-Yggdrasil-2013/07. IngwaR_[plixid.com].mp3"
+
+let test_list_playlist_response_parse test_ctxt =
+  let paths = Mpd_utils.read_file_paths playlist_info_list_data in
+  let second = List.nth paths 1 in
+  assert_equal  ~printer:(fun s ->
+      s)
+    "Wardruna-Runaljod-Yggdrasil-2013/02. Fehu_[plixid.com].mp3" second
+
 let mpd_responses_parsing_tests =
     "Mpd responses parsing tests" >:::
       ["test simple OK" >:: test_simple_ok;
-     "test request OK" >:: test_request_ok;
-     "test error 50" >:: test_error_50;
-     "test error 1" >:: test_error_1;
-     "test Mpd.utils.num_on_num_parse simple int" >:: test_num_on_num_parse_simple_int;
-     "test Mpd.utils.num_on_num_parse num_on_num" >:: test_num_on_num_parse_num_on_num;
-     "test Mpd.utils.read_key_value" >:: test_read_key_val;
-     "test Mpd.Song.parse" >:: test_song_parse ]
+       "test request OK" >:: test_request_ok;
+       "test error 50" >:: test_error_50;
+       "test error 1" >:: test_error_1;
+       "test Mpd.utils.num_on_num_parse simple int" >:: test_num_on_num_parse_simple_int;
+       "test Mpd.utils.num_on_num_parse num_on_num" >:: test_num_on_num_parse_num_on_num;
+       "test Mpd.utils.read_key_value" >:: test_read_key_val;
+       "test Mpd.Song.parse" >:: test_song_parse;
+       "test Mpd_utils.read_file_path" >:: test_list_playlist_response_parse
+      ]
 
   let () =
     run_test_tt_main mpd_responses_parsing_tests
