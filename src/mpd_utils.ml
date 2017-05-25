@@ -61,4 +61,14 @@ let bool_of_int_str b =
   | "0" -> false
   | _   -> true
 
-
+let read_file_paths data =
+  let lines = split_lines data in
+  let pattern = Str.regexp "\\(file\\): \\(.*\\)" in
+  let rec get_paths files acc =
+    match files with
+    | [] -> acc
+    | f :: remainded -> if Str.string_match pattern f 0
+      then get_paths remainded ((Str.matched_group 2 f) :: acc)
+      else get_paths remainded acc in
+  let paths = get_paths lines [] in
+  List.rev paths
