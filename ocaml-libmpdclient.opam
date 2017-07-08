@@ -1,0 +1,18 @@
+opam-version: "1.2"
+name: "OCaml-libmpdclient"
+version: "~unknown"
+maintainer: "cedlemo <cedlemo@gmx.com>"
+authors: "cedlemo <cedlemo@gmx.com>"
+homepage: "https://github.com/cedlemo/OCaml-libmpdclient"
+bug-reports: "https://github.com/cedlemo/OCaml-libmpdclient/issues"
+license: "GPL3"
+dev-repo: "https://github.com/cedlemo/OCaml-libmpdclient"
+build: [
+  ["./configure" "--prefix=%{prefix}%"]
+  [make]
+]
+install: [make "install"]
+remove: ["ocamlfind" "remove" "OCaml-libmpdclient"]
+depends: [
+  "ocamlfind" {build}
+]

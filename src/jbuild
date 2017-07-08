@@ -1,0 +1,9 @@
+
+(jbuild_version 1)
+
+(library
+ ((name        Mpd)
+  (public_name ocaml-libmpdclient)
+  (libraries (unix lwt))
+ )
+)
