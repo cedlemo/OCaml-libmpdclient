@@ -1,0 +1,11 @@
+(executables
+ ((names (test))
+  (libraries (ocaml-libmpdclient lwt oUnit))
+))
+
+(alias
+ ((name    runtest)
+  (deps    (test.exe))
+  (action  (run ${<}))
+ )
+)
