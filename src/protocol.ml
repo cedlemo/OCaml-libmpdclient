@@ -16,10 +16,6 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-(** Define the Mpd response and error types *)
-(* https://github.com/sol/mpd/blob/master/src/ack.h *)
-
-(** Type of error that could occur when a command is sent to the mpd server. *)
 type ack_error =
   | Not_list        (* 1 *)
   | Arg             (* 2 *)
@@ -34,10 +30,8 @@ type ack_error =
   | Player_sync     (* 55 *)
   | Exist           (* 56 *)
 
-  (** Type of the response of the mpd server. *)
 type response = Ok of string | Error of (ack_error * int * string * string)
 
-(** Get the error name of the error type. *)
 let error_name = function
   | Not_list      -> "Not_list"
   | Arg           -> "Arg"
@@ -52,7 +46,6 @@ let error_name = function
   | Player_sync   -> "Player_sync"
   | Exist         -> "Exist"
 
-  (** Returns the related type for the error returned by the server as a string. *)
 let str_error_to_val str =
   match str with
   | "1"  -> Not_list
@@ -69,7 +62,6 @@ let str_error_to_val str =
   | "56" -> Exist
   | _ -> Unknown
 
-  (** Parse the error response of the mpd server into the error type. *)
 let parse_error_response mpd_response =
   let dec = "[0-9]" in
   let error = "\\(" ^ dec ^ dec ^ "?\\)" in
@@ -86,7 +78,6 @@ let parse_error_response mpd_response =
   let ack_message = Str.matched_group 4 mpd_response in
   (ack_val, ack_cmd_num, ack_cmd, ack_message)
 
-  (** Parse the mpd server response *)
 let parse_response mpd_response =
   let ok_response_reg = Str.regexp "\\(\\(\n\\|.\\)*\\)OK\n" in
   if (Str.string_match ok_response_reg mpd_response 0 == true) then
