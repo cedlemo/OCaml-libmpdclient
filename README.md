@@ -9,7 +9,7 @@ This lib is based on the mpd protocol ([specifications](https://www.musicpd.org/
 *  Controlling playback	     (*done*)
 *  Playback options	     (*done*)
 *  The current playlist	     (*done*)
-*  Stored playlists          (*to do*)
+*  Stored playlists          (*in progress*)
 *  The music database        (*to do*)
 *  Mounts and neighbors      (*to do*)
 *  Stickers                  (*to do*)
@@ -57,3 +57,7 @@ This lib is based on the mpd protocol ([specifications](https://www.musicpd.org/
 
     received: OK
 
+## TODO :
+
+* implement stored playlist module.
+* implement lwt based stored playlist module.
