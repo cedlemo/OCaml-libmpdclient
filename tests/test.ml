@@ -136,6 +136,17 @@ let test_list_playlist_response_parse test_ctxt =
       s)
     "Wardruna-Runaljod-Yggdrasil-2013/02. Fehu_[plixid.com].mp3" second
 
+let listplaylists_data =
+"playlist: zen
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: rtl
+Last-Modified: 2014-12-02T10:15:57Z
+"
+
+let test_listplaylists_response_parse test_ctxt =
+  let playlist_names = Mpd_utils.read_list_playlists listplaylists_data in
+  assert_equal ~printer:(fun s -> s) "zen rtl" (String.concat " " playlist_names)
+
 let mpd_responses_parsing_tests =
     "Mpd responses parsing tests" >:::
       ["test simple OK" >:: test_simple_ok;
@@ -146,7 +157,8 @@ let mpd_responses_parsing_tests =
        "test Mpd.utils.num_on_num_parse num_on_num" >:: test_num_on_num_parse_num_on_num;
        "test Mpd.utils.read_key_value" >:: test_read_key_val;
        "test Mpd.Song.parse" >:: test_song_parse;
-       "test Mpd_utils.read_file_path" >:: test_list_playlist_response_parse
+"test Mpd_utils.read_file_path" >:: test_list_playlist_response_parse;
+       "test Mpd.utils.read_list_playlists" >:: test_listplaylists_response_parse
       ]
 
   let () =
