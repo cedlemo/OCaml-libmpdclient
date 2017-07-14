@@ -34,12 +34,11 @@ val load:
 val playlistadd:
   Mpd.Client.c -> string -> string -> Protocol.response
 
-(* TODO s :
+(** Clears the playlist NAME.m3u. *)
+val playlistclear:
+  Mpd.Client.c -> string -> Protocol.response
 
-*  -> playlistclear {NAME}
-*  Clears the playlist NAME.m3u.
-*  val playlistclear: Mpd.Client.c -> string -> Protocol.response
-*
+(* TODO s :
 *  -> playlistdelete {NAME} {SONGPOS}
 *  Deletes SONGPOS from the playlist NAME.m3u.
 *  val playlistdelete: Mpd.Client.c -> int -> Protocol.response
