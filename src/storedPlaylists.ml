@@ -59,3 +59,7 @@ let rename client playlist new_name =
 let rm client playlist =
   let request = "rm " ^ playlist in
   Mpd.Client.send client request
+
+let save client playlist =
+  let requrest = "save " ^ playlist in
+  Mpd.Client.send client request
