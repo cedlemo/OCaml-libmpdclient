@@ -20,7 +20,7 @@ Library "libmpdclient"
            Status,
            Song,
            MpdQueue,MpdLwtQueue,
-           StoredPlaylists,
+           StoredPlaylists,LwtStoredPlaylists,
            Mpd_utils
   BuildDepends: unix, str, lwt, lwt.unix
 
