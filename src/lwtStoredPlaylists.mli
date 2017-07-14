@@ -24,4 +24,9 @@
 val listplaylists:
   Mpd.LwtClient.c -> string list option Lwt.t
 
+(** Loads the playlist into the current queue. Playlist plugins are supported.
+    A range may be specified to load only a part of the playlist. *)
+val load:
+  Mpd.LwtClient.c -> string -> ?range:(int * int) -> unit -> Protocol.response Lwt.t
+
 

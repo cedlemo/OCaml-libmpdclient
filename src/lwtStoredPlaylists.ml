@@ -26,4 +26,12 @@ let listplaylists client =
       let playlists = Some (Mpd_utils.read_list_playlists response) in
       Lwt.return playlists
 
+let load client playlist ?range () =
+  let request = match range with
+    | None -> "load " ^ playlist
+    | Some (s, e) -> let r = String.concat ":" [string_of_int s; string_of_int e] in
+      String.concat " " ["load"; playlist; r]
+  in
+  Mpd.LwtClient.send client request
+
 
