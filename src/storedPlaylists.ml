@@ -61,5 +61,5 @@ let rm client playlist =
   Mpd.Client.send client request
 
 let save client playlist =
-  let requrest = "save " ^ playlist in
+  let request = "save " ^ playlist in
   Mpd.Client.send client request
