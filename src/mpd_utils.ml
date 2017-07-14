@@ -73,3 +73,19 @@ let read_file_paths data =
       else get_paths remainded acc in
   let paths = get_paths lines [] in
   List.rev paths
+
+(** Get playlists list from output of the command "listplaylists". *)
+let read_list_playlists data =
+  let lines = split_lines data in
+  let pattern = Str.regexp "playlist: \\(.*\\)" in
+  let rec get_playlists lines acc =
+    match lines with
+    | [] -> List.rev acc
+    | item :: remain ->
+      if Str.string_match pattern item 0 then
+        let name = Str.matched_group 1 item in
+        get_playlists remain (name :: acc)
+      else
+        get_playlists remain acc
+  in
+  get_playlists lines []
