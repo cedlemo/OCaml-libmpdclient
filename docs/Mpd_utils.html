@@ -3,8 +3,9 @@
 <head>
 <link rel="stylesheet" href="style.css" type="text/css">
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="Start" href="index.html">
-<link rel="previous" href="MpdLwtQueue.html">
+<link rel="previous" href="StoredPlaylists.html">
 <link rel="Up" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
@@ -19,10 +20,11 @@
 <link title="Song" rel="Chapter" href="Song.html">
 <link title="MpdQueue" rel="Chapter" href="MpdQueue.html">
 <link title="MpdLwtQueue" rel="Chapter" href="MpdLwtQueue.html">
+<link title="StoredPlaylists" rel="Chapter" href="StoredPlaylists.html">
 <link title="Mpd_utils" rel="Chapter" href="Mpd_utils.html"><title>Mpd_utils</title>
 </head>
 <body>
-<div class="navbar"><a class="pre" href="MpdLwtQueue.html" title="MpdLwtQueue">Previous</a>
+<div class="navbar"><a class="pre" href="StoredPlaylists.html" title="StoredPlaylists">Previous</a>
 &nbsp;<a class="up" href="index.html" title="Index">Up</a>
 &nbsp;</div>
 <h1>Module <a href="type_Mpd_utils.html">Mpd_utils</a></h1>
@@ -93,5 +95,13 @@ Returns all the values of a list of strings that have the key/value form.<br>
 <pre><span id="VALbool_of_int_str"><span class="keyword">val</span> bool_of_int_str</span> : <code class="type">string -> bool</code></pre><div class="info ">
 Get a boolean value from a string number. The string "0" is false while all
  * other string is true.<br>
+</div>
+
+<pre><span id="VALread_file_paths"><span class="keyword">val</span> read_file_paths</span> : <code class="type">string -> string list</code></pre><div class="info ">
+Get the file path from the ouput of the command "listplaylist name"<br>
+</div>
+
+<pre><span id="VALread_list_playlists"><span class="keyword">val</span> read_list_playlists</span> : <code class="type">string -> string list</code></pre><div class="info ">
+Get playlists list from output of the command "listplaylists".<br>
 </div>
 </body></html>

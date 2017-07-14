@@ -2,6 +2,7 @@
 <head>
 <link rel="stylesheet" href="style.css" type="text/css">
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="Start" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
@@ -16,6 +17,7 @@
 <link title="Song" rel="Chapter" href="Song.html">
 <link title="MpdQueue" rel="Chapter" href="MpdQueue.html">
 <link title="MpdLwtQueue" rel="Chapter" href="MpdLwtQueue.html">
+<link title="StoredPlaylists" rel="Chapter" href="StoredPlaylists.html">
 <link title="Mpd_utils" rel="Chapter" href="Mpd_utils.html"><title>Index of values</title>
 </head>
 <body>
@@ -236,6 +238,16 @@ Create the connection, exit if the connection can not be initialized.
 <tr><td align="left"><br>L</td></tr>
 <tr><td><a href="Song.html#VALlast_modified">last_modified</a> [<a href="Song.html">Song</a>]</td>
 <td></td></tr>
+<tr><td><a href="StoredPlaylists.html#VALlistplaylists">listplaylists</a> [<a href="StoredPlaylists.html">StoredPlaylists</a>]</td>
+<td><div class="info">
+Prints a list of the playlist names.
+</div>
+</td></tr>
+<tr><td><a href="StoredPlaylists.html#VALload">load</a> [<a href="StoredPlaylists.html">StoredPlaylists</a>]</td>
+<td><div class="info">
+Loads the playlist into the current queue.
+</div>
+</td></tr>
 <tr><td align="left"><br>M</td></tr>
 <tr><td><a href="Status.html#VALmixrampdb">mixrampdb</a> [<a href="Status.html">Status</a>]</td>
 <td><div class="info">
@@ -418,6 +430,21 @@ Get the songs in the playlist
 Get the current playlist length
 </div>
 </td></tr>
+<tr><td><a href="StoredPlaylists.html#VALplaylistadd">playlistadd</a> [<a href="StoredPlaylists.html">StoredPlaylists</a>]</td>
+<td><div class="info">
+Adds URI to the playlist NAME.m3u.
+</div>
+</td></tr>
+<tr><td><a href="StoredPlaylists.html#VALplaylistclear">playlistclear</a> [<a href="StoredPlaylists.html">StoredPlaylists</a>]</td>
+<td><div class="info">
+Clears the playlist NAME.m3u.
+</div>
+</td></tr>
+<tr><td><a href="StoredPlaylists.html#VALplaylistdelete">playlistdelete</a> [<a href="StoredPlaylists.html">StoredPlaylists</a>]</td>
+<td><div class="info">
+Deletes SONGPOS from the playlist NAME.m3u.
+</div>
+</td></tr>
 <tr><td><a href="MpdLwtQueue.html#VALplaylistfind">playlistfind</a> [<a href="MpdLwtQueue.html">MpdLwtQueue</a>]</td>
 <td><div class="info">
 Finds songs in the current playlist with strict matching.
@@ -441,6 +468,11 @@ Get information for one song
 <tr><td><a href="Status.html#VALplaylistlength">playlistlength</a> [<a href="Status.html">Status</a>]</td>
 <td><div class="info">
 Get the state of the player : Play / Pause / Stop
+</div>
+</td></tr>
+<tr><td><a href="StoredPlaylists.html#VALplaylistmove">playlistmove</a> [<a href="StoredPlaylists.html">StoredPlaylists</a>]</td>
+<td><div class="info">
+Moves the song at position FROM in the playlist NAME.m3u to the position TO.
 </div>
 </td></tr>
 <tr><td><a href="MpdLwtQueue.html#VALplaylistsearch">playlistsearch</a> [<a href="MpdLwtQueue.html">MpdLwtQueue</a>]</td>
@@ -520,6 +552,11 @@ Read in an Mpd connection
 </td></tr>
 <tr><td><a href="Mpd.LwtConnection.html#VALread_command_response">read_command_response</a> [<a href="Mpd.LwtConnection.html">Mpd.LwtConnection</a>]</td>
 <td></td></tr>
+<tr><td><a href="Mpd_utils.html#VALread_file_paths">read_file_paths</a> [<a href="Mpd_utils.html">Mpd_utils</a>]</td>
+<td><div class="info">
+Get the file path from the ouput of the command "listplaylist name"
+</div>
+</td></tr>
 <tr><td><a href="Mpd.LwtConnection.html#VALread_idle_events">read_idle_events</a> [<a href="Mpd.LwtConnection.html">Mpd.LwtConnection</a>]</td>
 <td></td></tr>
 <tr><td><a href="Mpd_utils.html#VALread_key_val">read_key_val</a> [<a href="Mpd_utils.html">Mpd_utils</a>]</td>
@@ -527,8 +564,18 @@ Read in an Mpd connection
 Split a line with the form "k: v" in the value of type pair
 </div>
 </td></tr>
+<tr><td><a href="Mpd_utils.html#VALread_list_playlists">read_list_playlists</a> [<a href="Mpd_utils.html">Mpd_utils</a>]</td>
+<td><div class="info">
+Get playlists list from output of the command "listplaylists".
+</div>
+</td></tr>
 <tr><td><a href="Mpd.LwtConnection.html#VALread_mpd_banner">read_mpd_banner</a> [<a href="Mpd.LwtConnection.html">Mpd.LwtConnection</a>]</td>
 <td></td></tr>
+<tr><td><a href="StoredPlaylists.html#VALrename">rename</a> [<a href="StoredPlaylists.html">StoredPlaylists</a>]</td>
+<td><div class="info">
+Renames the playlist NAME.m3u to NEW_NAME.m3u.
+</div>
+</td></tr>
 <tr><td><a href="Status.html#VALrepeat">repeat</a> [<a href="Status.html">Status</a>]</td>
 <td><div class="info">
 Find out if the player is in random mode
@@ -554,7 +601,17 @@ Sets the replay gain mode.
 Sets the replay gain mode.
 </div>
 </td></tr>
+<tr><td><a href="StoredPlaylists.html#VALrm">rm</a> [<a href="StoredPlaylists.html">StoredPlaylists</a>]</td>
+<td><div class="info">
+Removes the playlist NAME.m3u from the playlist directory.
+</div>
+</td></tr>
 <tr><td align="left"><br>S</td></tr>
+<tr><td><a href="StoredPlaylists.html#VALsave">save</a> [<a href="StoredPlaylists.html">StoredPlaylists</a>]</td>
+<td><div class="info">
+Saves the current playlist to NAME.m3u in the playlist directory.
+</div>
+</td></tr>
 <tr><td><a href="LwtPlayback.html#VALseek">seek</a> [<a href="LwtPlayback.html">LwtPlayback</a>]</td>
 <td><div class="info">
 Seeks to the position time of entry songpos in the playlist.
