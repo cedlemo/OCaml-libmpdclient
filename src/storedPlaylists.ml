@@ -42,3 +42,10 @@ let playlistdelete client playlist position =
                                    playlist;
                                    string_of_int position] in
   Mpd.Client.send client request
+
+let playlistmove client playlist from to_dest =
+  let request = String.concat " " ["playlistmove";
+                                   playlist;
+                                   string_of_int from;
+                                   string_of_int to_dest] in
+  Mpd.Client.send client request
