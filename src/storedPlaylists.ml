@@ -49,3 +49,9 @@ let playlistmove client playlist from to_dest =
                                    string_of_int from;
                                    string_of_int to_dest] in
   Mpd.Client.send client request
+
+let rename client playlist new_name =
+  let request = String.concat " " ["rename";
+                                   playlist;
+                                   new_name] in
+  Mpd.Client.send client request

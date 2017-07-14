@@ -46,11 +46,12 @@ val playlistdelete:
 val playlistmove:
   Mpd.Client.c -> string -> int -> int -> Protocol.response
 
+(** Renames the playlist NAME.m3u to NEW_NAME.m3u. *)
+val rename:
+  Mpd.Client.c -> string -> string -> Protocol.response
+
 (* TODO s :
-*  -> rename {NAME} {NEW_NAME}
-*  Renames the playlist NAME.m3u to NEW_NAME.m3u.
-*  val rename: Mpd.Client.c -> string -> string -> Protocol.response
-*
+
 *  -> rm {NAME}
 *  Removes the playlist NAME.m3u from the playlist directory.
 *  val rm: Mpd.Client.c -> string -> Protocol.response
