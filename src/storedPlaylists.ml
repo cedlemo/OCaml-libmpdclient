@@ -28,3 +28,8 @@ let load client playlist ?range () =
       String.concat " " ["load"; playlist; r]
   in
   Mpd.Client.send client request
+
+let playlistadd client playlist uri =
+  let request = String.concat " " ["playlistadd"; playlist; uri] in
+  Mpd.Client.send client request
+

@@ -29,12 +29,13 @@ val listplaylists:
 val load:
   Mpd.Client.c -> string -> ?range:(int * int) -> unit -> Protocol.response
 
+(** Adds URI to the playlist NAME.m3u. NAME.m3u will be created if it does not
+    exist. *)
+val playlistadd:
+  Mpd.Client.c -> string -> string -> Protocol.response
+
 (* TODO s :
-*  -> playlistadd {NAME} {URI}
-* Adds URI to the playlist NAME.m3u. NAME.m3u will be created if it does not exist.
-*
-*  val playlistadd: Mpd.Client.c -> string -> string -> Protocol.response
-*
+
 *  -> playlistclear {NAME}
 *  Clears the playlist NAME.m3u.
 *  val playlistclear: Mpd.Client.c -> string -> Protocol.response
