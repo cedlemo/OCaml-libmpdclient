@@ -16,4 +16,7 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-
+let listplaylists client =
+  match Mpd.Client.send client "listplaylists" with
+  | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> None
+  | Protocol.Ok (response) -> Some (Mpd_utils.read_list_playlists response)

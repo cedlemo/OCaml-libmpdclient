@@ -20,23 +20,13 @@
     directory. They are addressed with their file name (without the directory
     and without the .m3u suffix). *)
 
+(** Prints a list of the playlist names. *)
+val listplaylists:
+  Mpd.Client.c -> string list option
+
 (* TODO s :
 *
-* -> listplaylists
-*
-* Prints a list of the playlist directory.
-*
-* After each playlist name the server sends its last modification time as
-* attribute "Last-Modified" in ISO 8601 format. To avoid problems due to clock
-* differences between clients and the server, clients should not compare this
-* value with their local clock.
-* format :
-* playlist: zen
-* Last-Modified: 2014-12-02T10:15:57Z
-* playlist: rtl
-* Last-Modified: 2014-12-02T10:15:57Z
-* should be val listplaylists: Mpd.Client.c -> string list
-*
+
 * -> load {NAME} [START:END]
 *
 * Loads the playlist into the current queue. Playlist plugins are supported. A
