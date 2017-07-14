@@ -24,15 +24,12 @@
 val listplaylists:
   Mpd.Client.c -> string list option
 
-(* TODO s :
-*
+(** Loads the playlist into the current queue. Playlist plugins are supported.
+    A range may be specified to load only a part of the playlist. *)
+val load:
+  Mpd.Client.c -> string -> ?range:(int * int) -> unit -> Protocol.response
 
-* -> load {NAME} [START:END]
-*
-* Loads the playlist into the current queue. Playlist plugins are supported. A
-* range may be specified to load only a part of the playlist.
-*  val load: Mpd.Client.c -> string -> ?range:(int * int) -> unit -> Protocol.response
-*
+(* TODO s :
 *  -> playlistadd {NAME} {URI}
 * Adds URI to the playlist NAME.m3u. NAME.m3u will be created if it does not exist.
 *

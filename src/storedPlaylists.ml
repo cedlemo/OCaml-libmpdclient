@@ -20,3 +20,11 @@ let listplaylists client =
   match Mpd.Client.send client "listplaylists" with
   | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> None
   | Protocol.Ok (response) -> Some (Mpd_utils.read_list_playlists response)
+
+let load client playlist ?range () =
+  let request = match range with
+    | None -> "load " ^ playlist
+    | Some (s, e) -> let r = String.concat ":" [string_of_int s; string_of_int e] in
+      String.concat " " ["load"; playlist; r]
+  in
+  Mpd.Client.send client request
