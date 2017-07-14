@@ -20,4 +20,8 @@
     directory. They are addressed with their file name (without the directory
     and without the .m3u suffix). This is module is based on Lwt. *)
 
+(** Prints a list of the playlist names. *)
+val listplaylists:
+  Mpd.LwtClient.c -> string list option Lwt.t
+
 

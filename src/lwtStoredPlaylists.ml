@@ -16,4 +16,14 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
+open Lwt.Infix
+
+let listplaylists client =
+  Mpd.LwtClient.send client "listplaylists"
+  >>= function
+  | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> Lwt.return None
+  | Protocol.Ok (response) ->
+      let playlists = Some (Mpd_utils.read_list_playlists response) in
+      Lwt.return playlists
+
 
