@@ -134,7 +134,7 @@ let prio client priority ?range () =
   let request = match range with
     | None -> "prio " ^ priority'
     | Some (s, e) -> let r = String.concat ":" [string_of_int s; string_of_int e] in
-      String.concat " " ["prio"; r]
+      String.concat " " ["prio"; priority'; r]
   in Mpd.Client.send client request
 
 let prioid client priority ids =
