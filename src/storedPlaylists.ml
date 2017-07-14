@@ -36,3 +36,9 @@ let playlistadd client playlist uri =
 let playlistclear client playlist =
   let request = "playlistclear " ^ playlist in
   Mpd.Client.send client request
+
+let playlistdelete client playlist position =
+  let request = String.concat " " ["playlistclear";
+                                   playlist;
+                                   string_of_int position] in
+  Mpd.Client.send client request
