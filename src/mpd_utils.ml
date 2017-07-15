@@ -16,6 +16,8 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
+(** Set of helpers for the mpdlibclient library. *)
+
 (** Split multiline string into a list of strings *)
 let split_lines strings =
   Str.split (Str.regexp "\n") strings
