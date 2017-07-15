@@ -37,3 +37,7 @@ val playlistadd:
 (** Clears the playlist NAME.m3u. *)
 val playlistclear:
   Mpd.LwtClient.c -> string -> Protocol.response Lwt.t
+
+(** Deletes SONGPOS from the playlist NAME.m3u. *)
+val playlistdelete:
+  Mpd.LwtClient.c -> string -> int -> Protocol.response Lwt.t
