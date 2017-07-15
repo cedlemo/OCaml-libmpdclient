@@ -4,3 +4,5 @@ oasis setup -setup-update dynamic
 make doc
 mv libmpdclient_doc.docdir/* docs/
 ./clean.sh
+cp ./style.css docs/
+
