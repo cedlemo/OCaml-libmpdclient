@@ -4,6 +4,7 @@
 (library
  ((name        Mpd)
   (public_name ocaml-libmpdclient)
-  (libraries (unix lwt))
+  (libraries (unix lwt str))
+  (wrapped false)
  )
 )
