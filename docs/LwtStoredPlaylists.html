@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="StoredPlaylists.html">
+<link rel="next" href="Mpd_utils.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Mpd" rel="Chapter" href="Mpd.html">
+<link title="Protocol" rel="Chapter" href="Protocol.html">
+<link title="Playback" rel="Chapter" href="Playback.html">
+<link title="LwtPlayback" rel="Chapter" href="LwtPlayback.html">
+<link title="PlaybackOptions" rel="Chapter" href="PlaybackOptions.html">
+<link title="LwtPlaybackOptions" rel="Chapter" href="LwtPlaybackOptions.html">
+<link title="Status" rel="Chapter" href="Status.html">
+<link title="Song" rel="Chapter" href="Song.html">
+<link title="MpdQueue" rel="Chapter" href="MpdQueue.html">
+<link title="MpdLwtQueue" rel="Chapter" href="MpdLwtQueue.html">
+<link title="StoredPlaylists" rel="Chapter" href="StoredPlaylists.html">
+<link title="LwtStoredPlaylists" rel="Chapter" href="LwtStoredPlaylists.html">
+<link title="Mpd_utils" rel="Chapter" href="Mpd_utils.html"><title>LwtStoredPlaylists</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="StoredPlaylists.html" title="StoredPlaylists">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Mpd_utils.html" title="Mpd_utils">Next</a>
+</div>
+<h1>Module <a href="type_LwtStoredPlaylists.html">LwtStoredPlaylists</a></h1>
+
+<pre><span class="keyword">module</span> LwtStoredPlaylists: <code class="code"><span class="keyword">sig</span></code> <a href="LwtStoredPlaylists.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+LwtStoredPlaylists : Playlists are stored inside the configured playlist
+    directory. They are addressed with their file name (without the directory
+    and without the .m3u suffix). This is module is based on Lwt.<br>
+</div>
+<hr width="100%">
+
+<pre><span id="VALlistplaylists"><span class="keyword">val</span> listplaylists</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> string list option Lwt.t</code></pre><div class="info ">
+Prints a list of the playlist names.<br>
+</div>
+
+<pre><span id="VALload"><span class="keyword">val</span> load</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -><br>       string -> ?range:int * int -> unit -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
+Loads the playlist into the current queue. Playlist plugins are supported.
+    A range may be specified to load only a part of the playlist.<br>
+</div>
+
+<pre><span id="VALplaylistadd"><span class="keyword">val</span> playlistadd</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> string -> string -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
+Adds URI to the playlist NAME.m3u. NAME.m3u will be created if it does not
+    exist.<br>
+</div>
+
+<pre><span id="VALplaylistclear"><span class="keyword">val</span> playlistclear</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> string -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
+Clears the playlist NAME.m3u.<br>
+</div>
+
+<pre><span id="VALplaylistdelete"><span class="keyword">val</span> playlistdelete</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> string -> int -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
+Deletes SONGPOS from the playlist NAME.m3u.<br>
+</div>
+
+<pre><span id="VALplaylistmove"><span class="keyword">val</span> playlistmove</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> string -> int -> int -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
+Moves the song at position FROM in the playlist NAME.m3u to the position TO.<br>
+</div>
+
+<pre><span id="VALrename"><span class="keyword">val</span> rename</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> string -> string -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
+Renames the playlist NAME.m3u to NEW_NAME.m3u.<br>
+</div>
+</body></html>

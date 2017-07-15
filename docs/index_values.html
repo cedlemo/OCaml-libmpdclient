@@ -18,6 +18,7 @@
 <link title="MpdQueue" rel="Chapter" href="MpdQueue.html">
 <link title="MpdLwtQueue" rel="Chapter" href="MpdLwtQueue.html">
 <link title="StoredPlaylists" rel="Chapter" href="StoredPlaylists.html">
+<link title="LwtStoredPlaylists" rel="Chapter" href="LwtStoredPlaylists.html">
 <link title="Mpd_utils" rel="Chapter" href="Mpd_utils.html"><title>Index of values</title>
 </head>
 <body>
@@ -238,9 +239,19 @@ Create the connection, exit if the connection can not be initialized.
 <tr><td align="left"><br>L</td></tr>
 <tr><td><a href="Song.html#VALlast_modified">last_modified</a> [<a href="Song.html">Song</a>]</td>
 <td></td></tr>
+<tr><td><a href="LwtStoredPlaylists.html#VALlistplaylists">listplaylists</a> [<a href="LwtStoredPlaylists.html">LwtStoredPlaylists</a>]</td>
+<td><div class="info">
+Prints a list of the playlist names.
+</div>
+</td></tr>
 <tr><td><a href="StoredPlaylists.html#VALlistplaylists">listplaylists</a> [<a href="StoredPlaylists.html">StoredPlaylists</a>]</td>
 <td><div class="info">
 Prints a list of the playlist names.
+</div>
+</td></tr>
+<tr><td><a href="LwtStoredPlaylists.html#VALload">load</a> [<a href="LwtStoredPlaylists.html">LwtStoredPlaylists</a>]</td>
+<td><div class="info">
+Loads the playlist into the current queue.
 </div>
 </td></tr>
 <tr><td><a href="StoredPlaylists.html#VALload">load</a> [<a href="StoredPlaylists.html">StoredPlaylists</a>]</td>
@@ -430,14 +441,29 @@ Get the songs in the playlist
 Get the current playlist length
 </div>
 </td></tr>
+<tr><td><a href="LwtStoredPlaylists.html#VALplaylistadd">playlistadd</a> [<a href="LwtStoredPlaylists.html">LwtStoredPlaylists</a>]</td>
+<td><div class="info">
+Adds URI to the playlist NAME.m3u.
+</div>
+</td></tr>
 <tr><td><a href="StoredPlaylists.html#VALplaylistadd">playlistadd</a> [<a href="StoredPlaylists.html">StoredPlaylists</a>]</td>
 <td><div class="info">
 Adds URI to the playlist NAME.m3u.
 </div>
 </td></tr>
+<tr><td><a href="LwtStoredPlaylists.html#VALplaylistclear">playlistclear</a> [<a href="LwtStoredPlaylists.html">LwtStoredPlaylists</a>]</td>
+<td><div class="info">
+Clears the playlist NAME.m3u.
+</div>
+</td></tr>
 <tr><td><a href="StoredPlaylists.html#VALplaylistclear">playlistclear</a> [<a href="StoredPlaylists.html">StoredPlaylists</a>]</td>
 <td><div class="info">
 Clears the playlist NAME.m3u.
+</div>
+</td></tr>
+<tr><td><a href="LwtStoredPlaylists.html#VALplaylistdelete">playlistdelete</a> [<a href="LwtStoredPlaylists.html">LwtStoredPlaylists</a>]</td>
+<td><div class="info">
+Deletes SONGPOS from the playlist NAME.m3u.
 </div>
 </td></tr>
 <tr><td><a href="StoredPlaylists.html#VALplaylistdelete">playlistdelete</a> [<a href="StoredPlaylists.html">StoredPlaylists</a>]</td>
@@ -468,6 +494,11 @@ Get information for one song
 <tr><td><a href="Status.html#VALplaylistlength">playlistlength</a> [<a href="Status.html">Status</a>]</td>
 <td><div class="info">
 Get the state of the player : Play / Pause / Stop
+</div>
+</td></tr>
+<tr><td><a href="LwtStoredPlaylists.html#VALplaylistmove">playlistmove</a> [<a href="LwtStoredPlaylists.html">LwtStoredPlaylists</a>]</td>
+<td><div class="info">
+Moves the song at position FROM in the playlist NAME.m3u to the position TO.
 </div>
 </td></tr>
 <tr><td><a href="StoredPlaylists.html#VALplaylistmove">playlistmove</a> [<a href="StoredPlaylists.html">StoredPlaylists</a>]</td>
@@ -571,6 +602,11 @@ Get playlists list from output of the command "listplaylists".
 </td></tr>
 <tr><td><a href="Mpd.LwtConnection.html#VALread_mpd_banner">read_mpd_banner</a> [<a href="Mpd.LwtConnection.html">Mpd.LwtConnection</a>]</td>
 <td></td></tr>
+<tr><td><a href="LwtStoredPlaylists.html#VALrename">rename</a> [<a href="LwtStoredPlaylists.html">LwtStoredPlaylists</a>]</td>
+<td><div class="info">
+Renames the playlist NAME.m3u to NEW_NAME.m3u.
+</div>
+</td></tr>
 <tr><td><a href="StoredPlaylists.html#VALrename">rename</a> [<a href="StoredPlaylists.html">StoredPlaylists</a>]</td>
 <td><div class="info">
 Renames the playlist NAME.m3u to NEW_NAME.m3u.
