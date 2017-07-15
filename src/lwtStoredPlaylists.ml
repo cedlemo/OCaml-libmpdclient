@@ -34,4 +34,8 @@ let load client playlist ?range () =
   in
   Mpd.LwtClient.send client request
 
+let playlistadd client playlist uri =
+  let request = String.concat " " ["playlistadd"; playlist; uri] in
+  Mpd.LwtClient.send client request
+
 

@@ -29,4 +29,9 @@ val listplaylists:
 val load:
   Mpd.LwtClient.c -> string -> ?range:(int * int) -> unit -> Protocol.response Lwt.t
 
+(** Adds URI to the playlist NAME.m3u. NAME.m3u will be created if it does not
+    exist. *)
+val playlistadd:
+  Mpd.LwtClient.c -> string -> string -> Protocol.response Lwt.t
+
 
