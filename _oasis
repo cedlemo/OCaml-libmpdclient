@@ -15,12 +15,12 @@ Library "libmpdclient"
   Path: src
   Modules: Mpd,
            Protocol,
-           Playback,LwtPlayback,
-           PlaybackOptions,LwtPlaybackOptions,
+           Playback, LwtPlayback,
+           PlaybackOptions, LwtPlaybackOptions,
            Status,
            Song,
-           MpdQueue,MpdLwtQueue,
-           StoredPlaylists,LwtStoredPlaylists,
+           MpdQueue, MpdLwtQueue,
+           StoredPlaylists, LwtStoredPlaylists,
            Mpd_utils
   BuildDepends: unix, str, lwt, lwt.unix
 
