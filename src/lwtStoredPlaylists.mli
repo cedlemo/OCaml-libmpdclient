@@ -45,3 +45,7 @@ val playlistdelete:
 (** Moves the song at position FROM in the playlist NAME.m3u to the position TO. *)
 val playlistmove:
   Mpd.LwtClient.c -> string -> int -> int -> Protocol.response Lwt.t
+
+(** Renames the playlist NAME.m3u to NEW_NAME.m3u. *)
+val rename:
+  Mpd.LwtClient.c -> string -> string -> Protocol.response Lwt.t
