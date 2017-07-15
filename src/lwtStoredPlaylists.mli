@@ -34,4 +34,6 @@ val load:
 val playlistadd:
   Mpd.LwtClient.c -> string -> string -> Protocol.response Lwt.t
 
-
+(** Clears the playlist NAME.m3u. *)
+val playlistclear:
+  Mpd.LwtClient.c -> string -> Protocol.response Lwt.t
