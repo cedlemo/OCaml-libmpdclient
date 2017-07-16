@@ -26,6 +26,8 @@ This lib is based on the mpd protocol ([specifications](https://www.musicpd.org/
 
 ## Install
 
+### Oasis
+
 #### Build and install
 
     oasis setup -setup-update dynamic
@@ -56,6 +58,13 @@ This lib is based on the mpd protocol ([specifications](https://www.musicpd.org/
     received: OK MPD 0.19.0
 
     received: OK
+
+### Jbuilder
+
+    jbuilder build
+    jbuilder build samples/mpd_status_query.exe
+    jbuilder runtest
+    jbuilder clean
 
 ## TODO :
 
