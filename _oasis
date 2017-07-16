@@ -21,6 +21,7 @@ Library "libmpdclient"
            Song,
            MpdQueue, MpdLwtQueue,
            StoredPlaylists, LwtStoredPlaylists,
+           MusicDatabase,
            Mpd_utils
   BuildDepends: unix, str, lwt, lwt.unix
 

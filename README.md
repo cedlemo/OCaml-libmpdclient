@@ -10,7 +10,7 @@ This lib is based on the mpd protocol ([specifications](https://www.musicpd.org/
 *  Playback options	     (*done*)
 *  The current playlist	     (*done*)
 *  Stored playlists          (*done*)
-*  The music database        (*to do*)
+*  The music database        (*in progress*)
 *  Mounts and neighbors      (*to do*)
 *  Stickers                  (*to do*)
 *  Connection settings       (*to do*)
