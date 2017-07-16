@@ -33,7 +33,7 @@
 <h1>Module <a href="type_MpdQueue.html">MpdQueue</a></h1>
 
 <pre><span class="keyword">module</span> MpdQueue: <code class="code"><span class="keyword">sig</span></code> <a href="MpdQueue.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
-Adds the file URI to the playlist (directories add recursively). URI can also be a single file.<br>
+Module for Mpd current playlist manipulation.<br>
 </div>
 <hr width="100%">
 
@@ -53,13 +53,21 @@ Adds the file URI to the playlist (directories add recursively). URI can also be
 
 </tr></table>
 
+<div class="info ">
+Playlist type.<br>
+</div>
 
 
 <pre><span id="VALadd"><span class="keyword">val</span> add</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> string -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
-Adds the file URI to the playlist (directories add recursively). URI can also be a single file.<br>
+Adds the file URI to the playlist (directories add recursively). URI can
+    also be a single file.<br>
 </div>
 
-<pre><span id="VALaddid"><span class="keyword">val</span> addid</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> string -> int -> int</code></pre>
+<pre><span id="VALaddid"><span class="keyword">val</span> addid</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> string -> int -> int</code></pre><div class="info ">
+Adds a song to the playlist (non-recursive) and returns the song id.
+    URI is always a single file or URL.<br>
+</div>
+
 <pre><span id="VALclear"><span class="keyword">val</span> clear</span> : <code class="type"><a href="Mpd.Client.html#TYPEc">Mpd.Client.c</a> -> <a href="Protocol.html#TYPEresponse">Protocol.response</a></code></pre><div class="info ">
 Clears the current playlist.<br>
 </div>
