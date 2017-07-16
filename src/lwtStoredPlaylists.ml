@@ -60,3 +60,9 @@ let rename client playlist new_name =
                                    playlist;
                                    new_name] in
   Mpd.LwtClient.send client request
+
+let rm client playlist =
+  let request = "rm " ^ playlist in
+  Mpd.LwtClient.send client request
+
+

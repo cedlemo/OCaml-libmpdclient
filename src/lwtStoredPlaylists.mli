@@ -49,3 +49,7 @@ val playlistmove:
 (** Renames the playlist NAME.m3u to NEW_NAME.m3u. *)
 val rename:
   Mpd.LwtClient.c -> string -> string -> Protocol.response Lwt.t
+
+(** Removes the playlist NAME.m3u from the playlist directory. *)
+val rm:
+  Mpd.LwtClient.c -> string -> Protocol.response Lwt.t
