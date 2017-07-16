@@ -1,0 +1,6 @@
+(jbuild_version 1)
+
+(executables
+ ((names (try_mpd_queries mpd_status_query mpd_tagtypes_query mpd_volume_query mpd_playlist_info mpd_lwt_playlist_info mpd_lwt_client_idle))
+  (libraries (ocaml-libmpdclient lwt lwt.unix)))
+)
