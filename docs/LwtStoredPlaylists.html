@@ -68,4 +68,12 @@ Moves the song at position FROM in the playlist NAME.m3u to the position TO.<br>
 <pre><span id="VALrename"><span class="keyword">val</span> rename</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> string -> string -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
 Renames the playlist NAME.m3u to NEW_NAME.m3u.<br>
 </div>
+
+<pre><span id="VALrm"><span class="keyword">val</span> rm</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> string -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
+Removes the playlist NAME.m3u from the playlist directory.<br>
+</div>
+
+<pre><span id="VALsave"><span class="keyword">val</span> save</span> : <code class="type"><a href="Mpd.LwtClient.html#TYPEc">Mpd.LwtClient.c</a> -> string -> <a href="Protocol.html#TYPEresponse">Protocol.response</a> Lwt.t</code></pre><div class="info ">
+Saves the current playlist to NAME.m3u in the playlist directory.<br>
+</div>
 </body></html>
