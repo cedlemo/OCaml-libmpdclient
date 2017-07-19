@@ -24,11 +24,11 @@ type p =
   | Playlist of Song.s list
 
 let add client uri =
-  Mpd.LwtClient.send client uri
+  LwtClient.send client uri
 
 let addid client uri position =
   let cmd = String.concat " " ["addid"; uri; string_of_int position] in
-  Mpd.LwtClient.send client cmd
+  LwtClient.send client cmd
   >>= function
   | Protocol.Ok (song_id) -> let lines = Mpd_utils.split_lines song_id in
     let rec parse lines =
@@ -43,7 +43,7 @@ let addid client uri position =
   | Protocol.Error (_) -> Lwt.return (-1)
 
 let clear client =
-  Mpd.LwtClient.send client "clear"
+  LwtClient.send client "clear"
 
 let delete client position ?position_end () =
   let cmd = match position_end with
@@ -52,10 +52,10 @@ let delete client position ?position_end () =
                                      string_of_int position;
                                      ":";
                                      string_of_int pos_end]
-  in Mpd.LwtClient.send client cmd
+  in LwtClient.send client cmd
 
 let deleteid client id =
-  Mpd.LwtClient.send client (String.concat " " ["deleteid"; string_of_int id])
+  LwtClient.send client (String.concat " " ["deleteid"; string_of_int id])
 
 let move client position_from ?position_end position_to () =
   let cmd = match position_end with
@@ -68,10 +68,10 @@ let move client position_from ?position_end position_to () =
                                      string_of_int pos_end;
                                      " ";
                                      string_of_int position_to]
-  in Mpd.LwtClient.send client cmd
+  in LwtClient.send client cmd
 
 let moveid client id position_to =
-  Mpd.LwtClient.send client (String.concat " " ["moveid";
+  LwtClient.send client (String.concat " " ["moveid";
                                                 string_of_int id;
                                                 string_of_int position_to])
 
@@ -85,7 +85,7 @@ let rec _build_songs_list client songs l =
   match songs with
   | [] -> let playlist = Playlist (List.rev l) in Lwt.return  playlist
   | h :: q -> let song_infos_request = "playlistinfo " ^ (get_song_id h) in
-    Mpd.LwtClient.send client song_infos_request
+    LwtClient.send client song_infos_request
     >>= function
     | Protocol.Error (_, _, _, ack_message)->
       Lwt.return (PlaylistError (ack_message))
@@ -94,7 +94,7 @@ let rec _build_songs_list client songs l =
       _build_songs_list client q (song :: l)
 
 let playlist client =
-  Mpd.LwtClient.send client "playlist"
+  LwtClient.send client "playlist"
   >>= function
   | Protocol.Error (_, _, _, ack_message)->
     Lwt.return (PlaylistError (ack_message))
@@ -104,7 +104,7 @@ let playlist client =
 
 let playlistid client id =
   let request = "playlistid " ^ (string_of_int id) in
-  Mpd.LwtClient.send client request
+  LwtClient.send client request
   >>= function
   | Protocol.Error (_, _, _, ack_message)->
     Lwt.return (PlaylistError (ack_message))
@@ -114,7 +114,7 @@ let playlistid client id =
 
 let playlistfind client tag needle =
   let request = String.concat " " ["playlistfind"; tag; needle] in
-  Mpd.LwtClient.send client request
+  LwtClient.send client request
   >>= function
   | Protocol.Error (_, _, _, ack_message)->
     Lwt.return (PlaylistError (ack_message))
@@ -124,7 +124,7 @@ let playlistfind client tag needle =
 
 let playlistsearch client tag needle =
   let request = String.concat " " ["playlistsearch"; tag; needle] in
-  Mpd.LwtClient.send client request
+  LwtClient.send client request
   >>= function
   | Protocol.Error (_, _, _, ack_message)->
     Lwt.return (PlaylistError (ack_message))
@@ -133,7 +133,7 @@ let playlistsearch client tag needle =
     _build_songs_list client songs []
 
 let swap client pos1 pos2 =
-  Mpd.LwtClient.send client (String.concat " " ["swap";
+  LwtClient.send client (String.concat " " ["swap";
                                                 string_of_int pos1;
                                                 string_of_int pos2])
 
@@ -142,7 +142,7 @@ let shuffle client ?range () =
     |None -> "shuffle"
     |Some (s, e) -> let r = String.concat ":" [string_of_int s; string_of_int e] in
       String.concat " " ["shuffle"; r]
-  in Mpd.LwtClient.send client request
+  in LwtClient.send client request
 
 let prio client priority ?range () =
   let priority' = string_of_int ( if priority > 255 then 255
@@ -153,7 +153,7 @@ let prio client priority ?range () =
     | None -> "prio " ^ priority'
     | Some (s, e) -> let r = String.concat ":" [string_of_int s; string_of_int e] in
       String.concat " " ["prio"; priority'; r]
-  in Mpd.LwtClient.send client request
+  in LwtClient.send client request
 
 let prioid client priority ids =
   let priority' = string_of_int ( if priority > 255 then 255
@@ -162,13 +162,13 @@ let prioid client priority ids =
   in
   let ids' = String.concat " " (List.map (fun i -> string_of_int i) ids) in
   let request = String.concat " " ["prioid"; priority'; ids'] in
-  Mpd.LwtClient.send client request
+  LwtClient.send client request
 
 let swapid client id1 id2 =
   let request = String.concat " " ["swapid";
                                    string_of_int id1;
                                    string_of_int id2 ] in
-  Mpd.LwtClient.send client request
+  LwtClient.send client request
 
 let rangeid client id ?range () =
   let id' = string_of_int id in
@@ -179,10 +179,10 @@ let rangeid client id ?range () =
       let r = String.concat ":" [string_of_float s; string_of_float e] in
       String.concat " " [cmd; r]
   in
-  Mpd.LwtClient.send client request
+  LwtClient.send client request
 
 let cleartagid client id tag =
   let request = String.concat " " ["cleartagid";
                                    string_of_int id;
                                    tag] in
-  Mpd.LwtClient.send client request
+  LwtClient.send client request
