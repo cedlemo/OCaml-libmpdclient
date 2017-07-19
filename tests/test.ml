@@ -21,7 +21,6 @@
 
 open OUnit2
 open Mpd
-open Protocol
 
 let test_simple_ok test_ctxt =  assert_equal true (let response = Protocol.parse_response "OK\n" in
 match response with
@@ -48,20 +47,20 @@ match response with
 message = "error while playing"
 )
 
-open Mpd_utils
+open Utils
 
 let test_num_on_num_parse_simple_int test_ctxt =
   let simple_int = "3" in
-  match Mpd_utils.num_on_num_parse simple_int with
-  | Mpd_utils.Simple n -> assert_equal  3 n
+  match Utils.num_on_num_parse simple_int with
+  | Utils.Simple n -> assert_equal  3 n
                                         ~msg:"Simple int value"
                                         ~printer:string_of_int
   | _ -> assert_equal false true
 
 let test_num_on_num_parse_num_on_num test_ctxt =
   let simple_int = "3/10" in
-  match Mpd_utils.num_on_num_parse simple_int with
-  | Mpd_utils.Num_on_num (a, b) -> assert_equal 3 a
+  match Utils.num_on_num_parse simple_int with
+  | Utils.Num_on_num (a, b) -> assert_equal 3 a
                                         ~msg:"Simple int value"
                                         ~printer:string_of_int;
                                     assert_equal  10 b
@@ -72,7 +71,7 @@ let test_num_on_num_parse_num_on_num test_ctxt =
 
 let test_read_key_val test_ctxt =
   let key_val = "mykey: myvalue" in
-  let {key = k; value = v} = Mpd_utils.read_key_val key_val in
+  let {key = k; value = v} = Utils.read_key_val key_val in
   assert_equal "mykey" k;
   assert_equal "myvalue" v
 
@@ -106,7 +105,7 @@ Pos: 19
 Id: 20"
 
 let test_song_parse test_ctxt =
-  let song = Song.parse (Mpd_utils.split_lines song1) in
+  let song = Song.parse (Utils.split_lines song1) in
   assert_equal "Björk" (Song.artist song);
   assert_equal "Volta" (Song.album song);
   assert_equal "Earth Intruders (Mark Stent Extended Mix)" (Song.title song);
@@ -130,7 +129,7 @@ file: Wardruna-Runaljod-Yggdrasil-2013/06. IwaR_[plixid.com].mp3
 file: Wardruna-Runaljod-Yggdrasil-2013/07. IngwaR_[plixid.com].mp3"
 
 let test_list_playlist_response_parse test_ctxt =
-  let paths = Mpd_utils.read_file_paths playlist_info_list_data in
+  let paths = Utils.read_file_paths playlist_info_list_data in
   let second = List.nth paths 1 in
   assert_equal  ~printer:(fun s ->
       s)
@@ -144,7 +143,7 @@ Last-Modified: 2014-12-02T10:15:57Z
 "
 
 let test_listplaylists_response_parse test_ctxt =
-  let playlist_names = Mpd_utils.read_list_playlists listplaylists_data in
+  let playlist_names = Utils.read_list_playlists listplaylists_data in
   assert_equal ~printer:(fun s -> s) "zen rtl" (String.concat " " playlist_names)
 
 let mpd_responses_parsing_tests =
@@ -157,7 +156,7 @@ let mpd_responses_parsing_tests =
        "test Mpd.utils.num_on_num_parse num_on_num" >:: test_num_on_num_parse_num_on_num;
        "test Mpd.utils.read_key_value" >:: test_read_key_val;
        "test Mpd.Song.parse" >:: test_song_parse;
-"test Mpd_utils.read_file_path" >:: test_list_playlist_response_parse;
+"test Utils.read_file_path" >:: test_list_playlist_response_parse;
        "test Mpd.utils.read_list_playlists" >:: test_listplaylists_response_parse
       ]
 
