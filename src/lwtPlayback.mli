@@ -20,31 +20,40 @@
   https://www.musicpd.org/doc/protocol/playback_commands.html *)
 
 (** Plays next song in the playlist. *)
-val next: Mpd.LwtClient.c -> Protocol.response Lwt.t
+val next:
+  LwtClient.c -> Protocol.response Lwt.t
 
 (** Plays previous song in the playlist. *)
-val prev: Mpd.LwtClient.c -> Protocol.response Lwt.t
+val prev:
+  LwtClient.c -> Protocol.response Lwt.t
 
 (** Stops playing.*)
-val stop: Mpd.LwtClient.c -> Protocol.response Lwt.t
+val stop:
+  LwtClient.c -> Protocol.response Lwt.t
 
 (** Toggles pause/resumers playing *)
-val pause: Mpd.LwtClient.c -> bool -> Protocol.response Lwt.t
+val pause:
+  LwtClient.c -> bool -> Protocol.response Lwt.t
 
 (** Begins playing the playlist at song number. *)
-val play: Mpd.LwtClient.c -> int -> Protocol.response Lwt.t
+val play:
+  LwtClient.c -> int -> Protocol.response Lwt.t
 
 (** Begins playing the playlist at song id. *)
-val playid: Mpd.LwtClient.c -> int -> Protocol.response Lwt.t
+val playid:
+  LwtClient.c -> int -> Protocol.response Lwt.t
 
 (** Seeks to the position time of entry songpos in the playlist. *)
-val seek: Mpd.LwtClient.c -> int -> float -> Protocol.response Lwt.t
+val seek:
+  LwtClient.c -> int -> float -> Protocol.response Lwt.t
 
 (** Seeks to the position time of song id. *)
-val seekid: Mpd.LwtClient.c -> int -> float -> Protocol.response Lwt.t
+val seekid:
+  LwtClient.c -> int -> float -> Protocol.response Lwt.t
 
 (** Seeks to the position time within the current song.
  TODO : If prefixed by '+' or '-', then the time is relative to the current
  playing position
  *)
-val seekcur: Mpd.LwtClient.c -> float -> Protocol.response Lwt.t
+val seekcur:
+  LwtClient.c -> float -> Protocol.response Lwt.t

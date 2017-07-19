@@ -16,6 +16,8 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
+open Lwt.Infix
+
 type c = {connection : LwtConnection.c; mpd_banner : string }
 
 let initialize connection =

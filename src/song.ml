@@ -16,7 +16,8 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-open Mpd_utils
+open Utils
+
 type s = {
   album: string;
   albumsort: string; (* TODO : int ? *)
@@ -71,7 +72,7 @@ let parse lines =
   let rec _parse pairs s =
     match pairs with
     | [] -> s
-    | p :: remain -> let { key = k; value = v} = Mpd_utils.read_key_val p in
+    | p :: remain -> let { key = k; value = v} = Utils.read_key_val p in
     match k with
       | "Album" -> _parse remain { s with album = v }
       | "AlbumSort" -> _parse remain { s with albumsort = v }

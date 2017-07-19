@@ -19,6 +19,7 @@
 open Connection
 open Protocol
 open Status
+open Utils
 
 type c = {connection : Connection.c; mpd_banner : string }
 

@@ -17,36 +17,36 @@
  *)
 
 let next client =
-  Mpd.LwtClient.send client "next"
+  LwtClient.send client "next"
 
 let prev client =
-  Mpd.LwtClient.send client "prev"
+  LwtClient.send client "prev"
 
 let stop client =
-  Mpd.LwtClient.send client "stop"
+  LwtClient.send client "stop"
 
 let pause client arg =
   match arg with
-  | true -> Mpd.LwtClient.send client "pause 1"
-  | _    -> Mpd.LwtClient.send client "pause 0"
+  | true -> LwtClient.send client "pause 1"
+  | _    -> LwtClient.send client "pause 0"
 
 let play client songpos =
-  Mpd.LwtClient.send client (String.concat " " ["play";
+  LwtClient.send client (String.concat " " ["play";
                                                 string_of_int songpos])
 
 let playid client songid =
-  Mpd.LwtClient.send client (String.concat " " ["playid";
+  LwtClient.send client (String.concat " " ["playid";
                                                 string_of_int songid])
 
 let seek client songpos time =
-  Mpd.LwtClient.send client (String.concat " " ["seek";
+  LwtClient.send client (String.concat " " ["seek";
                                                 string_of_int songpos;
                                                 string_of_float time])
 
 let seekid client songid time =
-  Mpd.LwtClient.send client (String.concat " " ["seekid";
+  LwtClient.send client (String.concat " " ["seekid";
                                                 string_of_int songid;
                                                 string_of_float time])
 
 let seekcur client time =
-  Mpd.LwtClient.send client (String.concat " " ["seekcur"; string_of_float time])
+  LwtClient.send client (String.concat " " ["seekcur"; string_of_float time])

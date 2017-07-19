@@ -16,7 +16,7 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-open Mpd_utils
+open Utils
 
 type state = Play | Pause | Stop | ErrState
 
@@ -82,13 +82,13 @@ let parse lines =
   let rec _parse pairs s =
     match pairs with
     | [] -> s
-    | p :: remain -> let { key = k; value = v} = Mpd_utils.read_key_val p in
+    | p :: remain -> let { key = k; value = v} = Utils.read_key_val p in
     match k with
       | "volume" -> _parse remain { s with volume = int_of_string v }
-      | "repeat" -> _parse remain { s with repeat = Mpd_utils.bool_of_int_str v }
-      | "random" -> _parse remain { s with random = Mpd_utils.bool_of_int_str v }
-      | "single" -> _parse remain { s with single = Mpd_utils.bool_of_int_str v }
-      | "consume" -> _parse remain { s with consume = Mpd_utils.bool_of_int_str v }
+      | "repeat" -> _parse remain { s with repeat = Utils.bool_of_int_str v }
+      | "random" -> _parse remain { s with random = Utils.bool_of_int_str v }
+      | "single" -> _parse remain { s with single = Utils.bool_of_int_str v }
+      | "consume" -> _parse remain { s with consume = Utils.bool_of_int_str v }
       | "playlist" -> _parse remain { s with playlist = int_of_string v }
       | "playlistlength" -> _parse remain { s with playlistlength = int_of_string v }
       | "state" -> _parse remain { s with state = state_of_string v }

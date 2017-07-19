@@ -18,15 +18,15 @@
 
 let consume client state =
   match state with
-  | true  -> Mpd.Client.send client "consume 1"
-  | false -> Mpd.Client.send client "consume 0"
+  | true  -> Client.send client "consume 1"
+  | false -> Client.send client "consume 0"
 
 let crossfade client seconds =
-  Mpd.Client.send client (String.concat " " ["crossfade";
+  Client.send client (String.concat " " ["crossfade";
                                              string_of_int seconds])
 
 let mixrampdb client seconds =
-  Mpd.Client.send client (String.concat " " ["mixrampdb";
+  Client.send client (String.concat " " ["mixrampdb";
                                              string_of_int seconds])
 
 type mixrampd_t =
@@ -35,27 +35,27 @@ type mixrampd_t =
 
 let mixrampdelay client delay =
   match delay with
-  | Nan -> Mpd.Client.send client "mixrampdelay nan"
-  | Seconds (s) -> Mpd.Client.send client (String.concat " " ["mixrampdb";
+  | Nan -> Client.send client "mixrampdelay nan"
+  | Seconds (s) -> Client.send client (String.concat " " ["mixrampdb";
                                                               string_of_int s])
 let random client state =
   match state with
-  | true  -> Mpd.Client.send client "random 1"
-  | false -> Mpd.Client.send client "random 0"
+  | true  -> Client.send client "random 1"
+  | false -> Client.send client "random 0"
 
 let repeat client state =
   match state with
-  | true  -> Mpd.Client.send client "repeat 1"
-  | false -> Mpd.Client.send client "repeat 0"
+  | true  -> Client.send client "repeat 1"
+  | false -> Client.send client "repeat 0"
 
 let setvol client volume =
-  Mpd.Client.send client (String.concat " " ["setvol";
+  Client.send client (String.concat " " ["setvol";
                                              string_of_int volume])
 
 let single client state =
   match state with
-  | true  -> Mpd.Client.send client "single 1"
-  | false -> Mpd.Client.send client "single 0"
+  | true  -> Client.send client "single 1"
+  | false -> Client.send client "single 0"
 
 type gain_mode_t =
   | Off
@@ -65,8 +65,8 @@ type gain_mode_t =
 
 let replay_gain_mode client mode =
   match mode with
-  | Off -> Mpd.Client.send client "replay_gain_mode off"
-  | Track -> Mpd.Client.send client "replay_gain_mode track"
-  | Album -> Mpd.Client.send client "replay_gain_mode album"
-  | Auto -> Mpd.Client.send client "replay_gain_mode auto"
+  | Off -> Client.send client "replay_gain_mode off"
+  | Track -> Client.send client "replay_gain_mode track"
+  | Album -> Client.send client "replay_gain_mode album"
+  | Auto -> Client.send client "replay_gain_mode auto"
 

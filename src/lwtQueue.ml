@@ -16,7 +16,7 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-open Mpd_utils
+open Utils
 open Lwt.Infix
 
 type p =
@@ -30,11 +30,11 @@ let addid client uri position =
   let cmd = String.concat " " ["addid"; uri; string_of_int position] in
   LwtClient.send client cmd
   >>= function
-  | Protocol.Ok (song_id) -> let lines = Mpd_utils.split_lines song_id in
+  | Protocol.Ok (song_id) -> let lines = Utils.split_lines song_id in
     let rec parse lines =
       match lines with
       | [] -> Lwt.return (-1)
-      | line :: remain -> let { key = k; value = v} = Mpd_utils.read_key_val line in
+      | line :: remain -> let { key = k; value = v} = Utils.read_key_val line in
         if (k = "Id") then Lwt.return (int_of_string v)
         else Lwt.return remain
           >>= fun lines ->
@@ -90,7 +90,7 @@ let rec _build_songs_list client songs l =
     | Protocol.Error (_, _, _, ack_message)->
       Lwt.return (PlaylistError (ack_message))
     | Protocol.Ok (song_infos) ->
-      let song = Song.parse (Mpd_utils.split_lines song_infos) in
+      let song = Song.parse (Utils.split_lines song_infos) in
       _build_songs_list client q (song :: l)
 
 let playlist client =
@@ -99,7 +99,7 @@ let playlist client =
   | Protocol.Error (_, _, _, ack_message)->
     Lwt.return (PlaylistError (ack_message))
   | Protocol.Ok (response) ->
-    let songs = Mpd_utils.split_lines response in
+    let songs = Utils.split_lines response in
     _build_songs_list client songs []
 
 let playlistid client id =
@@ -109,7 +109,7 @@ let playlistid client id =
   | Protocol.Error (_, _, _, ack_message)->
     Lwt.return (PlaylistError (ack_message))
   | Protocol.Ok (response) ->
-    let song = Song.parse (Mpd_utils.split_lines response) in
+    let song = Song.parse (Utils.split_lines response) in
     Lwt.return (Playlist (song::[]))
 
 let playlistfind client tag needle =
@@ -119,7 +119,7 @@ let playlistfind client tag needle =
   | Protocol.Error (_, _, _, ack_message)->
     Lwt.return (PlaylistError (ack_message))
   | Protocol.Ok (response) ->
-    let songs = Mpd_utils.split_lines response in
+    let songs = Utils.split_lines response in
     _build_songs_list client songs []
 
 let playlistsearch client tag needle =
@@ -129,7 +129,7 @@ let playlistsearch client tag needle =
   | Protocol.Error (_, _, _, ack_message)->
     Lwt.return (PlaylistError (ack_message))
   | Protocol.Ok (response) ->
-    let songs = Mpd_utils.split_lines response in
+    let songs = Utils.split_lines response in
     _build_songs_list client songs []
 
 let swap client pos1 pos2 =
