@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/cedlemo/OCaml-libmpdclient.svg?branch=master)](https://travis-ci.org/cedlemo/OCaml-libmpdclient)
+
 # OCaml-libmpdclient
 
 This is an attempt to write a library in order to access to the mpd server.
