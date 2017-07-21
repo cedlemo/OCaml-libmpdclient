@@ -9,8 +9,6 @@ license: "GPL3"
 dev-repo: "https://github.com/cedlemo/OCaml-libmpdclient"
 build: [["jbuilder" "build" "-p" name "-j" jobs]]
 build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
-install: [make "install"]
-remove: ["ocamlfind" "remove" "OCaml-libmpdclient"]
 depends: [
-  "ocamlfind" {build}
+  "jbuilder" {build}
 ]
