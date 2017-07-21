@@ -7,10 +7,8 @@ homepage: "https://github.com/cedlemo/OCaml-libmpdclient"
 bug-reports: "https://github.com/cedlemo/OCaml-libmpdclient/issues"
 license: "GPL3"
 dev-repo: "https://github.com/cedlemo/OCaml-libmpdclient"
-build: [
-  ["./configure" "--prefix=%{prefix}%"]
-  [make]
-]
+build: [["jbuilder" "build" "-p" name "-j" jobs]]
+build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "OCaml-libmpdclient"]
 depends: [
