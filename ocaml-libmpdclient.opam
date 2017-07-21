@@ -12,6 +12,4 @@ build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
 depends: [
   "jbuilder" {build}
   "lwt"
-  "unix"
-  "str"
 ]
