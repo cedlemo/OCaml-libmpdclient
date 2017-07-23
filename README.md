@@ -71,3 +71,5 @@ This lib is based on the mpd protocol ([specifications](https://www.musicpd.org/
 ## TODO :
 
 * The music database
+* Create OCaml-mpdc : a command line tool which is a Mpd client.
+  * find out best way to use command line
