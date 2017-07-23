@@ -23,6 +23,8 @@ open Unix
  * ocamlfind ocamlc -o try_mpd_queries -package str,unix -linkpkg -g mpd_responses.ml mpd.ml try_mpd_queries.ml
  * or
  * ocamlfind ocamlc -o try_mpd_queries -package str,unix,libmpdclient -linkpkg -g try_mpd_queries.ml
+ * or
+ * jbuilder build samples/try_mpd_queries.exe
  *)
 let host = "127.0.0.1"
 let port = 6600
