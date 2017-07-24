@@ -16,5 +16,20 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
+(*
+ * cmdliner :
+ * http://erratique.ch/software/cmdliner/doc/Cmdliner.html#examples
+ *
+ * TODO : start implementing basic playbacks :
+ * https://cedlemo.github.io/OCaml-libmpdclient/Mpd/Playback/index.html
+ *
+ * ompdc playback play
+ * ompdc playback stop
+ * ompdc playback next
+ * ompdc playback prev
+ * ompdc playback pause
+ * ompdc playback seekcur
+ * other commands need to be able to read the playlist
+ * *)
 let host = "127.0.0.1"
 let port = 6600
