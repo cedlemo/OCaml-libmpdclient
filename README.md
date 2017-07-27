@@ -1,4 +1,7 @@
 [![Build Status](https://travis-ci.org/cedlemo/OCaml-libmpdclient.svg?branch=master)](https://travis-ci.org/cedlemo/OCaml-libmpdclient)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![GitHub issues](https://img.shields.io/github/issues/cedlemo/OCaml-libmpdclient.svg)](https://github.com/cedlemo/OCaml-libmpdclient/issues)
+[![GitHub stars](https://img.shields.io/github/stars/cedlemo/OCaml-libmpdclient.svg)](https://github.com/cedlemo/OCaml-libmpdclient/stargazers)
 
 # OCaml-libmpdclient
 
