@@ -31,5 +31,27 @@
  * ompdc playback seekcur
  * other commands need to be able to read the playlist
  * *)
-let host = "127.0.0.1"
-let port = 6600
+(* let host = "127.0.0.1"
+let port = 6600 *)
+open Cmdliner
+
+let ompdc host =
+  print_endline host
+
+let host =
+  let doc = "Set the address of the Mpd server." in
+  let env = Arg.env_var "MPD_HOST" ~doc in
+  Arg.(value & opt string "127.0.0.1" & info ["h"; "host"] ~env ~docv:"HOST")
+
+let ompdc_t = Term.(const ompdc $host)
+
+let info =
+  let doc = "A simple Mpd client written in OCaml" in
+  let man = [
+    `S Manpage.s_bugs;
+    `P "Send issue at https://github.com/cedlemo/OCaml-libmpdclient/issues"
+  ]
+  in
+  Term.info "ompdc" ~version:"not yet" ~doc ~exits:Term.default_exits ~man
+
+let () = Term.exit @@ Term.eval (ompdc_t, info)
