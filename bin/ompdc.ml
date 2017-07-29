@@ -35,15 +35,21 @@
 let port = 6600 *)
 open Cmdliner
 
-let ompdc host =
-  print_endline host
+let ompdc host port =
+  let msg = String.concat " " [host; ":"; string_of_int port] in
+  print_endline msg
 
 let host =
   let doc = "Set the address of the Mpd server." in
   let env = Arg.env_var "MPD_HOST" ~doc in
   Arg.(value & opt string "127.0.0.1" & info ["h"; "host"] ~env ~docv:"HOST")
 
-let ompdc_t = Term.(const ompdc $host)
+let port =
+  let doc = "Set the port of the Mpd server." in
+  let env = Arg.env_var "OMPDC_PORT" ~doc in
+  Arg.(value & opt int 6600 & info ["p"; "port"] ~env ~docv:"PORT")
+
+let ompdc_t = Term.(const ompdc $host $port)
 
 let info =
   let doc = "A simple Mpd client written in OCaml" in
