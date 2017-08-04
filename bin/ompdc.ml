@@ -116,26 +116,28 @@ let playback_cmds_to_string = function
   | Prev -> "prev"
   | Stop -> "stop"
 
+
+let initialize_client {host; port} =
+   let connection = Mpd.Connection.initialize host port in
+   let client = Mpd.Client.initialize connection in
+   let _ = print_endline ("Mpd server : " ^ (Mpd.Client.mpd_banner client)) in
+   client
+
 let playback common_opts cmd =
   let {host; port} = common_opts in
+  let client = initialize_client {host; port} in
   let cmd_str = playback_cmds_to_string cmd in
+  let _ = match cmd with
+    | Next -> ignore (Mpd.Playback.next client)
+    | Pause -> ignore (Mpd.Playback.pause client true)
+    | Play -> ignore (Mpd.Playback.play client 1)
+    | Prev -> ignore (Mpd.Playback.prev client)
+    | Stop -> ignore (Mpd.Playback.stop client)
+  in
   let message = Printf.sprintf "%s:%d %s" host port cmd_str in
   print_endline message
 
 let playback_action =
-(*  let next =
-    let doc = "Play next song." in
-    Arg.(value & flag & info ["next"] ~doc)
-  in
-  let pause =
-    let doc = "Toggle Play/Stop." in
-    Arg.(value & flag & info ["pause"] ~doc)
-  in
-  let  =
-    let doc = "Play next song." in
-    Arg.(value & flag & info ["next"] ~doc)
-  in
-*)
     let doc = "Play next song." in
     let next = Next, Arg.info ["next"] ~doc in
     let doc = "Toggle Play/Stop." in
