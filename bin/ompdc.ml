@@ -116,11 +116,13 @@ let playback_cmds_to_string = function
   | Prev -> "prev"
   | Stop -> "stop"
 
-let playback common_opts cmd
-  let message = Printf.sprintf "%s:%d %s" host port cmd in
+let playback common_opts cmd =
+  let {host; port} = common_opts in
+  let cmd_str = playback_cmds_to_string cmd in
+  let message = Printf.sprintf "%s:%d %s" host port cmd_str in
   print_endline message
 
-let playback_cmd =
+let playback_action =
 (*  let next =
     let doc = "Play next song." in
     Arg.(value & flag & info ["next"] ~doc)
@@ -141,5 +143,42 @@ let playback_cmd =
     let doc = "Play the current song in the Mpd queue." in
     let play = Play, Arg.info ["play"] ~doc in
     Arg.(last & vflag_all [Pause] [next; pause; play])
+
+let playback_t =
+    let doc = "Playback commands"
     in
-    Term.(const playback $ common_opts_t $ playback
+    let exits = Term.default_exits in
+    let man = [
+               `S Manpage.s_description;
+               `P "Playback commands for the current playlist (queue).";
+               `Blocks help_section; ]
+    in
+    Term.(const playback $ common_opts_t $ playback_action),
+    Term.info "playback" ~doc ~sdocs:Manpage.s_common_options ~exits ~man
+
+let help_cmd =
+  let topic =
+    let doc = "The topic to get help on. `topics' lists the topics." in
+    Arg.(value & pos 0 (some string) None & info [] ~docv:"TOPIC" ~doc)
+  in
+  let doc = "display help about ompdc and ompdc commands" in
+  let man =
+    [`S Manpage.s_description;
+     `P "Prints help about ompdc commands and other subjects...";
+     `Blocks help_section; ]
+  in
+  Term.(ret
+          (const help $ common_opts_t $ Arg.man_format $ Term.choice_names $topic)),
+  Term.info "help" ~doc ~exits:Term.default_exits ~man
+
+let default_cmd =
+  let doc = "a Mpd client written in OCaml." in
+  let sdocs = Manpage.s_common_options in
+  let exits = Term.default_exits in
+  let man = help_section in
+  Term.(ret (const (fun _ -> `Help (`Pager, None)) $ common_opts_t)),
+  Term.info "ompdc" ~version:"v1.0.1" ~doc ~sdocs ~exits ~man
+
+let cmds = [playback_t; help_cmd]
+
+let () = Term.(exit @@ eval_choice default_cmd cmds)
