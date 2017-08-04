@@ -144,7 +144,11 @@ let playback_action =
     let pause = Pause, Arg.info ["pause"] ~doc in
     let doc = "Play the current song in the Mpd queue." in
     let play = Play, Arg.info ["play"] ~doc in
-    Arg.(last & vflag_all [Pause] [next; pause; play])
+    let doc = "Stop playing songs." in
+    let stop = Stop, Arg.info ["stop"] ~doc in
+    let doc = "Play previous song." in
+    let prev = Prev, Arg.info ["prev"] ~doc in
+    Arg.(last & vflag_all [Pause] [next; pause; play; stop])
 
 let playback_t =
     let doc = "Playback commands"
