@@ -31,29 +31,14 @@ This lib is based on the mpd protocol ([specifications](https://www.musicpd.org/
 
 ## Install
 
-### Oasis
+### Jbuilder
 
-#### Build and install
+    jbuilder build
+    jbuilder build samples/mpd_status_query.exe
+    jbuilder runtest
+    jbuilder clean
 
-    oasis setup -setup-update dynamic
-    ./configure
-    make
-    make install
-
-#### Build and create doc
-
-    oasis setup -setup-update dynamic
-    ./configure
-    make
-    make install
-
-#### Build and test
-
-    oasis setup -setup-update dynamic
-    ./configure --enable-tests
-    make test
-
-#### Test sample :
+### Test sample :
 
     ./try_mpd_queries.native "play"
     received: OK MPD 0.19.0
@@ -64,15 +49,9 @@ This lib is based on the mpd protocol ([specifications](https://www.musicpd.org/
 
     received: OK
 
-### Jbuilder
-
-    jbuilder build
-    jbuilder build samples/mpd_status_query.exe
-    jbuilder runtest
-    jbuilder clean
-
 ## TODO :
 
 * The music database
-* Create OCaml-mpdc : a command line tool which is a Mpd client.
+* Improve connection error when no mpd found or bad host or bad port.
+* Continue OCaml-mpdc : a command line tool which is a Mpd client.
   * find out best way to use command line
