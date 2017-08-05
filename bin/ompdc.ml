@@ -16,54 +16,8 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-(*
- * cmdliner :
- * http://erratique.ch/software/cmdliner/doc/Cmdliner.html#examples
- *
- * TODO : start implementing basic playbacks :
- * https://cedlemo.github.io/OCaml-libmpdclient/Mpd/Playback/index.html
- *
- * ompdc playback play
- * ompdc playback stop
- * ompdc playback next
- * ompdc playback prev
- * ompdc playback pause
- * ompdc playback seekcur
- * other commands need to be able to read the playlist
- * *)
-(* let host = "127.0.0.1"
-let port = 6600 *)
-(* open Cmdliner
+let version = "not.yet"
 
-let ompdc host port =
-  let msg = String.concat " " [host; ":"; string_of_int port] in
-  print_endline msg
-
-let host =
-  let doc = "Set the address of the Mpd server." in
-  let env = Arg.env_var "MPD_HOST" ~doc in
-  Arg.(value & opt string "127.0.0.1" & info ["h"; "host"] ~env ~docv:"HOST")
-
-let port =
-  let doc = "Set the port of the Mpd server." in
-  let env = Arg.env_var "OMPDC_PORT" ~doc in
-  Arg.(value & opt int 6600 & info ["p"; "port"] ~env ~docv:"PORT")
-
-let ompdc_t = Term.(const ompdc $host $port)
-
-let info =
-  let doc = "A simple Mpd client written in OCaml" in
-  let man = [
-    `S Manpage.s_bugs;
-    `P "Send issue at https://github.com/cedlemo/OCaml-libmpdclient/issues"
-  ]
-  in
-  Term.info "ompdc" ~version:"not yet" ~doc ~exits:Term.default_exits ~man
-
-let () = Term.exit @@ Term.eval (ompdc_t, info)
-*)
-
-(* Import from darcs example. *)
 let help copts man_format cmds topic = match topic with
 | None -> `Help (`Pager, None) (* help about the program. *)
 | Some topic ->
@@ -86,8 +40,9 @@ let help_section = [
   `P "These options are common to all commands.";
   `S "MORE HELP";
   `P "Use `$(mname) $(i, COMMAND) --help' for help on a single command."; `Noblank;
-  `S Manpage.s_bugs; `P "Check bug reports at https://github.com/cedlemo/OCaml-libmpdclient/issues";]
-
+  `S Manpage.s_bugs; `P "Check bug reports at https://github.com/cedlemo/OCaml-libmpdclient/issues";
+  `S Manpage.s_authors; `P "Cedric Le Moigne <cedlemo at gmx dot com>"
+        ]
 (* Options common to all commands *)
 let common_opts host port =
   {host; port}
@@ -96,17 +51,15 @@ let common_opts_t =
   let docs = Manpage.s_common_options in
   let host =
     let doc = "Set the address of the Mpd server." in
-    let env = Arg.env_var "MPD_HOST" ~doc in
-    Arg.(value & opt string "127.0.0.1" & info ["h"; "host"] ~env ~docv:"HOST")
+    let env = Arg.env_var "OMPDC_HOST" ~doc in
+    Arg.(value & opt string "127.0.0.1" & info ["h"; "host"] ~docs ~env ~docv:"HOST")
   in
   let port =
     let doc = "Set the port of the Mpd server." in
     let env = Arg.env_var "OMPDC_PORT" ~doc in
-    Arg.(value & opt int 6600 & info ["p"; "port"] ~env ~docv:"PORT")
+    Arg.(value & opt int 6600 & info ["p"; "port"] ~docs ~env ~docv:"PORT")
   in
   Term.(const common_opts $ host $ port)
-
-(* Commands *)
 
 type playback_cmds = Play | Next | Prev | Pause | Stop
 let playback_cmds_to_string = function
@@ -148,7 +101,7 @@ let playback_action =
     let stop = Stop, Arg.info ["stop"] ~doc in
     let doc = "Play previous song." in
     let prev = Prev, Arg.info ["prev"] ~doc in
-    Arg.(last & vflag_all [Pause] [next; pause; play; stop])
+    Arg.(last & vflag_all [Pause] [next; pause; play; prev; stop])
 
 let playback_t =
     let doc = "Playback commands"
@@ -183,7 +136,7 @@ let default_cmd =
   let exits = Term.default_exits in
   let man = help_section in
   Term.(ret (const (fun _ -> `Help (`Pager, None)) $ common_opts_t)),
-  Term.info "ompdc" ~version:"v1.0.1" ~doc ~sdocs ~exits ~man
+  Term.info "ompdc" ~version ~doc ~sdocs ~exits ~man
 
 let cmds = [playback_t; help_cmd]
 
