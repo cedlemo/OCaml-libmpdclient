@@ -41,8 +41,6 @@ let help copts man_format cmds topic = match topic with
 let help_section = [
   `S Manpage.s_common_options;
   `P "These options are common to all commands.";
-  `S "MORE HELP";
-  `P "Use `$(mname) $(i, COMMAND) --help' for help on a single command."; `Noblank;
   `S Manpage.s_bugs; `P "Check bug reports at https://github.com/cedlemo/OCaml-libmpdclient/issues";
   `S Manpage.s_authors; `P "Cedric Le Moigne <cedlemo at gmx dot com>"
         ]
@@ -116,7 +114,7 @@ let playback_t =
                `Blocks help_section; ]
     in
     Term.(const playback $ common_opts_t $ playback_action),
-    Term.info "playback" ~doc ~sdocs:Manpage.s_common_options ~exits ~man
+    Term.info "playback" ~doc ~sdocs ~exits ~man
 
 let help_cmd =
   let topic =
