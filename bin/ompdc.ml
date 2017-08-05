@@ -16,7 +16,12 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
+open Cmdliner
+
 let version = "not.yet"
+let sdocs = Manpage.s_common_options
+let docs = Manpage.s_common_options
+let exits = Term.default_exits
 
 let help copts man_format cmds topic = match topic with
 | None -> `Help (`Pager, None) (* help about the program. *)
@@ -30,8 +35,6 @@ let help copts man_format cmds topic = match topic with
     | `Ok t ->
         let page = (topic, 7, "", "", ""), [`S topic; `P "Say something";] in
         `Ok (Cmdliner.Manpage.print man_format Format.std_formatter page)
-open Cmdliner
-type mpd_opts = {host : string; port : int}
 
 (* Help sections common to all commands *)
 
@@ -43,12 +46,14 @@ let help_section = [
   `S Manpage.s_bugs; `P "Check bug reports at https://github.com/cedlemo/OCaml-libmpdclient/issues";
   `S Manpage.s_authors; `P "Cedric Le Moigne <cedlemo at gmx dot com>"
         ]
+
 (* Options common to all commands *)
+type mpd_opts = {host : string; port : int}
+
 let common_opts host port =
   {host; port}
 
 let common_opts_t =
-  let docs = Manpage.s_common_options in
   let host =
     let doc = "Set the address of the Mpd server." in
     let env = Arg.env_var "OMPDC_HOST" ~doc in
@@ -68,7 +73,6 @@ let playback_cmds_to_string = function
   | Play -> "play"
   | Prev -> "prev"
   | Stop -> "stop"
-
 
 let initialize_client {host; port} =
    let connection = Mpd.Connection.initialize host port in
@@ -106,7 +110,6 @@ let playback_action =
 let playback_t =
     let doc = "Playback commands"
     in
-    let exits = Term.default_exits in
     let man = [
                `S Manpage.s_description;
                `P "Playback commands for the current playlist (queue).";
@@ -128,12 +131,10 @@ let help_cmd =
   in
   Term.(ret
           (const help $ common_opts_t $ Arg.man_format $ Term.choice_names $topic)),
-  Term.info "help" ~doc ~exits:Term.default_exits ~man
+  Term.info "help" ~doc ~exits ~man
 
 let default_cmd =
   let doc = "a Mpd client written in OCaml." in
-  let sdocs = Manpage.s_common_options in
-  let exits = Term.default_exits in
   let man = help_section in
   Term.(ret (const (fun _ -> `Help (`Pager, None)) $ common_opts_t)),
   Term.info "ompdc" ~version ~doc ~sdocs ~exits ~man
