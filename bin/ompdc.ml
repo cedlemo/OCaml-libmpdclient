@@ -45,6 +45,7 @@ let help_section = [
   `S Manpage.s_authors; `P "Cedric Le Moigne <cedlemo at gmx dot com>"
         ]
 
+
 (* Options common to all commands *)
 type mpd_opts = {host : string; port : int}
 
@@ -64,46 +65,32 @@ let common_opts_t =
   in
   Term.(const common_opts $ host $ port)
 
-type playback_cmds = Play | Next | Prev | Pause | Stop
-let playback_cmds_to_string = function
-  | Next -> "next"
-  | Pause -> "pause"
-  | Play -> "play"
-  | Prev -> "prev"
-  | Stop -> "stop"
-
-let initialize_client {host; port} =
-   let connection = Mpd.Connection.initialize host port in
-   let client = Mpd.Client.initialize connection in
-   let _ = print_endline ("Mpd server : " ^ (Mpd.Client.mpd_banner client)) in
-   client
-
-let playback common_opts cmd =
-  let {host; port} = common_opts in
-  let client = initialize_client {host; port} in
-  let cmd_str = playback_cmds_to_string cmd in
-  let _ = match cmd with
-    | Next -> ignore (Mpd.Playback.next client)
-    | Pause -> ignore (Mpd.Playback.pause client true)
-    | Play -> ignore (Mpd.Playback.play client 1)
-    | Prev -> ignore (Mpd.Playback.prev client)
-    | Stop -> ignore (Mpd.Playback.stop client)
+let playback common_opts cmd args =
+  let show_message host port cmd args =
+    let _args = match args with | None -> "no args" | Some s -> s in
+    let message = Printf.sprintf "%s:%d %s %s" host port cmd _args in
+    print_endline message
   in
-  let message = Printf.sprintf "%s:%d %s" host port cmd_str in
-  print_endline message
+  let {host; port} = common_opts in
+  match cmd with
+  | `Next -> show_message host port "next" args
+  | `Pause -> show_message host port "pause" args
+  | `Play -> show_message host port "play" args
+  | `Prev -> show_message host port "prev" args
+  | `Stop -> show_message host port "stop" args
 
-let playback_action =
-    let doc = "Play next song." in
-    let next = Next, Arg.info ["next"] ~doc in
-    let doc = "Toggle Play/Stop." in
-    let pause = Pause, Arg.info ["pause"] ~doc in
-    let doc = "Play the current song in the Mpd queue." in
-    let play = Play, Arg.info ["play"] ~doc in
-    let doc = "Stop playing songs." in
-    let stop = Stop, Arg.info ["stop"] ~doc in
-    let doc = "Play previous song." in
-    let prev = Prev, Arg.info ["prev"] ~doc in
-    Arg.(last & vflag_all [Pause] [next; pause; play; prev; stop])
+let playback_actions =
+  let actions = ["play", `Play;
+                 "stop", `Stop;
+                 "prev", `Prev;
+                 "next", `Next;
+                 "pause", `Pause
+  ] in
+  let action = Arg.enum actions in
+  Arg.(required & pos 0 (some action) None & info [])
+
+let playback_args = let doc = "the field to output ($(b,field) action)" in
+  Arg.(value & pos 1 (some string) None & info [] ~doc ~docv:"FIELD")
 
 let playback_t =
     let doc = "Playback commands"
@@ -113,7 +100,7 @@ let playback_t =
                `P "Playback commands for the current playlist (queue).";
                `Blocks help_section; ]
     in
-    Term.(const playback $ common_opts_t $ playback_action),
+    Term.(const playback $ common_opts_t $ playback_actions $ playback_args),
     Term.info "playback" ~doc ~sdocs ~exits ~man
 
 let help_cmd =
