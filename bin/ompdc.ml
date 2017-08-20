@@ -86,11 +86,25 @@ let playback_actions =
                  "next", `Next;
                  "pause", `Pause
   ] in
+  let substitue = Printf.sprintf in
+  let action_docs = List.map (fun (str, sym) ->
+    match sym with
+    | `Play -> substitue "$(b,%s) [ARG]" str
+    | `Pause -> substitue "$(b,%s) [ARG]" str
+    | `Stop | `Prev | `Next -> substitue "$(b,%s)" str
+  ) actions in
+  let doc = substitue "The action to perform. $(docv) must be one of: %s."
+      (String.concat ", " action_docs)
+  in
   let action = Arg.enum actions in
-  Arg.(required & pos 0 (some action) None & info [])
+  Arg.(required & pos 0 (some action) None & info [] ~doc ~docv:"ACTION")
 
-let playback_args = let doc = "the field to output ($(b,field) action)" in
-  Arg.(value & pos 1 (some string) None & info [] ~doc ~docv:"FIELD")
+let playback_args =
+  let doc = "An argument if the action need it. In playback mode, only the
+  $(b,play) and $(b,pause) actions accept an argument.
+  $(b,play) take an integer for the song id to play. $(b,pause) take a
+  boolean in order to switch between play/pause." in
+  Arg.(value & pos 1 (some string) None & info [] ~doc ~docv:"ARG")
 
 let playback_t =
     let doc = "Playback commands"
