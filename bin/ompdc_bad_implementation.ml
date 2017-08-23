@@ -140,3 +140,39 @@ let default_cmd =
 let cmds = [playback_t; help_cmd]
 
 let () = Term.(exit @@ eval_choice default_cmd cmds)
+
+(* let playback common_opts cmd args =
+  let show_message host port cmd args =
+    let _args = match args with | None -> "no args" | Some s -> s in
+    let message = Printf.sprintf "%s:%d %s %s" host port cmd _args in
+    print_endline message
+  in
+  let {host; port} = common_opts in
+  match cmd with
+  | `Next -> show_message host port "next" args
+  | `Pause -> show_message host port "pause" args
+  | `Play -> show_message host port "play" args
+  | `Prev -> show_message host port "prev" args
+  | `Stop -> show_message host port "stop" args
+
+let playback_actions =
+  let actions = ["play", `Play;
+                 "stop", `Stop;
+                 "prev", `Prev;
+                 "next", `Next;
+                 "pause", `Pause
+  ] in
+  let substitue = Printf.sprintf in
+  let action_docs = List.map (fun (str, sym) ->
+    match sym with
+    | `Play -> substitue "$(b,%s) [ARG]" str
+    | `Pause -> substitue "$(b,%s) [ARG]" str
+    | `Stop | `Prev | `Next -> substitue "$(b,%s)" str
+  ) actions in
+  let doc = substitue "The action to perform. $(docv) must be one of: %s."
+      (String.concat ", " action_docs)
+  in
+  let action = Arg.enum actions in
+  Arg.(required & pos 0 (some action) None & info [] ~doc ~docv:"ACTION")
+*)
+
