@@ -36,6 +36,7 @@ let help copts man_format cmds topic = match topic with
         let page = (topic, 7, "", "", ""), [`S topic; `P "Say something";] in
         `Ok (Cmdliner.Manpage.print man_format Format.std_formatter page)
 
+
 (* Help sections common to all commands *)
 
 let help_section = [
@@ -44,7 +45,6 @@ let help_section = [
   `S Manpage.s_bugs; `P "Check bug reports at https://github.com/cedlemo/OCaml-libmpdclient/issues";
   `S Manpage.s_authors; `P "Cedric Le Moigne <cedlemo at gmx dot com>"
         ]
-
 
 (* Options common to all commands *)
 type mpd_opts = {host : string; port : int}
@@ -65,57 +65,104 @@ let common_opts_t =
   in
   Term.(const common_opts $ host $ port)
 
-let playback common_opts cmd args =
-  let show_message host port cmd args =
-    let _args = match args with | None -> "no args" | Some s -> s in
-    let message = Printf.sprintf "%s:%d %s %s" host port cmd _args in
-    print_endline message
-  in
+let initialize_client {host; port} =
+   let connection = Mpd.Connection.initialize host port in
+   let client = Mpd.Client.initialize connection in
+   let _ = print_endline ("Mpd server : " ^ (Mpd.Client.mpd_banner client)) in
+   client
+
+let play common_opts song_id =
   let {host; port} = common_opts in
-  match cmd with
-  | `Next -> show_message host port "next" args
-  | `Pause -> show_message host port "pause" args
-  | `Play -> show_message host port "play" args
-  | `Prev -> show_message host port "prev" args
-  | `Stop -> show_message host port "stop" args
+  let client = initialize_client {host; port} in
+  let _ = Mpd.Playback.play client song_id in
+  Mpd.Client.close client
 
-let playback_actions =
-  let actions = ["play", `Play;
-                 "stop", `Stop;
-                 "prev", `Prev;
-                 "next", `Next;
-                 "pause", `Pause
-  ] in
-  let substitue = Printf.sprintf in
-  let action_docs = List.map (fun (str, sym) ->
-    match sym with
-    | `Play -> substitue "$(b,%s) [ARG]" str
-    | `Pause -> substitue "$(b,%s) [ARG]" str
-    | `Stop | `Prev | `Next -> substitue "$(b,%s)" str
-  ) actions in
-  let doc = substitue "The action to perform. $(docv) must be one of: %s."
-      (String.concat ", " action_docs)
-  in
-  let action = Arg.enum actions in
-  Arg.(required & pos 0 (some action) None & info [] ~doc ~docv:"ACTION")
+let song_id =
+  let doc = "Integer value that represents the id of a song in the current playlist." in
+  Arg.(value & pos 0 int 0 & info [] ~doc ~docv:"SONG_ID")
 
-let playback_args =
-  let doc = "An argument if the action need it. In playback mode, only the
-  $(b,play) and $(b,pause) actions accept an argument.
-  $(b,play) take an integer for the song id to play. $(b,pause) take a
-  boolean in order to switch between play/pause." in
-  Arg.(value & pos 1 (some string) None & info [] ~doc ~docv:"ARG")
-
-let playback_t =
-    let doc = "Playback commands"
+let play_t =
+    let doc = "Play the song SONG_ID in the playlist"
     in
     let man = [
                `S Manpage.s_description;
-               `P "Playback commands for the current playlist (queue).";
+               `P doc;
                `Blocks help_section; ]
     in
-    Term.(const playback $ common_opts_t $ playback_actions $ playback_args),
-    Term.info "playback" ~doc ~sdocs ~exits ~man
+    Term.(const play $ common_opts_t $ song_id),
+    Term.info "play" ~doc ~sdocs ~exits ~man
+
+let next common_opts =
+  let {host; port} = common_opts in
+  let client = initialize_client {host; port} in
+  let _ = Mpd.Playback.next client in
+  Mpd.Client.close client
+
+let next_t =
+    let doc = "Play the next song in the playlist"
+    in
+    let man = [
+               `S Manpage.s_description;
+               `P doc;
+               `Blocks help_section; ]
+    in
+    Term.(const next $ common_opts_t),
+    Term.info "next" ~doc ~sdocs ~exits ~man
+
+let prev common_opts =
+  let {host; port} = common_opts in
+  let client = initialize_client {host; port} in
+  let _ = Mpd.Playback.prev client in
+  Mpd.Client.close client
+
+let prev_t =
+    let doc = "Play the previous song in the playlist"
+    in
+    let man = [
+               `S Manpage.s_description;
+               `P doc;
+               `Blocks help_section; ]
+    in
+    Term.(const prev $ common_opts_t),
+    Term.info "prev" ~doc ~sdocs ~exits ~man
+
+let stop common_opts =
+  let {host; port} = common_opts in
+  let client = initialize_client {host; port} in
+  let _ = Mpd.Playback.stop client in
+  Mpd.Client.close client
+
+let stop_t =
+    let doc = "Stop playing song."
+    in
+    let man = [
+               `S Manpage.s_description;
+               `P doc;
+               `Blocks help_section; ]
+    in
+    Term.(const stop $ common_opts_t),
+    Term.info "stop" ~doc ~sdocs ~exits ~man
+
+let pause common_opts value =
+  let {host; port} = common_opts in
+  let client = initialize_client {host; port} in
+  let _ = Mpd.Playback.pause client value in
+  Mpd.Client.close client
+
+let toggle_value =
+  let doc = "Boolean value that switch between pause/play the current song." in
+  Arg.(value & pos 0 bool true & info [] ~doc ~docv:"TOGGLE_VAL")
+
+let pause_t =
+    let doc = "Switch between play/pause."
+    in
+    let man = [
+               `S Manpage.s_description;
+               `P doc;
+               `Blocks help_section; ]
+    in
+    Term.(const pause $ common_opts_t $ toggle_value),
+    Term.info "pause" ~doc ~sdocs ~exits ~man
 
 let help_cmd =
   let topic =
@@ -132,12 +179,12 @@ let help_cmd =
           (const help $ common_opts_t $ Arg.man_format $ Term.choice_names $topic)),
   Term.info "help" ~doc ~exits ~man
 
+
 let default_cmd =
   let doc = "a Mpd client written in OCaml." in
   let man = help_section in
   Term.(ret (const (fun _ -> `Help (`Pager, None)) $ common_opts_t)),
   Term.info "ompdc" ~version ~doc ~sdocs ~exits ~man
-
-let cmds = [playback_t; help_cmd]
+let cmds = [play_t; next_t; prev_t; stop_t;pause_t; help_cmd]
 
 let () = Term.(exit @@ eval_choice default_cmd cmds)
