@@ -19,96 +19,6 @@
 open Cmdliner
 open Ompdc_common
 
-(* let infos = ["volume", `Volume;
-             "repeat", `Repeat;
-             "random", `Random;
-             "single", `Single;
-             "consume", `Consume;
-             "playlist", `Playlist;
-             "playlistlength", `Playlistlength;
-             "state", `State;
-             "song", `Song;
-             "songid", `Songid;
-             "nextsong", `Nextsong;
-             "nextsongid", `Nextsongid;
-             "time", `Time;
-             "elapsed", `Elapsed;
-             "duration", `Duration;
-             "bitrate", `Bitrate;
-             "xfade", `Xfade;
-             "mixrampdb", `Mixrampdb;
-             "mixrampdelay", `Mixrampdelay;
-             "audio", `Audio;
-             "updating_db", `Updating_db;
-             "error", `Error
-]
-
-let get_info common_opts name =
-  let get_info_str = function
-  | `Volume -> "volume"
-  | `Repeat -> "repeat"
-  | `Random -> "random"
-  | `Single -> "single"
-  | `Consume -> "consume"
-  | `Playlist -> "playlist"
-  | `Playlistlength -> "playlistlength"
-  | `State -> "state"
-  | `Song -> "song"
-  | `Songid -> "songid"
-  | `Nextsong -> "nextsong"
-  | `Nextsongid -> "nextsongid"
-  | `Time -> "time"
-  | `Elapsed -> "elapsed"
-  | `Duration -> "duration"
-  | `Bitrate -> "bitrate"
-  | `Xfade -> "xfade"
-  | `Mixrampdb -> "mixrampdb"
-  | `Mixrampdelay -> "mixrampdelay"
-  | `Audio -> "audio"
-  | `Updating_db -> "updating_db"
-  | `Error -> "error"
-  in
-  let show_message host port name =
-    let _name = match name with | None -> "no args" | Some s -> get_info_str s in
-    let message = Printf.sprintf "%s:%d %s" host port _name in
-    print_endline message
-  in
-  let {host; port} = common_opts in
-  show_message host port name
-
-let status_infos =
-  let substitue = Printf.sprintf in
-  let info_docs = List.map (fun (str, sym) ->
-    match sym with
-    | `Volume -> substitue "$(b,%s)" str
-    | `Repeat -> substitue "$(b,%s)" str
-    | `Random -> substitue "$(b,%s)" str
-    | `Single -> substitue "$(b,%s)" str
-    | `Consume -> substitue "$(b,%s)" str
-    | `Playlist -> substitue "$(b,%s)" str
-    | `Playlistlength -> substitue "$(b,%s)" str
-    | `State -> substitue "$(b,%s)" str
-    | `Song -> substitue "$(b,%s)" str
-    | `Songid -> substitue "$(b,%s)" str
-    | `Nextsong -> substitue "$(b,%s)" str
-    | `Nextsongid -> substitue "$(b,%s)" str
-    | `Time -> substitue "$(b,%s)" str
-    | `Elapsed -> substitue "$(b,%s)" str
-    | `Duration -> substitue "$(b,%s)" str
-    | `Bitrate -> substitue "$(b,%s)" str
-    | `Xfade -> substitue "$(b,%s)" str
-    | `Mixrampdb -> substitue "$(b,%s)" str
-    | `Mixrampdelay -> substitue "$(b,%s)" str
-    | `Audio -> substitue "$(b,%s)" str
-    | `Updating_db  -> substitue "$(b,%s)" str
-    | `Error -> substitue "$(b,%s)" str
-  ) infos in
-  let doc = substitue "The information to extract. $(docv) must be one of: %s or nothing."
-      (String.concat ", " info_docs)
-  in
-  let status_info = Arg.enum infos in
-  Arg.(opt (some status_info) None & info [] ~doc ~docv:"INFO")
-*)
 type infos =
   | Volume
   | Repeat
@@ -133,7 +43,7 @@ type infos =
   | Updating_db
   | Error
 
-  let get_info_str = function
+let get_info_str = function
   | Volume -> "volume"
   | Repeat -> "repeat"
   | Random -> "random"
@@ -170,7 +80,32 @@ let status_infos =
   let repeat = Repeat, Arg.info ["r"; "repeat"] in
   let random = Random, Arg.info ["rand"; "random"] in
   let single = Single, Arg.info ["single"] in
-  Arg.(value & vflag_all [Volume; Repeat; Random; Single] [volume; repeat; random; single])
+  let consume = Consume, Arg.info ["c"; "consume"] in
+  let playlist = Playlist, Arg.info ["plist"; "playlist"] in
+  let playlistlength = Playlistlength, Arg.info ["plistl"; "playlistlength"] in
+  let state = State, Arg.info ["st"; "state"] in
+  let song = Song, Arg.info ["so"; "song"] in
+  let songid = Songid, Arg.info ["soid"; "songid"] in
+  let nextsong = Nextsong, Arg.info ["nso"; "nextsong"] in
+  let nextsongid = Nextsongid, Arg.info ["nsoid"; "nextsongid"] in
+  let time = Time, Arg.info ["t"; "time"] in
+  let elapsed = Elapsed, Arg.info ["e"; "elapsed"] in
+  let duration = Duration, Arg.info ["d"; "duration"] in
+  let bitrate = Bitrate, Arg.info ["b"; "bitrate"] in
+  let xfade = Xfade, Arg.info ["x"; "xfade"] in
+  let mixrampdb = Mixrampdb, Arg.info ["mixdb"; "mixrampdb"] in
+  let mixrampdelay = Mixrampdelay, Arg.info ["mixdelay"; "mixrampdelay"] in
+  let audio = Audio, Arg.info ["a"; "audio"] in
+  let updating_db = Updating_db, Arg.info ["u"; "Updating_db"] in
+  let error = Error, Arg.info ["err"; "error"] in
+  Arg.(value & vflag_all [Volume; Repeat; Random; Single; Consume; Playlist;
+                          Playlistlength; State; Song; Songid; Nextsong;
+                          Nextsongid; Time; Elapsed; Duration; Bitrate; Xfade;
+                          Mixrampdb; Mixrampdelay; Audio; Updating_db; Error]
+                         [volume; repeat; random; single; consume; playlist;
+                          playlistlength; state; song; songid; nextsong;
+                          nextsongid; time; elapsed; duration; bitrate; xfade;
+                          mixrampdb; mixrampdelay; audio; updating_db; error])
 
 let cmd =
   let doc = "Get all status information or only one specified in argument." in
