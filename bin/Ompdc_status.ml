@@ -16,44 +16,67 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-let info common_opts name =
+open Cmdliner
+open Ompdc_common
+
+(* let infos = ["volume", `Volume;
+             "repeat", `Repeat;
+             "random", `Random;
+             "single", `Single;
+             "consume", `Consume;
+             "playlist", `Playlist;
+             "playlistlength", `Playlistlength;
+             "state", `State;
+             "song", `Song;
+             "songid", `Songid;
+             "nextsong", `Nextsong;
+             "nextsongid", `Nextsongid;
+             "time", `Time;
+             "elapsed", `Elapsed;
+             "duration", `Duration;
+             "bitrate", `Bitrate;
+             "xfade", `Xfade;
+             "mixrampdb", `Mixrampdb;
+             "mixrampdelay", `Mixrampdelay;
+             "audio", `Audio;
+             "updating_db", `Updating_db;
+             "error", `Error
+]
+
+let get_info common_opts name =
+  let get_info_str = function
+  | `Volume -> "volume"
+  | `Repeat -> "repeat"
+  | `Random -> "random"
+  | `Single -> "single"
+  | `Consume -> "consume"
+  | `Playlist -> "playlist"
+  | `Playlistlength -> "playlistlength"
+  | `State -> "state"
+  | `Song -> "song"
+  | `Songid -> "songid"
+  | `Nextsong -> "nextsong"
+  | `Nextsongid -> "nextsongid"
+  | `Time -> "time"
+  | `Elapsed -> "elapsed"
+  | `Duration -> "duration"
+  | `Bitrate -> "bitrate"
+  | `Xfade -> "xfade"
+  | `Mixrampdb -> "mixrampdb"
+  | `Mixrampdelay -> "mixrampdelay"
+  | `Audio -> "audio"
+  | `Updating_db -> "updating_db"
+  | `Error -> "error"
+  in
   let show_message host port name =
-    let _args = match args with | None -> "no args" | Some s -> s in
-    let message = Printf.sprintf "%s:%d %s" host port name in
+    let _name = match name with | None -> "no args" | Some s -> get_info_str s in
+    let message = Printf.sprintf "%s:%d %s" host port _name in
     print_endline message
   in
   let {host; port} = common_opts in
-  match cmd with
-  | `Next -> show_message host port "next" args
-  | `Pause -> show_message host port "pause" args
-  | `Play -> show_message host port "play" args
-  | `Prev -> show_message host port "prev" args
-  | `Stop -> show_message host port "stop" args
+  show_message host port name
 
 let status_infos =
-  let infos = ["volume", `Volume;
-               "repeat", `Repeat;
-               "random", `Random;
-               "single", `Single;
-               "consume", `Consume;
-               "playlist", `Playlist;
-               "playlistlength", `Playlistlength;
-               "state", `State;
-               "song", `Song;
-               "songid", `Songid;
-               "nextsong", `Nextsong;
-               "nextsongid", `Nextsongid;
-               "time", `Time;
-               "elapsed", `Elapsed;
-               "duration", `Duration;
-               "bitrate", `Bitrate;
-               "xfade", `Xfade;
-               "mixrampdb", `Mixrampdb;
-               "mixrampdelay", `Mixrampdelay;
-               "audio", `Audio;
-               "updating_db", `Updating_db;
-               "error", `Error
-  ] in
   let substitue = Printf.sprintf in
   let info_docs = List.map (fun (str, sym) ->
     match sym with
@@ -84,6 +107,76 @@ let status_infos =
       (String.concat ", " info_docs)
   in
   let status_info = Arg.enum infos in
-  Arg.(required & pos 0 (some status_info) None & info [] ~doc ~docv:"INFO")
+  Arg.(opt (some status_info) None & info [] ~doc ~docv:"INFO")
+*)
+type infos =
+  | Volume
+  | Repeat
+  | Random
+  | Single
+  | Consume
+  | Playlist
+  | Playlistlength
+  | State
+  | Song
+  | Songid
+  | Nextsong
+  | Nextsongid
+  | Time
+  | Elapsed
+  | Duration
+  | Bitrate
+  | Xfade
+  | Mixrampdb
+  | Mixrampdelay
+  | Audio
+  | Updating_db
+  | Error
 
-(* TODO let status_t = *)
+  let get_info_str = function
+  | Volume -> "volume"
+  | Repeat -> "repeat"
+  | Random -> "random"
+  | Single -> "single"
+  | Consume -> "consume"
+  | Playlist -> "playlist"
+  | Playlistlength -> "playlistlength"
+  | State -> "state"
+  | Song -> "song"
+  | Songid -> "songid"
+  | Nextsong -> "nextsong"
+  | Nextsongid -> "nextsongid"
+  | Time -> "time"
+  | Elapsed -> "elapsed"
+  | Duration -> "duration"
+  | Bitrate -> "bitrate"
+  | Xfade -> "xfade"
+  | Mixrampdb -> "mixrampdb"
+  | Mixrampdelay -> "mixrampdelay"
+  | Audio -> "audio"
+  | Updating_db -> "updating_db"
+  | Error -> "error"
+
+let get_info common_opts infos =
+  let rec _parse = function
+    | [] -> ()
+    | i :: remain -> let _ = print_endline (get_info_str i) in
+    _parse remain
+  in
+  _parse infos
+
+let status_infos =
+  let volume = Volume, Arg.info ["v"; "volume"; "vol"] in
+  let repeat = Repeat, Arg.info ["r"; "repeat"] in
+  let random = Random, Arg.info ["rand"; "random"] in
+  let single = Single, Arg.info ["single"] in
+  Arg.(value & vflag_all [Volume; Repeat; Random; Single] [volume; repeat; random; single])
+
+let cmd =
+  let doc = "Get all status information or only one specified in argument." in
+  let man = [ `S Manpage.s_description;
+              `P "Status commands in order to display Mpd server information.";
+              `Blocks help_section
+  ] in
+  Term.(const get_info $ common_opts_t $ status_infos),
+  Term.info "status" ~doc ~sdocs ~exits ~man

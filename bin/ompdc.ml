@@ -25,6 +25,9 @@ let default_cmd =
   Term.(ret (const (fun _ -> `Help (`Pager, None)) $ common_opts_t)),
   Term.info "ompdc" ~version ~doc ~sdocs ~exits ~man
 
-let cmds = Ompdc_playback.cmds @ [help_cmd]
+let cmds = List.concat [Ompdc_playback.cmds;
+                        [Ompdc_status.cmd;
+                         help_cmd]
+]
 
 let () = Term.(exit @@ eval_choice default_cmd cmds)
