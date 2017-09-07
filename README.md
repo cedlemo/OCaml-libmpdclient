@@ -54,4 +54,4 @@ This lib is based on the mpd protocol ([specifications](https://www.musicpd.org/
 * The music database
 * Improve connection error when no mpd found or bad host or bad port.
 * Continue OCaml-mpdc : a command line tool which is a Mpd client.
-  * find out best way to use command line
+  * finish status commands (link parameters to theirs mpd call)
