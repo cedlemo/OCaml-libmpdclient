@@ -21,6 +21,9 @@
 type s
 (** Current state of the mpd server. *)
 type state
+(* Get the string representation of a state. *)
+val string_of_state:
+  state -> string
 (** Default empty/null state *)
 val empty : s
 (** Parse list of strings into a Mpd Status type *)

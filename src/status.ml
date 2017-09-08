@@ -27,6 +27,12 @@ let state_of_string str =
   | "stop" -> Stop
   | _ -> ErrState
 
+let string_of_state = function
+  | Play -> "play"
+  | Pause -> "pause"
+  | Stop -> "stop"
+  | ErrState -> "error state"
+
 type s =
 { volume: int; (** 0-100 *)
   repeat: bool; (** false or true *)
