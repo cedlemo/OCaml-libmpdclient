@@ -141,7 +141,7 @@ let status_fields =
                           mixrampdb; mixrampdelay; audio; updating_db; error])
 
 let cmd =
-  let doc = "Get all status information or only one specified in argument." in
+  let doc = "Get all status information with no arguments or chose those you want." in
   let man = [ `S Manpage.s_description;
               `P "Status commands in order to display Mpd server information.";
               `Blocks help_section
