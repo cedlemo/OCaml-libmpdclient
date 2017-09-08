@@ -67,15 +67,48 @@ let get_info_str = function
   | Updating_db -> "updating_db"
   | Error -> "error"
 
-let get_info common_opts infos =
-  let rec _parse = function
-    | [] -> ()
-    | i :: remain -> let _ = print_endline (get_info_str i) in
-    _parse remain
-  in
-  _parse infos
 
-let status_infos =
+let get_mpd_status_info status = function
+  | Volume -> ["volume:"; string_of_int @@ Mpd.Status.volume status]
+  | Repeat -> ["repeat:"; string_of_bool @@ Mpd.Status.repeat status]
+  | Random -> ["random:"; string_of_bool @@ Mpd.Status.random status]
+  | Single -> ["single:"; string_of_bool @@ Mpd.Status.single status]
+  | Consume -> ["consume:"; string_of_bool @@ Mpd.Status.consume status]
+  | Playlist ->["playlist:"; string_of_int @@ Mpd.Status.playlist status]
+  | Playlistlength -> ["playlistlength:";
+                        string_of_int @@ Mpd.Status.playlistlength status]
+  | State -> let state = Mpd.Status.state status in
+      ["state:"; Mpd.Status.string_of_state state]
+  | Song -> ["song:"; string_of_int @@ Mpd.Status.song status]
+  | Songid -> ["songid:"; string_of_int @@ Mpd.Status.songid status]
+  | Nextsong -> ["nextsong:"; string_of_int @@ Mpd.Status.nextsong status]
+  | Nextsongid -> ["nextsongid:"; string_of_int @@ Mpd.Status.nextsongid status]
+  | Time -> ["time:"; Mpd.Status.time status]
+  | Elapsed -> ["elapsed:"; string_of_float @@ Mpd.Status.elapsed status]
+  | Duration -> ["duration:"; string_of_float @@ Mpd.Status.duration status]
+  | Bitrate -> ["bitrate:"; string_of_int @@ Mpd.Status.bitrate status]
+  | Xfade -> ["xfade:"; string_of_int @@ Mpd.Status.xfade status]
+  | Mixrampdb -> ["mixrampdb:"; string_of_float @@ Mpd.Status.mixrampdb status]
+  | Mixrampdelay -> ["mixrampdelay:"; string_of_int @@ Mpd.Status.mixrampdelay status]
+  | Audio -> ["audio:"; Mpd.Status.audio status]
+  | Updating_db -> ["updating_db:"; string_of_int @@ Mpd.Status.updating_db status]
+  | Error -> ["error:"; Mpd.Status.error status]
+
+
+let get_status common_opts fields =
+  let {host; port} = common_opts in
+  let client = initialize_client {host; port} in
+  let status = Mpd.Client.status client in
+  let rec _parse_fields = function
+    | [] -> ()
+    | i :: remain -> let info = String.concat " " @@ get_mpd_status_info status i in
+    let _ = print_endline info in
+    _parse_fields remain
+  in
+  let _ = _parse_fields fields in
+  Mpd.Client.close client
+
+let status_fields =
   let volume = Volume, Arg.info ["v"; "volume"; "vol"] in
   let repeat = Repeat, Arg.info ["r"; "repeat"] in
   let random = Random, Arg.info ["rand"; "random"] in
@@ -113,5 +146,5 @@ let cmd =
               `P "Status commands in order to display Mpd server information.";
               `Blocks help_section
   ] in
-  Term.(const get_info $ common_opts_t $ status_infos),
+  Term.(const get_status $ common_opts_t $ status_fields),
   Term.info "status" ~doc ~sdocs ~exits ~man
