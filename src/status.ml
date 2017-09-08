@@ -33,7 +33,7 @@ let string_of_state = function
   | Stop -> "stop"
   | ErrState -> "error state"
 
-type s =
+type t =
 { volume: int; (** 0-100 *)
   repeat: bool; (** false or true *)
   random: bool; (** false or true *)

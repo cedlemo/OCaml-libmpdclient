@@ -18,60 +18,87 @@
 
 (** Mpd_status is included in Mpd.Status. *)
 
-type s
+type t
 (** Current state of the mpd server. *)
 type state
-(* Get the string representation of a state. *)
+(** Get the string representation of a state. *)
 val string_of_state:
   state -> string
 (** Default empty/null state *)
-val empty : s
+val empty : t
 (** Parse list of strings into a Mpd Status type *)
-val parse: string list -> s
+val parse:
+  string list -> t
 (** Get the volume level from a Mpd Status *)
-val volume: s -> int
+val volume:
+  t -> int
 (** Find out if the player is in repeat mode *)
-val repeat: s -> bool
+val repeat:
+  t -> bool
 (** Find out if the player is in random mode *)
-val random: s -> bool
+val random:
+  t -> bool
 (** Find out if the player is in single mode *)
-val single: s -> bool
+val single:
+  t -> bool
 (** Find out if the player is in consume mode *)
-val consume: s -> bool
+val consume:
+  t -> bool
 (** Get the current playlist id *)
-val playlist: s -> int
+val playlist:
+  t -> int
 (** Get the current playlist length *)
-val playlistlength: s -> int
+val playlistlength:
+  t -> int
 (** Get the state of the player : Play / Pause / Stop *)
-val state: s -> state
+val state:
+  t -> state
 (** Get the song number of the current song stopped on or playing *)
-val song: s -> int
+val song:
+  t -> int
 (** Get the song id of the current song stopped on or playing *)
-val songid: s -> int
+val songid:
+  t -> int
 (** Get the next song number based on the current song stopped on or playing *)
-val nextsong: s -> int
+val nextsong:
+  t -> int
 (** Get the next song id based on the current song stopped on or playing *)
-val nextsongid: s -> int
+val nextsongid:
+  t -> int
 (** Get the total time elapsed (of current playing/paused song) *)
-val time: s -> string
-(** Get the total time elapsed within the current song, but with higher resolution *)
-val elapsed: s -> float
+val time:
+  t -> string
+(** Get the total time elapsed within the current song, but with higher
+    resolution *)
+val elapsed:
+  t -> float
 (** Returns the totatl duration of the current song in seconds *)
-val duration: s -> float
+val duration:
+  t -> float
 (** Get the instantaneous bitrate in kbps *)
-val bitrate: s -> int
+val bitrate:
+  t -> int
 (** Get the crossfade in seconds of the current song *)
-val xfade: s -> int
+val xfade:
+  t -> int
 (** Get the mixramp threshold in dB *)
-val mixrampdb: s -> float
+val mixrampdb:
+  t -> float
 (** Get the mixrampdelay in seconds *)
-val mixrampdelay: s -> int
-(** Get information of the audio file of the current song (sampleRate:bits:channels) *)
-val audio: s -> string
+val mixrampdelay:
+  t -> int
+(** Get information of the audio file of the current song
+    (sampleRate:bits:channels) *)
+val audio:
+  t -> string
 (** Get the job id *)
-val updating_db: s -> int
+val updating_db:
+  t -> int
 (** Get the error message if there is one *)
-val error: s -> string
+val error:
+  t -> string
 (** Build a status error message. When the status request return an error, this
- * function is useful to generate an empty status with the error message set. *)
-val generate_error: string -> s
+    function is useful to generate an empty status with the error message field
+    set.*)
+val generate_error:
+  string -> t

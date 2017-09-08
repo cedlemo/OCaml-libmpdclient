@@ -42,7 +42,7 @@ val mpd_banner:
 (** Create a status request and returns the status under a Mpd.Status.s
     type.*)
 val status:
-  c -> Status.s
+  c -> Status.t
 
 (** Does nothing but return "OK". *)
 val ping:
