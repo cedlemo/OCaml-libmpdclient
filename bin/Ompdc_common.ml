@@ -17,6 +17,7 @@
  *)
 
 open Cmdliner
+open Mpd.Protocol
 
 let version = "not.yet"
 let sdocs = Manpage.s_common_options
@@ -83,3 +84,16 @@ let initialize_client {host; port} =
    let client = Mpd.Client.initialize connection in
    let _ = print_endline ("Mpd server : " ^ (Mpd.Client.mpd_banner client)) in
    client
+
+let check_for_mpd_error mpd_response =
+  let response = (
+    match mpd_response with
+    | Ok msg -> "Mpd response: " ^ msg
+    | Error (ack_error, ack_cmd_num, ack_cmd, ack_message) ->
+        String.concat " " ["Error type:";
+                           Mpd.Protocol.error_name ack_error;
+                           "-- error message:";
+                           ack_message]
+  )
+  in
+  print_endline response
