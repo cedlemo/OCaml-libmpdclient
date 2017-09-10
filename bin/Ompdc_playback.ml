@@ -22,7 +22,7 @@ open Ompdc_common
 let play common_opts song_id =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
-  let _ = Mpd.Playback.play client song_id in
+  let _ = check_for_mpd_error @@ Mpd.Playback.play client song_id in
   Mpd.Client.close client
 
 let song_id =
@@ -43,7 +43,7 @@ let play_t =
 let next common_opts =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
-  let _ = Mpd.Playback.next client in
+  let _ = check_for_mpd_error @@ Mpd.Playback.next client in
   Mpd.Client.close client
 
 let next_t =
@@ -60,7 +60,7 @@ let next_t =
 let previous common_opts =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
-  let _ = Mpd.Playback.previous client in
+  let _ = check_for_mpd_error @@ Mpd.Playback.previous client in
   Mpd.Client.close client
 
 let previous_t =
@@ -77,7 +77,7 @@ let previous_t =
 let stop common_opts =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
-  let _ = Mpd.Playback.stop client in
+  let _ = check_for_mpd_error @@ Mpd.Playback.stop client in
   Mpd.Client.close client
 
 let stop_t =
@@ -94,7 +94,7 @@ let stop_t =
 let pause common_opts value =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
-  let _ = Mpd.Playback.pause client value in
+  let _ = check_for_mpd_error @@ Mpd.Playback.pause client value in
   Mpd.Client.close client
 
 let toggle_value =
