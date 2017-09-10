@@ -32,7 +32,10 @@ let initialize hostname port =
     prerr_endline (hostname ^ ": Host not found");
              exit 2
   in let socket = Unix.socket PF_INET SOCK_STREAM 0
-  in let _ = Unix.connect socket (ADDR_INET(ip, port))
+  in let _ = try Unix.connect socket (ADDR_INET(ip, port))
+  with Unix_error (error, fn_name, param_name) ->
+    let message = String.concat " " [Unix.error_message error; fn_name; param_name] in
+    prerr_endline message
   in { hostname = hostname; port = port; ip = ip; socket = socket}
 
 let close { socket; _} =
