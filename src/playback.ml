@@ -19,8 +19,8 @@
 let next client =
   Client.send client "next"
 
-let prev client =
-  Client.send client "prev"
+let previous client =
+  Client.send client "previous"
 
 let stop client =
   Client.send client "stop"

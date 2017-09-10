@@ -19,8 +19,8 @@
 let next client =
   LwtClient.send client "next"
 
-let prev client =
-  LwtClient.send client "prev"
+let previous client =
+  LwtClient.send client "previous"
 
 let stop client =
   LwtClient.send client "stop"

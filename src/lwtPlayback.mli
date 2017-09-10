@@ -24,7 +24,7 @@ val next:
   LwtClient.c -> Protocol.response Lwt.t
 
 (** Plays previous song in the playlist. *)
-val prev:
+val previous:
   LwtClient.c -> Protocol.response Lwt.t
 
 (** Stops playing.*)

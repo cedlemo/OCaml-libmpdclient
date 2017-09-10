@@ -23,7 +23,7 @@
 val next: Client.c -> Protocol.response
 
 (** Plays previous song in the playlist. *)
-val prev: Client.c -> Protocol.response
+val previous: Client.c -> Protocol.response
 
 (** Stops playing.*)
 val stop: Client.c -> Protocol.response
