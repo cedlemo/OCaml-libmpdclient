@@ -57,13 +57,13 @@ let next_t =
     Term.(const next $ common_opts_t),
     Term.info "next" ~doc ~sdocs ~exits ~man
 
-let prev common_opts =
+let previous common_opts =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
-  let _ = Mpd.Playback.prev client in
+  let _ = Mpd.Playback.previous client in
   Mpd.Client.close client
 
-let prev_t =
+let previous_t =
     let doc = "Play the previous song in the playlist"
     in
     let man = [
@@ -71,8 +71,8 @@ let prev_t =
                `P doc;
                `Blocks help_section; ]
     in
-    Term.(const prev $ common_opts_t),
-    Term.info "prev" ~doc ~sdocs ~exits ~man
+    Term.(const previous $ common_opts_t),
+    Term.info "previous" ~doc ~sdocs ~exits ~man
 
 let stop common_opts =
   let {host; port} = common_opts in
@@ -112,4 +112,4 @@ let pause_t =
     Term.(const pause $ common_opts_t $ toggle_value),
     Term.info "pause" ~doc ~sdocs ~exits ~man
 
-let cmds = [play_t; next_t; prev_t; stop_t; pause_t]
+let cmds = [play_t; next_t; previous_t; stop_t; pause_t]
