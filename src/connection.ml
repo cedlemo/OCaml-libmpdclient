@@ -61,7 +61,10 @@ let socket { socket; _} = socket
 let write c str =
   let socket = socket c in
   let len = String.length str in
-  ignore(send socket str 0 len [])
+  try ignore(Unix.send socket str 0 len [])
+  with Unix_error (error, fn_name, param_name) ->
+    let custom_message = Printf.sprintf ": unable to write %s in socket" str in
+    unix_error_message (error, fn_name, param_name) custom_message
 
 let read c =
   let socket = socket c in
