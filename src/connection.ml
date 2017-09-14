@@ -46,12 +46,15 @@ let initialize hostname port =
   let _ = try Unix.connect socket (ADDR_INET(ip, port))
   with Unix_error (error, fn_name, param_name) ->
     let custom_message = Printf.sprintf ": unable to connect to %s:%d" hostname port in
-    unix_error_message (error, fn_name, param_name) custom_message in
+    unix_error_message (error, fn_name, param_name) custom_message
+  in
   { hostname = hostname; port = port; ip = ip; socket = socket}
 
 let close { socket; _} =
-  let _ = Unix.set_nonblock socket
-  in Unix.close socket
+  try (let _ = Unix.set_nonblock socket in Unix.close socket)
+  with Unix_error (error, fn_name, param_name) ->
+    let custom_message = ": unable to close socket" in
+    unix_error_message (error, fn_name, param_name) custom_message
 
 let socket { socket; _} = socket
 
