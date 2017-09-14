@@ -38,7 +38,11 @@ let initialize hostname port =
     let _ = prerr_endline (hostname ^ ": Host not found") in
     exit 2
   in
-  let socket = Unix.socket PF_INET SOCK_STREAM 0 in
+  let socket = try Unix.socket PF_INET SOCK_STREAM 0
+  with Unix_error (error, fn_name, param_name) ->
+    let custom_message = ": unable to create socket" in
+    unix_error_message (error, fn_name, param_name) custom_message
+  in
   let _ = try Unix.connect socket (ADDR_INET(ip, port))
   with Unix_error (error, fn_name, param_name) ->
     let custom_message = Printf.sprintf ": unable to connect to %s:%d" hostname port in
