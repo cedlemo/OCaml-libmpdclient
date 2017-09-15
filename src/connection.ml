@@ -48,15 +48,15 @@ let initialize hostname port =
     let custom_message = Printf.sprintf ": unable to connect to %s:%d" hostname port in
     unix_error_message (error, fn_name, param_name) custom_message
   in
-  { hostname = hostname; port = port; ip = ip; socket = socket}
+  {hostname; port; ip; socket}
 
-let close { socket; _} =
+let close {socket; _} =
   try (let _ = Unix.set_nonblock socket in Unix.close socket)
   with Unix_error (error, fn_name, param_name) ->
     let custom_message = ": unable to close socket" in
     unix_error_message (error, fn_name, param_name) custom_message
 
-let socket { socket; _} = socket
+let socket {socket; _} = socket
 
 let write c str =
   let socket = socket c in
@@ -87,4 +87,3 @@ let read c =
           unix_error_message (error, fn_name, param_name) custom_message
   in
   String.concat "" (List.rev (_read socket []))
-
