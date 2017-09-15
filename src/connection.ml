@@ -60,8 +60,6 @@ let close connection =
     let custom_message = ": unable to close socket" in
     unix_error_message (error, fn_name, param_name) custom_message
 
-let socket {socket; _} = socket
-
 let write c str =
   let open Unix in
   let len = String.length str in

@@ -32,10 +32,6 @@ val initialize:
 val close:
   c -> unit
 
-(** Get the socket on which the connection is based *)
-val socket:
-  c -> Unix.file_descr
-
 (** Write to an Mpd connection *)
 val write:
   c -> string -> unit
