@@ -78,6 +78,13 @@ let read c =
     try
       let recvlen = Unix.recv s str 0 128 [] in
       let recvstr = String.sub str 0 recvlen in _read s (recvstr :: acc)
-  with
-      | Unix_error(Unix.EAGAIN, _, _) -> if acc = [] then _read s acc else acc
-      in String.concat "" (List.rev (_read socket []))
+    with
+      | Unix_error (error, fn_name, param_name) ->
+        match error with
+        | Unix.EAGAIN -> if acc = [] then _read s acc else acc
+        | _ ->
+          let custom_message = ": unable to revieve data via the socket." in
+          unix_error_message (error, fn_name, param_name) custom_message
+  in
+  String.concat "" (List.rev (_read socket []))
+
