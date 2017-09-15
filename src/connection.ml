@@ -17,7 +17,6 @@
  *)
 
 open Sys
-open Unix
 
 open Protocol
 open Status
@@ -33,25 +32,30 @@ let unix_error_message (error, fn_name, param_name) user_str =
   exit 2
 
 let initialize hostname port =
+  let open Unix in
   let ip = try (Unix.gethostbyname hostname).h_addr_list.(0)
   with Not_found ->
     let _ = prerr_endline (hostname ^ ": Host not found") in
     exit 2
   in
-  let socket = try Unix.socket PF_INET SOCK_STREAM 0
+  let s = try Unix.socket PF_INET SOCK_STREAM 0
   with Unix_error (error, fn_name, param_name) ->
     let custom_message = ": unable to create socket" in
     unix_error_message (error, fn_name, param_name) custom_message
   in
-  let _ = try Unix.connect socket (ADDR_INET(ip, port))
+  let _ = try Unix.connect s (Unix.ADDR_INET(ip, port))
   with Unix_error (error, fn_name, param_name) ->
     let custom_message = Printf.sprintf ": unable to connect to %s:%d" hostname port in
     unix_error_message (error, fn_name, param_name) custom_message
   in
-  {hostname; port; ip; socket}
+  {hostname; port; ip; socket = s}
 
-let close {socket; _} =
-  try (let _ = Unix.set_nonblock socket in Unix.close socket)
+let close connection =
+  let open Unix in
+  try (
+    Unix.set_nonblock connection.socket;
+    Unix.close connection.socket
+  )
   with Unix_error (error, fn_name, param_name) ->
     let custom_message = ": unable to close socket" in
     unix_error_message (error, fn_name, param_name) custom_message
@@ -59,16 +63,16 @@ let close {socket; _} =
 let socket {socket; _} = socket
 
 let write c str =
-  let socket = socket c in
+  let open Unix in
   let len = String.length str in
-  try ignore(Unix.send socket str 0 len [])
+  try ignore(Unix.send c.socket str 0 len [])
   with Unix_error (error, fn_name, param_name) ->
     let custom_message = Printf.sprintf ": unable to write %s in socket" str in
     unix_error_message (error, fn_name, param_name) custom_message
 
-let read c =
-  let socket = socket c in
-  let _ = try ignore(Unix.set_nonblock socket)
+let read connection =
+  let open Unix in
+  let _ = try ignore(Unix.set_nonblock connection.socket)
   with Unix_error (error, fn_name, param_name) ->
     let custom_message = ": unable to set socket in non blocking mode." in
     unix_error_message (error, fn_name, param_name) custom_message
@@ -79,11 +83,11 @@ let read c =
       let recvlen = Unix.recv s str 0 128 [] in
       let recvstr = String.sub str 0 recvlen in _read s (recvstr :: acc)
     with
-      | Unix_error (error, fn_name, param_name) ->
+      | Unix.Unix_error (error, fn_name, param_name) ->
         match error with
         | Unix.EAGAIN -> if acc = [] then _read s acc else acc
         | _ ->
           let custom_message = ": unable to revieve data via the socket." in
           unix_error_message (error, fn_name, param_name) custom_message
   in
-  String.concat "" (List.rev (_read socket []))
+  String.concat "" (List.rev (_read connection.socket []))
