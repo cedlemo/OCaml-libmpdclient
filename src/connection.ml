@@ -68,7 +68,11 @@ let write c str =
 
 let read c =
   let socket = socket c in
-  let _ = Unix.set_nonblock socket in
+  let _ = try ignore(Unix.set_nonblock socket)
+  with Unix_error (error, fn_name, param_name) ->
+    let custom_message = ": unable to set socket in non blocking mode." in
+    unix_error_message (error, fn_name, param_name) custom_message
+  in
   let str = Bytes.create 128 in
   let rec _read s acc =
     try
