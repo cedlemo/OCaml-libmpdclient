@@ -16,11 +16,6 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-open Connection
-open Protocol
-open Status
-open Utils
-
 type t = {connection : Connection.t; mpd_banner : string }
 
 let initialize connection =
@@ -53,7 +48,7 @@ let tagtypes client =
   let response = send client "tagtypes" in
   match response with
   | Ok (lines) -> let tagid_keys_vals = Utils.split_lines lines in
-  List.rev (values_of_pairs tagid_keys_vals)
+  List.rev (Utils.values_of_pairs tagid_keys_vals)
   | Error (ack, ack_cmd_num, cmd, error) -> []
 (*
 (** Remove one or more tags from the list of tag types the client is

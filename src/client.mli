@@ -18,9 +18,6 @@
 
 (** Provides functions and type in order to communicate to the mpd server
  with commands and requests. *)
-open Connection
-open Status
-open Protocol
 
 (** Client type *)
 type t
