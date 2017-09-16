@@ -19,8 +19,6 @@
 (** Offer functions and type in order to handle connections to the mpd server at
     the socket level. *)
 
-open Unix
-
 (** connection type *)
 type t
 

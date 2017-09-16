@@ -16,10 +16,7 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-open Sys
-
 open Protocol
-open Status
 open Utils
 
 type t =
