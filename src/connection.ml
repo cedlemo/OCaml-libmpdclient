@@ -22,7 +22,7 @@ open Protocol
 open Status
 open Utils
 
-type c =
+type t =
   { hostname : string; port : int; ip : Unix.inet_addr; socket : Unix.file_descr }
 
 let unix_error_message (error, fn_name, param_name) user_str =
@@ -50,27 +50,27 @@ let initialize hostname port =
   in
   {hostname; port; ip; socket = s}
 
-let close connection =
+let close t =
   let open Unix in
   try (
-    Unix.set_nonblock connection.socket;
-    Unix.close connection.socket
+    Unix.set_nonblock t.socket;
+    Unix.close t.socket
   )
   with Unix_error (error, fn_name, param_name) ->
     let custom_message = ": unable to close socket" in
     unix_error_message (error, fn_name, param_name) custom_message
 
-let write c str =
+let write t str =
   let open Unix in
   let len = String.length str in
-  try ignore(Unix.send c.socket str 0 len [])
+  try ignore(Unix.send t.socket str 0 len [])
   with Unix_error (error, fn_name, param_name) ->
     let custom_message = Printf.sprintf ": unable to write %s in socket" str in
     unix_error_message (error, fn_name, param_name) custom_message
 
-let read connection =
+let read t =
   let open Unix in
-  let _ = try ignore(Unix.set_nonblock connection.socket)
+  let _ = try ignore(Unix.set_nonblock t.socket)
   with Unix_error (error, fn_name, param_name) ->
     let custom_message = ": unable to set socket in non blocking mode." in
     unix_error_message (error, fn_name, param_name) custom_message
@@ -88,4 +88,4 @@ let read connection =
           let custom_message = ": unable to revieve data via the socket." in
           unix_error_message (error, fn_name, param_name) custom_message
   in
-  String.concat "" (List.rev (_read connection.socket []))
+  String.concat "" (List.rev (_read t.socket []))

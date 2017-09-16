@@ -27,7 +27,7 @@ type c
 
   (** Initialize the client with a connection. *)
 val initialize:
-  Connection.c -> c
+  Connection.t -> c
 
 (** Send to the mpd server a command or a request. The response of the server
     is returned under the form of a Protocol.response type. *)

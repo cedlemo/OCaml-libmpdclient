@@ -21,7 +21,7 @@ open Protocol
 open Status
 open Utils
 
-type c = {connection : Connection.c; mpd_banner : string }
+type c = {connection : Connection.t; mpd_banner : string }
 
 let initialize connection =
   let message = Connection.read connection in

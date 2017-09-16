@@ -22,20 +22,20 @@
 open Unix
 
 (** connection type *)
-type c
+type t
 
 (** Create the connection, exit if the connection can not be initialized. *)
 val initialize:
-  string -> int -> c
+  string -> int -> t
 
 (** Close the connection *)
 val close:
-  c -> unit
+  t -> unit
 
 (** Write to an Mpd connection *)
 val write:
-  c -> string -> unit
+  t -> string -> unit
 
 (** Read in an Mpd connection *)
 val read:
-  c -> string
+  t -> string
