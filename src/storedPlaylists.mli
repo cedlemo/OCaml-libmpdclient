@@ -22,38 +22,38 @@
 
 (** Prints a list of the playlist names. *)
 val listplaylists:
-  Client.c -> string list option
+  Client.t -> string list option
 
 (** Loads the playlist into the current queue. Playlist plugins are supported.
     A range may be specified to load only a part of the playlist. *)
 val load:
-  Client.c -> string -> ?range:(int * int) -> unit -> Protocol.response
+  Client.t -> string -> ?range:(int * int) -> unit -> Protocol.response
 
 (** Adds URI to the playlist NAME.m3u. NAME.m3u will be created if it does not
     exist. *)
 val playlistadd:
-  Client.c -> string -> string -> Protocol.response
+  Client.t -> string -> string -> Protocol.response
 
 (** Clears the playlist NAME.m3u. *)
 val playlistclear:
-  Client.c -> string -> Protocol.response
+  Client.t -> string -> Protocol.response
 
 (** Deletes SONGPOS from the playlist NAME.m3u. *)
 val playlistdelete:
-  Client.c -> string -> int -> Protocol.response
+  Client.t -> string -> int -> Protocol.response
 
 (** Moves the song at position FROM in the playlist NAME.m3u to the position TO. *)
 val playlistmove:
-  Client.c -> string -> int -> int -> Protocol.response
+  Client.t -> string -> int -> int -> Protocol.response
 
 (** Renames the playlist NAME.m3u to NEW_NAME.m3u. *)
 val rename:
-  Client.c -> string -> string -> Protocol.response
+  Client.t -> string -> string -> Protocol.response
 
 (** Removes the playlist NAME.m3u from the playlist directory. *)
 val rm:
-  Client.c -> string -> Protocol.response
+  Client.t -> string -> Protocol.response
 
 (** Saves the current playlist to NAME.m3u in the playlist directory. *)
 val save:
-  Client.c -> string -> Protocol.response
+  Client.t -> string -> Protocol.response
