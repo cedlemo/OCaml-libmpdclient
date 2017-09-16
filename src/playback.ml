@@ -31,22 +31,18 @@ let pause client arg =
   | _    -> Client.send client "pause 0"
 
 let play client songpos =
-  Client.send client (String.concat " " ["play";
-                                              string_of_int songpos])
+  Client.send client (String.concat " " ["play"; string_of_int songpos])
 
 let playid client songid =
-  Client.send client (String.concat " " ["playid";
-                                              string_of_int songid])
+  Client.send client (String.concat " " ["playid"; string_of_int songid])
 
 let seek client songpos time =
-  Client.send client (String.concat " " ["seek";
-                                              string_of_int songpos;
-                                              string_of_float time])
+  String.concat " " ["seek"; string_of_int songpos; string_of_float time]
+  |> Client.send client
 
 let seekid client songid time =
-  Client.send client (String.concat " " ["seekid";
-                                              string_of_int songid;
-                                              string_of_float time])
+  String.concat " " ["seekid"; string_of_int songid; string_of_float time]
+  |> Client.send client
 
 let seekcur client time =
   Client.send client (String.concat " " ["seekcur"; string_of_float time])
