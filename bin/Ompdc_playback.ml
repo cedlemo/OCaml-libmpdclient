@@ -40,6 +40,29 @@ let play_t =
     Term.(const play $ common_opts_t $ song_id),
     Term.info "play" ~doc ~sdocs ~exits ~man
 
+let time =
+  let doc = "Float value that could represents the length of a song or the \
+             starting point to play" in
+  Arg.(value & pos 1 float 0.0 & info [] ~doc ~docv:"TIME")
+
+let seek common_opts song_id time =
+  let {host; port} = common_opts in
+  let client = initialize_client {host; port} in
+  let _ = check_for_mpd_error @@ Mpd.Playback.seek client song_id time in
+  Mpd.Client.close client
+
+let seek_t =
+    let doc = "Play the song SONG_ID in the playlist at TIME"
+    in
+    let man = [
+               `S Manpage.s_description;
+               `P doc;
+               `Blocks help_section; ]
+    in
+    Term.(const seek $ common_opts_t $ song_id $ time),
+    Term.info "seek" ~doc ~sdocs ~exits ~man
+
+
 let next common_opts =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
@@ -112,4 +135,4 @@ let pause_t =
     Term.(const pause $ common_opts_t $ toggle_value),
     Term.info "pause" ~doc ~sdocs ~exits ~man
 
-let cmds = [play_t; next_t; previous_t; stop_t; pause_t]
+let cmds = [play_t; seek_t; next_t; previous_t; stop_t; pause_t]
