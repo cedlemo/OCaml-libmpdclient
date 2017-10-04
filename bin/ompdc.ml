@@ -27,6 +27,7 @@ let default_cmd =
 
 let cmds = List.concat [Ompdc_playback.cmds;
                         [Ompdc_status.cmd;
+                         Ompdc_idle.cmd;
                          help_cmd]
 ]
 
