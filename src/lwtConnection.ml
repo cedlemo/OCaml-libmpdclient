@@ -24,13 +24,14 @@ type c =
 let gethostbyname name =
 Lwt.catch
   (fun () ->
-  Lwt_unix.gethostbyname name
-  >>= fun entry ->
-    let addrs = Array.to_list entry.Unix.h_addr_list in
-    Lwt.return addrs
-) (function
-  | Not_found -> Lwt.return_nil
-  | e -> Lwt.fail e
+    Lwt_unix.gethostbyname name
+    >>= fun entry ->
+      let addrs = Array.to_list entry.Unix.h_addr_list in
+      Lwt.return addrs
+  )
+  (function
+    | Not_found -> Lwt.return_nil
+    | e -> Lwt.fail e
   )
 
 let open_socket addr port =
@@ -40,18 +41,19 @@ let open_socket addr port =
   >>= fun () ->
     Lwt.return sock
 
-  let initialize hostname port =
-  gethostbyname hostname >>= fun addrs ->
-  match addrs with
-  | [] -> Lwt.return None
-  | addr :: others -> open_socket addr port
-                      >>= fun socket ->
-                        let conn = { hostname = hostname;
-                                     port = port;
-                                     ip = addr;
-                                     socket = socket
-                                   }
-  in Lwt.return (Some (conn))
+let initialize hostname port =
+  gethostbyname hostname
+  >>= fun addrs ->
+    match addrs with
+    | [] -> Lwt.return None
+    | addr :: others -> open_socket addr port
+                        >>= fun socket ->
+                          let conn = { hostname = hostname;
+                                       port = port;
+                                       ip = addr;
+                                       socket = socket
+                                     }
+                          in Lwt.return (Some (conn))
 
 let write conn str =
   let {socket = socket; _} = conn in
@@ -101,7 +103,7 @@ let read connection check_full_data =
     | Incomplete -> recvstr connection
                     >>= fun response ->
                     _read connection (response :: acc)
-    in _read connection []
+  in _read connection []
 
 let read_idle_events connection =
   read connection full_mpd_idle_event
