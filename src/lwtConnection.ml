@@ -21,6 +21,9 @@ open Lwt
 type c =
   { hostname : string; port : int; ip : Unix.inet_addr; socket : Lwt_unix.file_descr }
 
+let lwt_print_err str =
+  Lwt_io.write_line Lwt_io.stderr str
+
 let gethostbyname name =
 Lwt.catch
   (fun () ->
@@ -30,7 +33,8 @@ Lwt.catch
       Lwt.return addrs
   )
   (function
-    | Not_found -> Lwt.return_nil
+    | Not_found -> lwt_print_err (name ^ ": Host not found")
+      >>= fun () -> Lwt.return_nil
     | e -> Lwt.fail e
   )
 
