@@ -25,25 +25,34 @@ let lwt_print_err str =
   Lwt_io.write_line Lwt_io.stderr str
 
 let gethostbyname name =
-Lwt.catch
-  (fun () ->
-    Lwt_unix.gethostbyname name
-    >>= fun entry ->
-      let addrs = Array.to_list entry.Unix.h_addr_list in
-      Lwt.return addrs
-  )
-  (function
-    | Not_found -> lwt_print_err (name ^ ": Host not found")
-      >>= fun () -> Lwt.return_nil
-    | e -> Lwt.fail e
-  )
+  Lwt.catch
+    (fun () ->
+      Lwt_unix.gethostbyname name
+      >>= fun entry ->
+        let addrs = Array.to_list entry.Unix.h_addr_list in
+        Lwt.return addrs
+    )
+    (function
+      | Not_found -> lwt_print_err (name ^ ": Host not found")
+        >>= fun () -> Lwt.return_nil
+      | e -> Lwt.fail e
+    )
 
 let open_socket addr port =
-  let sock = Lwt_unix.socket Lwt_unix.PF_INET Lwt_unix.SOCK_STREAM 0 in
-  let sockaddr = Lwt_unix.ADDR_INET (addr, port) in
-  Lwt_unix.connect sock sockaddr
-  >>= fun () ->
-    Lwt.return sock
+  Lwt.catch
+    (fun () ->
+      let sock = Lwt_unix.socket Lwt_unix.PF_INET Lwt_unix.SOCK_STREAM 0 in
+      let sockaddr = Lwt_unix.ADDR_INET (addr, port) in
+      Lwt_unix.connect sock sockaddr
+      >>= fun () ->
+        Lwt.return sock
+    )
+    (function
+      | Unix.Unix_error (error, fn_name, param_name) ->
+          Lwt_io.eprintf "%s %s %s : unable to open socket. Exiting..." (Unix.error_message error) fn_name param_name
+          >>= fun () -> Lwt.return_nil
+      | e -> Lwt.fail e
+    )
 
 let initialize hostname port =
   gethostbyname hostname
