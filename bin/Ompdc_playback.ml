@@ -19,25 +19,29 @@
 open Cmdliner
 open Ompdc_common
 
-let play common_opts song_id =
+let play common_opts song_pos =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
-  let _ = check_for_mpd_error @@ Mpd.Playback.play client song_id in
+  let _ = check_for_mpd_error @@ Mpd.Playback.play client song_pos in
   Mpd.Client.close client
 
+let song_pos =
+  let doc = "Integer value that represents the position of a song in the current playlist." in
+  Arg.(value & pos 0 int 0 & info [] ~doc ~docv:"SONG_POS")
+
 let song_id =
-  let doc = "Integer value that represents the id of a song in the current playlist." in
+  let doc = "Integer value that represents the id of a song." in
   Arg.(value & pos 0 int 0 & info [] ~doc ~docv:"SONG_ID")
 
 let play_t =
-    let doc = "Play the song SONG_ID in the playlist"
+    let doc = "Play the song at SONG_POS in the playlist"
     in
     let man = [
                `S Manpage.s_description;
                `P doc;
                `Blocks help_section; ]
     in
-    Term.(const play $ common_opts_t $ song_id),
+    Term.(const play $ common_opts_t $ song_pos),
     Term.info "play" ~doc ~sdocs ~exits ~man
 
 let time =
@@ -45,21 +49,21 @@ let time =
              starting point to play" in
   Arg.(value & pos 1 float 0.0 & info [] ~doc ~docv:"TIME")
 
-let seek common_opts song_id time =
+let seek common_opts song_pos time =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
-  let _ = check_for_mpd_error @@ Mpd.Playback.seek client song_id time in
+  let _ = check_for_mpd_error @@ Mpd.Playback.seek client song_pos time in
   Mpd.Client.close client
 
 let seek_t =
-    let doc = "Play the song SONG_ID in the playlist at TIME"
+    let doc = "Play the song at SONG_POS in the playlist at TIME"
     in
     let man = [
                `S Manpage.s_description;
                `P doc;
                `Blocks help_section; ]
     in
-    Term.(const seek $ common_opts_t $ song_id $ time),
+    Term.(const seek $ common_opts_t $ song_pos $ time),
     Term.info "seek" ~doc ~sdocs ~exits ~man
 
 
