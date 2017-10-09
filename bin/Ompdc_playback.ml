@@ -25,6 +25,12 @@ let play common_opts song_pos =
   let _ = check_for_mpd_error @@ Mpd.Playback.play client song_pos in
   Mpd.Client.close client
 
+let play_id common_opts song_id =
+  let {host; port} = common_opts in
+  let client = initialize_client {host; port} in
+  let _ = check_for_mpd_error @@ Mpd.Playback.playid client song_id in
+  Mpd.Client.close client
+
 let song_pos =
   let doc = "Integer value that represents the position of a song in the current playlist." in
   Arg.(value & pos 0 int 0 & info [] ~doc ~docv:"SONG_POS")
@@ -43,6 +49,17 @@ let play_t =
     in
     Term.(const play $ common_opts_t $ song_pos),
     Term.info "play" ~doc ~sdocs ~exits ~man
+
+let play_id_t =
+    let doc = "Play the song SONG_ID."
+    in
+    let man = [
+               `S Manpage.s_description;
+               `P doc;
+               `Blocks help_section; ]
+    in
+    Term.(const play $ common_opts_t $ song_id),
+    Term.info "play_id" ~doc ~sdocs ~exits ~man
 
 let time =
   let doc = "Float value that could represents the length of a song or the \
@@ -139,4 +156,4 @@ let pause_t =
     Term.(const pause $ common_opts_t $ toggle_value),
     Term.info "pause" ~doc ~sdocs ~exits ~man
 
-let cmds = [play_t; seek_t; next_t; previous_t; stop_t; pause_t]
+let cmds = [play_t; play_id_t; seek_t; next_t; previous_t; stop_t; pause_t]
