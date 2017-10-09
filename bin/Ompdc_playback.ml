@@ -78,6 +78,12 @@ let seek_id common_opts song_id time =
   let _ = check_for_mpd_error @@ Mpd.Playback.seekid client song_id time in
   Mpd.Client.close client
 
+let seek_cur common_opts time =
+  let {host; port} = common_opts in
+  let client = initialize_client {host; port} in
+  let _ = check_for_mpd_error @@ Mpd.Playback.seekcur client time in
+  Mpd.Client.close client
+
 let seek_t =
     let doc = "Play the song at SONG_POS in the playlist at TIME"
     in
@@ -99,6 +105,15 @@ let seek_id_t =
     in
     Term.(const seek_id $ common_opts_t $ song_id $ time),
     Term.info "seek_id" ~doc ~sdocs ~exits ~man
+
+let seek_cur_t =
+  let doc = "Play the current song at TIME" in
+  let man = [
+    `S Manpage.s_description;
+    `P doc;
+    `Blocks help_section; ] in
+  Term.(const seek_cur $ common_opts_t $ time),
+  Term.info "seek_cur" ~doc ~sdocs ~exits ~man
 
 let next common_opts =
   let {host; port} = common_opts in
@@ -172,4 +187,4 @@ let pause_t =
     Term.(const pause $ common_opts_t $ toggle_value),
     Term.info "pause" ~doc ~sdocs ~exits ~man
 
-let cmds = [play_t; play_id_t; seek_t; seek_id_t; next_t; previous_t; stop_t; pause_t]
+let cmds = [play_t; play_id_t; seek_t; seek_id_t; seek_cur_t; next_t; previous_t; stop_t; pause_t]
