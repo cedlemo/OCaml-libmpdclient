@@ -45,12 +45,12 @@ let open_socket addr port =
       let sockaddr = Lwt_unix.ADDR_INET (addr, port) in
       Lwt_unix.connect sock sockaddr
       >>= fun () ->
-        Lwt.return sock
+        Lwt.return (Some sock)
     )
     (function
       | Unix.Unix_error (error, fn_name, param_name) ->
-          Lwt_io.eprintf "%s %s %s : unable to open socket. Exiting..." (Unix.error_message error) fn_name param_name
-          >>= fun () -> Lwt.return_nil
+          Lwt_io.eprintf "%s, Unix.%s (%s): unable to open socket. Exiting...\n" (Unix.error_message error) fn_name param_name
+          >>= fun () -> Lwt.return_none
       | e -> Lwt.fail e
     )
 
@@ -58,15 +58,17 @@ let initialize hostname port =
   gethostbyname hostname
   >>= fun addrs ->
     match addrs with
-    | [] -> Lwt.return None
+    | [] -> Lwt.return_none
     | addr :: others -> open_socket addr port
-                        >>= fun socket ->
-                          let conn = { hostname = hostname;
-                                       port = port;
-                                       ip = addr;
-                                       socket = socket
-                                     }
-                          in Lwt.return (Some (conn))
+                        >>= function
+                          | None -> Lwt.return_none
+                          | Some socket ->
+                              let conn = { hostname = hostname;
+                                           port = port;
+                                           ip = addr;
+                                           socket = socket
+                                         }
+                              in Lwt.return (Some (conn))
 
 let write conn str =
   let {socket = socket; _} = conn in
