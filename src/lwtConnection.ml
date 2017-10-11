@@ -21,20 +21,17 @@ open Lwt
 type c =
   { hostname : string; port : int; ip : Unix.inet_addr; socket : Lwt_unix.file_descr }
 
-let lwt_print_err str =
-  Lwt_io.write_line Lwt_io.stderr str
-
 let gethostbyname name =
   Lwt.catch
     (fun () ->
       Lwt_unix.gethostbyname name
       >>= fun entry ->
         let addrs = Array.to_list entry.Unix.h_addr_list in
-        Lwt.return addrs
+        Lwt.return (Some addrs)
     )
     (function
-      | Not_found -> lwt_print_err (name ^ ": Host not found")
-        >>= fun () -> Lwt.return_nil
+      | Not_found -> Lwt_io.eprintf "Host not found, Lwt_unix.gethostname: no host found for %s. Exiting...\n" name
+        >>= fun () -> Lwt.return_none
       | e -> Lwt.fail e
     )
 
@@ -56,10 +53,11 @@ let open_socket addr port =
 
 let initialize hostname port =
   gethostbyname hostname
-  >>= fun addrs ->
-    match addrs with
-    | [] -> Lwt.return_none
-    | addr :: others -> open_socket addr port
+  >>= function
+    | None -> Lwt.return_none
+    | Some addrs -> match addrs with
+                    | [] -> Lwt.return_none
+                    | addr :: others -> open_socket addr port
                         >>= function
                           | None -> Lwt.return_none
                           | Some socket ->
