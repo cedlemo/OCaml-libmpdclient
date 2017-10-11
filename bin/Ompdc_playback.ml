@@ -92,8 +92,8 @@ let seek_t =
                `P doc;
                `Blocks help_section; ]
     in
-    Term.(const seek_id $ common_opts_t $ song_pos $ time),
-    Term.info "seek_id" ~doc ~sdocs ~exits ~man
+    Term.(const seek $ common_opts_t $ song_pos $ time),
+    Term.info "seek" ~doc ~sdocs ~exits ~man
 
 let seek_id_t =
     let doc = "Play the song SONG_ID at TIME"
