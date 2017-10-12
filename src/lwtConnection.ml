@@ -69,11 +69,23 @@ let initialize hostname port =
                               in Lwt.return (Some (conn))
 
 let write conn str =
-  let {socket = socket; _} = conn in
-  let len = String.length str in
-  Lwt_unix.send socket str 0 len []
-  >>=fun success ->
-    Lwt.return ()
+  Lwt.catch
+  (fun () ->
+    let {socket = socket; _} = conn in
+    let len = String.length str in
+    Lwt_unix.send socket str 0 len []
+  )
+  (function
+      | Unix.Unix_error (error, fn_name, param_name) ->
+          Lwt_io.eprintf "%s, Unix.%s (%s): unable to write to socket connected to %s:%s. Exiting...\n"
+                         (Unix.error_message error)
+                         fn_name
+                         param_name
+                         conn.hostname
+                         (string_of_int conn.port)
+          >>= fun () -> Lwt.return (-1)
+      | e -> Lwt.fail e
+  )
 
 let recvstr conn =
   let {socket = socket; _} = conn in
