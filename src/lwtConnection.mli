@@ -31,7 +31,7 @@ val initialize:
 
 (** Write in a Mpd connection throught a Lwt thread. *)
 val write:
-  c -> string -> unit Lwt.t
+  c -> string -> int Lwt.t
 
 val read_mpd_banner:
   c -> string Lwt.t

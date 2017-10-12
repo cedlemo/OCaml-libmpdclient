@@ -48,18 +48,18 @@ val idle:
 (** Send to the mpd server a command. The response of the server is returned
     under the form of a Protocol.response type. *)
 val send:
-  c -> string -> Protocol.response Lwt.t
+  c -> string -> Protocol.response option Lwt.t
 
 (** Create a status request and returns the status under a Mpd.Status.s Lwt.t
     type.*)
 val status:
-  c -> Status.t Lwt.t
+  c -> Status.t option Lwt.t
 
 (** Does nothing but return "OK". *)
 val ping:
-  c -> Protocol.response Lwt.t
+  c -> Protocol.response option Lwt.t
 
 (** This is used for authentication with the server. PASSWORD is simply the
     plaintext password. *)
 val password:
-  c -> string -> Protocol.response Lwt.t
+  c -> string -> Protocol.response option Lwt.t

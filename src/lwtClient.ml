@@ -36,32 +36,36 @@ let rec idle client on_event =
   let {connection = connection; _} = client in
   let cmd = "idle\n" in
   LwtConnection.write connection cmd
-  >>= fun () ->
-    LwtConnection.read_idle_events connection
-    >>= fun response ->
-      on_event response
-      >>=fun stop ->
-        match stop with
-        | true -> Lwt.return ()
-        | false -> idle client on_event
+  >>= function
+  | (-1) -> Lwt.return () (* TODO: Should return a meaningfull value so that the user can exit on this value. *)
+  | _ -> LwtConnection.read_idle_events connection
+      >>= fun response ->
+        on_event response
+        >>=fun stop ->
+          match stop with
+          | true -> Lwt.return ()
+          | false -> idle client on_event
 
 let send client cmd =
   let {connection = c; _} = client in
   LwtConnection.write c (cmd ^ "\n")
-  >>= fun () ->
-    LwtConnection.read_command_response c
-    >>= fun response ->
-    let parsed_response = Protocol.parse_response response in
+  >>= function
+    | (-1) -> Lwt.return_none (* TODO: Should return a meaningfull value so that the user can exit on this value. *)
+    | _ -> LwtConnection.read_command_response c
+      >>= fun response ->
+      let parsed_response = Some (Protocol.parse_response response) in
       Lwt.return parsed_response
 
 let status client =
   send client "status"
-  >>= fun response ->
-    match response with
-    | Ok (lines) -> let status_pairs = Utils.split_lines lines in
-    let status = Status.parse status_pairs in Lwt.return status
-    | Error (ack, ack_cmd_num, cmd, error) -> let status = Status.generate_error error in
-    Lwt.return status
+  >>= function
+    | None -> Lwt.return_none
+    | Some response -> Lwt.return response
+                       >>= function
+                         | Ok (lines) -> let status_pairs = Utils.split_lines lines in
+                             let status = Some (Status.parse status_pairs) in Lwt.return status
+                         | Error (ack, ack_cmd_num, cmd, error) -> let status = Some (Status.generate_error error) in
+                             Lwt.return status
 
 let ping client =
   send client "ping"
