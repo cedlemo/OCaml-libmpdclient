@@ -16,8 +16,7 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-let consume client state =
-  match state with
+let consume client = function
   | true  -> LwtClient.send client "consume 1"
   | false -> LwtClient.send client "consume 0"
 
@@ -33,18 +32,15 @@ type mixrampd_t =
   | Nan
   | Seconds of int
 
-let mixrampdelay client delay =
-  match delay with
+let mixrampdelay client = function
   | Nan -> LwtClient.send client "mixrampdelay nan"
   | Seconds (s) -> LwtClient.send client (String.concat " " ["mixrampdb";
                                                               string_of_int s])
-let random client state =
-  match state with
+let random client = function
   | true  -> LwtClient.send client "random 1"
   | false -> LwtClient.send client "random 0"
 
-let repeat client state =
-  match state with
+let repeat client = function
   | true  -> LwtClient.send client "repeat 1"
   | false -> LwtClient.send client "repeat 0"
 
@@ -52,8 +48,7 @@ let setvol client volume =
   LwtClient.send client (String.concat " " ["setvol";
                                              string_of_int volume])
 
-let single client state =
-  match state with
+let single client = function
   | true  -> LwtClient.send client "single 1"
   | false -> LwtClient.send client "single 0"
 
@@ -63,10 +58,8 @@ type gain_mode_t =
   | Album
   | Auto
 
-let replay_gain_mode client mode =
-  match mode with
+let replay_gain_mode client = function
   | Off -> LwtClient.send client "replay_gain_mode off"
   | Track -> LwtClient.send client "replay_gain_mode track"
   | Album -> LwtClient.send client "replay_gain_mode album"
   | Auto -> LwtClient.send client "replay_gain_mode auto"
-
