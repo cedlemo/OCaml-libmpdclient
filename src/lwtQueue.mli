@@ -60,19 +60,19 @@ val moveid:
 (** Get a list of Song.s that represents all the songs in the current
     playlist. *)
 val playlist:
-  LwtClient.c -> t Lwt.t
+  LwtClient.c -> t option Lwt.t
 
 (** Get a list with the Song.s of the song id in the playlist *)
 val playlistid:
-  LwtClient.c -> int -> t Lwt.t
+  LwtClient.c -> int -> t option Lwt.t
 
 (** Finds songs in the current playlist with strict matching.*)
 val playlistfind:
-  LwtClient.c -> string -> string -> t Lwt.t
+  LwtClient.c -> string -> string -> t option Lwt.t
 
 (** Searches case-insensitively for partial matches in the current playlist. *)
 val playlistsearch:
-  LwtClient.c -> string -> string -> t Lwt.t
+  LwtClient.c -> string -> string -> t option Lwt.t
 
 (** Swaps the positions of SONG1 and SONG2. *)
 val swap:
