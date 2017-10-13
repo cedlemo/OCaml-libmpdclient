@@ -20,10 +20,10 @@
 
 (** Sets consume state to STATE, STATE should be false or true.
     When consume is activated, each song played is removed from playlist. *)
-val consume: LwtClient.c -> bool -> Protocol.response Lwt.t
+val consume: LwtClient.c -> bool -> Protocol.response option Lwt.t
 
 (** Sets crossfading between songs. *)
-val crossfade: LwtClient.c -> int -> Protocol.response Lwt.t
+val crossfade: LwtClient.c -> int -> Protocol.response option Lwt.t
 
 (** Sets the threshold at which songs will be overlapped.
     Like crossfading but doesn't fade the track volume, just overlaps. The
@@ -31,28 +31,28 @@ val crossfade: LwtClient.c -> int -> Protocol.response Lwt.t
     normalized maximum volume so use negative values, I prefer -17dB.
     In the absence of mixramp tags crossfading will be used.
     See http://sourceforge.net/projects/mixramp *)
-val mixrampdb: LwtClient.c -> int -> Protocol.response Lwt.t
+val mixrampdb: LwtClient.c -> int -> Protocol.response option Lwt.t
 
 (** Type for the command mixrampdelay, it can be integers for seconds or nan. *)
 type mixrampd_t
 
 (** Additional time subtracted from the overlap calculated by mixrampdb. A
     value of "nan" disables MixRamp overlapping and falls back to crossfading. *)
-val mixrampdelay: LwtClient.c -> mixrampd_t -> Protocol.response Lwt.t
+val mixrampdelay: LwtClient.c -> mixrampd_t -> Protocol.response option Lwt.t
 
 (** Sets random state to STATE, STATE should be true or false *)
-val random: LwtClient.c -> bool -> Protocol.response Lwt.t
+val random: LwtClient.c -> bool -> Protocol.response option Lwt.t
 
 (** Sets repeat state to STATE, STATE should be false or true. *)
-val repeat: LwtClient.c -> bool -> Protocol.response Lwt.t
+val repeat: LwtClient.c -> bool -> Protocol.response option Lwt.t
 
 (** Sets volume to VOL, the range of volume is 0-100. *)
-val setvol: LwtClient.c -> int -> Protocol.response Lwt.t
+val setvol: LwtClient.c -> int -> Protocol.response option Lwt.t
 
 (** Sets single state to STATE, STATE should be 0 or 1. When single is
     activated, playback is stopped after current song, or song is repeated if
     the 'repeat' mode is enabled. *)
-val single: LwtClient.c -> bool -> Protocol.response Lwt.t
+val single: LwtClient.c -> bool -> Protocol.response option Lwt.t
 
 (** gain_mode type for the command replay_gain_mode. *)
 type gain_mode_t
@@ -61,4 +61,4 @@ type gain_mode_t
     Changing the mode during playback may take several seconds, because the
     new settings does not affect the buffered data.
     This command triggers the options idle event. *)
-val replay_gain_mode: LwtClient.c -> gain_mode_t -> Protocol.response Lwt.t
+val replay_gain_mode: LwtClient.c -> gain_mode_t -> Protocol.response option Lwt.t
