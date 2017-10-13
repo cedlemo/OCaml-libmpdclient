@@ -32,7 +32,7 @@ let on_mpd_event = function
 let main_thread =
    Mpd.LwtConnection.initialize host port
    >>= function
-    | None -> Lwt.return ()
+    | None -> Lwt.return 125
     | Some (c) -> Lwt_io.write_line Lwt_io.stdout "Client on"
                   >>= fun () ->
                     Mpd.LwtClient.initialize c
@@ -40,5 +40,7 @@ let main_thread =
                       Lwt_io.write_line Lwt_io.stdout (Mpd.LwtClient.mpd_banner client)
                       >>= fun () ->
                         Mpd.LwtClient.idle client on_mpd_event
+                        >>= fun () ->
+                          Lwt.return 0
 
-let () = Lwt_main.run main_thread
+let () = exit (Lwt_main.run main_thread)
