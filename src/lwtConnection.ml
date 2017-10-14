@@ -88,15 +88,26 @@ let write conn str =
   )
 
 let recvstr conn =
-  let {socket = socket; _} = conn in
-  let maxlen = 8 in
-  let buffer = Bytes.create maxlen in
-  Lwt_unix.recv socket buffer 0 maxlen [] >|= String.sub buffer 0
-  (* Equivalent to
-   * let buf = Bytes.create 128 in
-   * Lwt_unix.recv sock buf 0 128 []
-   * >>= fun recvlen ->
-   *   String.sub buf 0 recvlen in *)
+  Lwt.catch
+  (fun () ->
+    let {socket = socket; _} = conn in
+    let maxlen = 8 in
+    let buffer = Bytes.create maxlen in
+    Lwt_unix.recv socket buffer 0 maxlen []
+    >>= fun recvlen ->
+      Some (String.sub buffer 0 recvlen)
+  )
+  (function
+      | Unix.Unix_error (error, fn_name, param_name) ->
+          Lwt_io.eprintf "%s, Unix.%s (%s): unable to read from socket connected to %s:%s. Exiting...\n"
+                         (Unix.error_message error)
+                         fn_name
+                         param_name
+                         conn.hostname
+                         (string_of_int conn.port)
+          >>= fun () -> Lwt.return_none
+      | e -> Lwt.fail e
+  )
 
 type mpd_response =
   | Incomplete
@@ -124,11 +135,12 @@ let read connection check_full_data =
   let rec _read connection acc =
     let response = String.concat "" (List.rev acc) in
     match check_full_data response with
-    | Complete (s) -> Lwt.return s
+    | Complete (s) -> Lwt.return (Some s)
     | Incomplete -> recvstr connection
-                    >>= fun response ->
-                    _read connection (response :: acc)
-  in _read connection []
+                    >>= function
+                      | None -> Lwt.return_none
+                      | Some response -> _read connection (response :: acc)
+    in _read connection []
 
 let read_idle_events connection =
   read connection full_mpd_idle_event

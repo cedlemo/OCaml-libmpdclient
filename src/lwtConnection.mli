@@ -35,13 +35,13 @@ val write:
   t -> string -> int Lwt.t
 
 val read_mpd_banner:
-  t -> string Lwt.t
+  t -> string option Lwt.t
 
 val read_idle_events:
-  t -> string Lwt.t
+  t -> string option Lwt.t
 
 val read_command_response:
-  t -> string Lwt.t
+  t -> string option Lwt.t
 
 val close:
-  t -> unit Lwt.t
+  t -> unit option Lwt.t
