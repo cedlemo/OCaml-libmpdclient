@@ -24,42 +24,42 @@ open LwtConnection
 open Status
 open Protocol
 
-type c
+type t
 
 (** Initialize the client with a connection. *)
 val initialize:
-  LwtConnection.c -> c Lwt.t
+  LwtConnection.t -> t Lwt.t
 
 (** Close the client *)
 val close:
-  c -> unit Lwt.t
+  t -> unit Lwt.t
 
 (** Return the mpd banner that the server send at the first connection of the
     client. *)
 val mpd_banner:
-  c -> string
+  t -> string
 
 (** Loop on mpd event with the "idle" command
     the on_event function take the event response as argument and return
     true to stop or false to continue the loop *)
 val idle:
-  c -> (string -> bool Lwt.t) -> unit Lwt.t
+  t -> (string -> bool Lwt.t) -> unit Lwt.t
 
 (** Send to the mpd server a command. The response of the server is returned
     under the form of a Protocol.response type. *)
 val send:
-  c -> string -> Protocol.response option Lwt.t
+  t -> string -> Protocol.response option Lwt.t
 
 (** Create a status request and returns the status under a Mpd.Status.s Lwt.t
     type.*)
 val status:
-  c -> Status.t option Lwt.t
+  t -> Status.t option Lwt.t
 
 (** Does nothing but return "OK". *)
 val ping:
-  c -> Protocol.response option Lwt.t
+  t -> Protocol.response option Lwt.t
 
 (** This is used for authentication with the server. PASSWORD is simply the
     plaintext password. *)
 val password:
-  c -> string -> Protocol.response option Lwt.t
+  t -> string -> Protocol.response option Lwt.t
