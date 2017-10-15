@@ -18,7 +18,7 @@
 
 open Lwt.Infix
 
-type c = {connection : LwtConnection.c; mpd_banner : string }
+type t = {connection : LwtConnection.t; mpd_banner : string }
 
 let initialize connection =
   LwtConnection.read_mpd_banner connection
