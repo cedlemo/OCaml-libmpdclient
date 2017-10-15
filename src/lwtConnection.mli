@@ -1,4 +1,4 @@
-(*
+*
  * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
@@ -27,7 +27,7 @@ type t
 (** Create the connection in a Lwt thread, returns None if the connection
     can not be initialized. *)
 val initialize:
-  string -> int -> t option Lwt.t
+  string -> int -> t Lwt.t
 
 (** Write in a Mpd connection throught a Lwt thread. Return -1 if an it fails
     with an exception. *)

@@ -32,11 +32,15 @@ let gethostbyname name =
       Lwt_unix.gethostbyname name
       >>= fun entry ->
         let addrs = Array.to_list entry.Unix.h_addr_list in
-        Lwt.return (Some addrs)
+        Lwt.return addrs
     )
     (function
-      | Not_found -> Lwt_io.eprintf "Host not found, Lwt_unix.gethostname: no host found for %s. Exiting...\n" name
-        >>= fun () -> Lwt.return_none
+      | Not_found -> let m = Printf.sprintf "Host not found, \
+                                            Lwt_unix.gethostname: no host found\
+                                            for %s. Exiting...\n" name in
+          fail_with_message m
+          >>= fun () -> Lwt.return_nil
+
       | e -> Lwt.fail e
     )
 
