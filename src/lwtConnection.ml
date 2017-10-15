@@ -18,7 +18,7 @@
 
 open Lwt
 
-type c =
+type t =
   { hostname : string; port : int; ip : Unix.inet_addr; socket : Lwt_unix.file_descr }
 
 let gethostbyname name =
@@ -95,7 +95,7 @@ let recvstr conn =
     let buffer = Bytes.create maxlen in
     Lwt_unix.recv socket buffer 0 maxlen []
     >>= fun recvlen ->
-      Some (String.sub buffer 0 recvlen)
+      Lwt.return (Some (String.sub buffer 0 recvlen))
   )
   (function
       | Unix.Unix_error (error, fn_name, param_name) ->
@@ -152,5 +152,18 @@ let read_command_response connection =
   read connection full_mpd_command_response
 
 let close conn =
-  let {socket = socket; _} = conn in
-  Lwt_unix.close socket
+  Lwt.catch
+  (fun () ->
+    let {socket = socket; _} = conn in
+    Lwt_unix.close socket
+  )
+  (function
+      | Unix.Unix_error (error, fn_name, param_name) ->
+          Lwt_io.eprintf "%s, Unix.%s (%s): unable to read from socket connected to %s:%s. Exiting...\n"
+                         (Unix.error_message error)
+                         fn_name
+                         param_name
+                         conn.hostname
+                         (string_of_int conn.port)
+      | e -> Lwt.fail e
+  )

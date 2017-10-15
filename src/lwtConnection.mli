@@ -44,4 +44,4 @@ val read_command_response:
   t -> string option Lwt.t
 
 val close:
-  t -> unit option Lwt.t
+  t -> unit Lwt.t
