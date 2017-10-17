@@ -43,8 +43,15 @@ let idle common_opts =
           >>= fun () ->
             Mpd.LwtClient.idle client on_mpd_event
   in
-  Lwt_main.run main_thread
-
+  Lwt_main.run (
+    Lwt.catch
+      (fun () -> main_thread)
+      (function
+        | Mpd.LwtConnection.Mpd_Lwt_unix_exn message ->
+            Lwt_io.write_line Lwt_io.stderr message
+        | _ -> Lwt_io.write_line Lwt_io.stderr "Exception not handled. Exit ..."
+      )
+  )
 let cmd =
   let doc = "Use Ompdc an Mpd server events listener. Quit with Ctl+Alt+C." in
   let man = [ `S Manpage.s_description;
