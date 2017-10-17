@@ -39,7 +39,6 @@ let gethostbyname name =
                                             Lwt_unix.gethostname: no host found\
                                             for %s. Exiting...\n" name in
           fail_with_message m
-          >>= fun () -> Lwt.return_nil
 
       | e -> Lwt.fail e
     )
@@ -51,31 +50,31 @@ let open_socket addr port =
       let sockaddr = Lwt_unix.ADDR_INET (addr, port) in
       Lwt_unix.connect sock sockaddr
       >>= fun () ->
-        Lwt.return (Some sock)
+        Lwt.return sock
     )
     (function
       | Unix.Unix_error (error, fn_name, param_name) ->
-          Lwt_io.eprintf "%s, Unix.%s (%s): unable to open socket. Exiting...\n" (Unix.error_message error) fn_name param_name
-          >>= fun () -> Lwt.return_none
+          let m = Printf.sprintf "%s, Unix.%s (%s): unable to open socket. \
+                                  Exiting...\n"
+                                  (Unix.error_message error)
+                                  fn_name
+                                  param_name in
+          fail_with_message m
       | e -> Lwt.fail e
     )
 
 let initialize hostname port =
   gethostbyname hostname
-  >>= function
-    | None -> Lwt.return_none
-    | Some addrs -> match addrs with
-                    | [] -> Lwt.return_none
-                    | addr :: others -> open_socket addr port
-                        >>= function
-                          | None -> Lwt.return_none
-                          | Some socket ->
-                              let conn = { hostname = hostname;
-                                           port = port;
-                                           ip = addr;
-                                           socket = socket
-                                         }
-                              in Lwt.return (Some (conn))
+  >>= fun addrs ->
+    let addr = List.hd addrs in
+    open_socket addr port
+    >>= fun socket ->
+      let conn = { hostname = hostname;
+                   port = port;
+                   ip = addr;
+                   socket = socket
+                 }
+     in Lwt.return conn
 
 let write conn str =
   Lwt.catch
@@ -86,13 +85,14 @@ let write conn str =
   )
   (function
       | Unix.Unix_error (error, fn_name, param_name) ->
-          Lwt_io.eprintf "%s, Unix.%s (%s): unable to write to socket connected to %s:%s. Exiting...\n"
-                         (Unix.error_message error)
-                         fn_name
-                         param_name
-                         conn.hostname
-                         (string_of_int conn.port)
-          >>= fun () -> Lwt.return (-1)
+          let m = Printf.sprintf "%s, Unix.%s (%s): unable to write to socket \
+                                  connected to %s:%s. Exiting...\n"
+                                  (Unix.error_message error)
+                                  fn_name
+                                  param_name
+                                  conn.hostname
+                                  (string_of_int conn.port) in
+          fail_with_message m
       | e -> Lwt.fail e
   )
 
@@ -104,17 +104,18 @@ let recvstr conn =
     let buffer = Bytes.create maxlen in
     Lwt_unix.recv socket buffer 0 maxlen []
     >>= fun recvlen ->
-      Lwt.return (Some (String.sub buffer 0 recvlen))
+      Lwt.return (String.sub buffer 0 recvlen)
   )
   (function
       | Unix.Unix_error (error, fn_name, param_name) ->
-          Lwt_io.eprintf "%s, Unix.%s (%s): unable to read from socket connected to %s:%s. Exiting...\n"
-                         (Unix.error_message error)
-                         fn_name
-                         param_name
-                         conn.hostname
-                         (string_of_int conn.port)
-          >>= fun () -> Lwt.return_none
+          let m = Printf.sprintf "%s, Unix.%s (%s): unable to read from socket \
+                                  connected to %s:%s. Exiting...\n"
+                                  (Unix.error_message error)
+                                  fn_name
+                                  param_name
+                                  conn.hostname
+                                  (string_of_int conn.port) in
+          fail_with_message m
       | e -> Lwt.fail e
   )
 
@@ -144,11 +145,9 @@ let read connection check_full_data =
   let rec _read connection acc =
     let response = String.concat "" (List.rev acc) in
     match check_full_data response with
-    | Complete (s) -> Lwt.return (Some s)
+    | Complete (s) -> Lwt.return s
     | Incomplete -> recvstr connection
-                    >>= function
-                      | None -> Lwt.return_none
-                      | Some response -> _read connection (response :: acc)
+                    >>= fun response -> _read connection (response :: acc)
     in _read connection []
 
 let read_idle_events connection =
@@ -168,11 +167,13 @@ let close conn =
   )
   (function
       | Unix.Unix_error (error, fn_name, param_name) ->
-          Lwt_io.eprintf "%s, Unix.%s (%s): unable to read from socket connected to %s:%s. Exiting...\n"
-                         (Unix.error_message error)
-                         fn_name
-                         param_name
-                         conn.hostname
-                         (string_of_int conn.port)
+          let m = Printf.sprintf "%s, Unix.%s (%s): unable to read from socket \
+                                  connected to %s:%s. Exiting...\n"
+                                  (Unix.error_message error)
+                                  fn_name
+                                  param_name
+                                  conn.hostname
+                                  (string_of_int conn.port) in
+          fail_with_message m
       | e -> Lwt.fail e
   )

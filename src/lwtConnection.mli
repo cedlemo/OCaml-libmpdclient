@@ -24,24 +24,24 @@ open Lwt
 (** Lwt connection type for thread usage *)
 type t
 
-(** Create the connection in a Lwt thread, returns None if the connection
-    can not be initialized. *)
+(** Create the connection in a Lwt thread, throws an exception Mpd_Lwt_unix_exn
+    of string when an error occurs. *)
 val initialize:
   string -> int -> t Lwt.t
 
-(** Write in a Mpd connection throught a Lwt thread. Return -1 if an it fails
-    with an exception. *)
+(** Write in a Mpd connection throught a Lwt thread. It fails
+    with an exception Mpd_Lwt_unix_exn of string. *)
 val write:
   t -> string -> int Lwt.t
 
 val read_mpd_banner:
-  t -> string option Lwt.t
+  t -> string Lwt.t
 
 val read_idle_events:
-  t -> string option Lwt.t
+  t -> string Lwt.t
 
 val read_command_response:
-  t -> string option Lwt.t
+  t -> string Lwt.t
 
 val close:
   t -> unit Lwt.t
