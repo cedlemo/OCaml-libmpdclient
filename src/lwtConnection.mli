@@ -1,4 +1,4 @@
-*
+(*
  * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
