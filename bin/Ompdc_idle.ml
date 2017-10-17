@@ -35,15 +35,13 @@ let idle common_opts =
   let main_thread =
     Mpd.LwtConnection.initialize host port
     >>= fun connection ->
-    match connection with
-    | None -> Lwt.return ()
-    | Some (c) -> Lwt_io.write_line Lwt_io.stdout "Client on"
-                  >>= fun () ->
-                  Mpd.LwtClient.initialize c
-                  >>= fun client ->
-                    Lwt_io.write_line Lwt_io.stdout (Mpd.LwtClient.mpd_banner client)
-                    >>= fun () ->
-                    Mpd.LwtClient.idle client on_mpd_event
+      Lwt_io.write_line Lwt_io.stdout "Client on"
+      >>= fun () ->
+        Mpd.LwtClient.initialize connection
+        >>= fun client ->
+          Lwt_io.write_line Lwt_io.stdout (Mpd.LwtClient.mpd_banner client)
+          >>= fun () ->
+            Mpd.LwtClient.idle client on_mpd_event
   in
   Lwt_main.run main_thread
 
