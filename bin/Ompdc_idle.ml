@@ -47,7 +47,7 @@ let idle common_opts =
     Lwt.catch
       (fun () -> main_thread)
       (function
-        | Mpd.LwtConnection.Mpd_Lwt_unix_exn message ->
+        | Mpd.LwtConnection.Lwt_unix_exn message ->
             Lwt_io.write_line Lwt_io.stderr message
         | _ -> Lwt_io.write_line Lwt_io.stderr "Exception not handled. Exit ..."
       )

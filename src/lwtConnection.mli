@@ -24,7 +24,7 @@ open Lwt
 (** Lwt connection type for thread usage *)
 type t
 
-exception Mpd_Lwt_unix_exn of string
+exception Lwt_unix_exn of string
 
 (** Create the connection in a Lwt thread, throws an exception Mpd_Lwt_unix_exn
     of string when an error occurs. *)

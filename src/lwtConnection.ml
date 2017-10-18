@@ -21,10 +21,10 @@ open Lwt
 type t =
   { hostname : string; port : int; ip : Unix.inet_addr; socket : Lwt_unix.file_descr }
 
-exception Mpd_Lwt_unix_exn of string
+exception Lwt_unix_exn of string
 
 let fail_with_message m =
-  Lwt.fail (Mpd_Lwt_unix_exn m)
+  Lwt.fail (Lwt_unix_exn m)
 
 let gethostbyname name =
   Lwt.catch

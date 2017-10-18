@@ -46,7 +46,7 @@ let main_thread =
                Lwt.return 0
    )
    (function
-     | Mpd.LwtConnection.Mpd_Lwt_unix_exn message ->
+     | Mpd.LwtConnection.Lwt_unix_exn message ->
          Lwt_io.write_line Lwt_io.stderr message
          >>= fun () ->
            Lwt.return 125
