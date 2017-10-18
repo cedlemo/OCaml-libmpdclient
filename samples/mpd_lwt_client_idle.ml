@@ -5,6 +5,7 @@
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
+ * h:noh::j
  * any later version.
  *
  * OCaml-libmpdclient is distributed in the hope that it will be useful,
@@ -30,17 +31,28 @@ let on_mpd_event = function
   | _ as event_name -> print_endline (("-" ^ event_name) ^ "-"); Lwt.return false
 
 let main_thread =
-   Mpd.LwtConnection.initialize host port
-   >>= function
-    | None -> Lwt.return 125
-    | Some (c) -> Lwt_io.write_line Lwt_io.stdout "Client on"
-                  >>= fun () ->
-                    Mpd.LwtClient.initialize c
-                    >>= fun client ->
-                      Lwt_io.write_line Lwt_io.stdout (Mpd.LwtClient.mpd_banner client)
-                      >>= fun () ->
-                        Mpd.LwtClient.idle client on_mpd_event
-                        >>= fun () ->
-                          Lwt.return 0
-
+   Lwt.catch
+   (fun () ->
+     Mpd.LwtConnection.initialize host port
+     >>= fun connection ->
+       Lwt_io.write_line Lwt_io.stdout "Client on"
+       >>= fun () ->
+         Mpd.LwtClient.initialize connection
+         >>= fun client ->
+           Lwt_io.write_line Lwt_io.stdout (Mpd.LwtClient.mpd_banner client)
+           >>= fun () ->
+             Mpd.LwtClient.idle client on_mpd_event
+             >>= fun () ->
+               Lwt.return 0
+   )
+   (function
+     | Mpd.LwtConnection.Mpd_Lwt_unix_exn message ->
+         Lwt_io.write_line Lwt_io.stderr message
+         >>= fun () ->
+           Lwt.return 125
+     | _ ->
+         Lwt_io.write_line Lwt_io.stderr "Uncaught exception. Exiting ..."
+         >>= fun () ->
+           Lwt.return 125
+   )
 let () = exit (Lwt_main.run main_thread)
