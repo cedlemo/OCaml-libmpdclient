@@ -27,33 +27,33 @@ val listplaylists:
 (** Loads the playlist into the current queue. Playlist plugins are supported.
     A range may be specified to load only a part of the playlist. *)
 val load:
-  LwtClient.t -> string -> ?range:(int * int) -> unit -> Protocol.response option Lwt.t
+  LwtClient.t -> string -> ?range:(int * int) -> unit -> Protocol.response Lwt.t
 
 (** Adds URI to the playlist NAME.m3u. NAME.m3u will be created if it does not
     exist. *)
 val playlistadd:
-  LwtClient.t -> string -> string -> Protocol.response option Lwt.t
+  LwtClient.t -> string -> string -> Protocol.response Lwt.t
 
 (** Clears the playlist NAME.m3u. *)
 val playlistclear:
-  LwtClient.t -> string -> Protocol.response option Lwt.t
+  LwtClient.t -> string -> Protocol.response Lwt.t
 
 (** Deletes SONGPOS from the playlist NAME.m3u. *)
 val playlistdelete:
-  LwtClient.t -> string -> int -> Protocol.response option Lwt.t
+  LwtClient.t -> string -> int -> Protocol.response Lwt.t
 
 (** Moves the song at position FROM in the playlist NAME.m3u to the position TO. *)
 val playlistmove:
-  LwtClient.t -> string -> int -> int -> Protocol.response option Lwt.t
+  LwtClient.t -> string -> int -> int -> Protocol.response Lwt.t
 
 (** Renames the playlist NAME.m3u to NEW_NAME.m3u. *)
 val rename:
-  LwtClient.t -> string -> string -> Protocol.response option Lwt.t
+  LwtClient.t -> string -> string -> Protocol.response Lwt.t
 
 (** Removes the playlist NAME.m3u from the playlist directory. *)
 val rm:
-  LwtClient.t -> string -> Protocol.response option Lwt.t
+  LwtClient.t -> string -> Protocol.response Lwt.t
 
 (** Saves the current playlist to NAME.m3u in the playlist directory. *)
 val save:
-  LwtClient.t -> string -> Protocol.response option Lwt.t
+  LwtClient.t -> string -> Protocol.response Lwt.t
