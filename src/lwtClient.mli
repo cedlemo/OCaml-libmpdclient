@@ -53,13 +53,13 @@ val send:
 (** Create a status request and returns the status under a Mpd.Status.s Lwt.t
     type.*)
 val status:
-  t -> Status.t option Lwt.t
+  t -> Status.t Lwt.t
 
 (** Does nothing but return "OK". *)
 val ping:
-  t -> Protocol.response option Lwt.t
+  t -> Protocol.response Lwt.t
 
 (** This is used for authentication with the server. PASSWORD is simply the
     plaintext password. *)
 val password:
-  t -> string -> Protocol.response option Lwt.t
+  t -> string -> Protocol.response Lwt.t

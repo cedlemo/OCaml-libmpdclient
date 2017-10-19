@@ -58,13 +58,10 @@ let send client cmd =
 let status client =
   send client "status"
   >>= function
-    | None -> Lwt.return_none
-    | Some response -> Lwt.return response
-                       >>= function
-                         | Ok (lines) -> let status_pairs = Utils.split_lines lines in
-                             let status = Some (Status.parse status_pairs) in Lwt.return status
-                         | Error (ack, ack_cmd_num, cmd, error) -> let status = Some (Status.generate_error error) in
-                             Lwt.return status
+    | Ok (lines) -> let status_pairs = Utils.split_lines lines in
+        let status = Status.parse status_pairs in Lwt.return status
+    | Error (ack, ack_cmd_num, cmd, error) ->
+        let status = Status.generate_error error in Lwt.return status
 
 let ping client =
   send client "ping"
