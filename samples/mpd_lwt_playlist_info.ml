@@ -30,29 +30,28 @@ let lwt_print_line str =
   Lwt_io.write_line Lwt_io.stdout str
 
 let main_thread =
-   Mpd.LwtConnection.initialize host port
-   >>= fun connection ->
-    match connection with
-    | None -> Lwt.return ()
-    | Some (c) ->Mpd.LwtClient.initialize c
-                 >>= fun client ->
-                   MpdLwtQueue.playlist client
-                   >>= function
-                   | MpdLwtQueue.PlaylistError message -> lwt_print_line ("err" ^ message)
-                   | MpdLwtQueue.Playlist playlist ->
-                     Lwt.return playlist
-                     >>= fun p ->
-                       let n = List.length p in
-                       lwt_print_line ("Number of songs : " ^ (string_of_int n))
-                       >>= fun () ->
-                         Lwt_list.iter_s (fun song ->
-                           let id = string_of_int (Song.id song) in
-                           let title = Song.title song in
-                           let album = Song.album song in
-                           lwt_print_line (String.concat " " ["\t*"; id; title; album])
-                         ) p
-                         >>= fun () ->
-                           Mpd.LwtClient.close client
+  let open Mpd in
+  LwtConnection.initialize host port
+  >>= fun connection ->
+    LwtClient.initialize connection
+    >>= fun client ->
+      LwtQueue.playlist client
+      >>= function
+      | LwtQueue.PlaylistError message -> lwt_print_line ("err" ^ message)
+      | LwtQueue.Playlist playlist ->
+          Lwt.return playlist
+          >>= fun p ->
+            let n = List.length p in
+            lwt_print_line ("Number of songs : " ^ (string_of_int n))
+            >>= fun () ->
+              Lwt_list.iter_s (fun song ->
+                                 let id = string_of_int (Song.id song) in
+                                 let title = Song.title song in
+                                 let album = Song.album song in
+                                 lwt_print_line (String.concat " " ["\t*"; id; title; album])
+                              ) p
+              >>= fun () ->
+                LwtClient.close client
 
 let () =
   Lwt_main.run main_thread
