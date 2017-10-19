@@ -30,19 +30,17 @@ let addid client uri position =
   let cmd = String.concat " " ["addid"; uri; string_of_int position] in
   LwtClient.send client cmd
   >>= function
-  | None -> Lwt.return (-1)
-  | Some response -> match response with
-      | Protocol.Ok (song_id) -> let lines = Utils.split_lines song_id in
-        let rec parse lines =
-          match lines with
-          | [] -> Lwt.return (-1)
-          | line :: remain -> let { key = k; value = v} = Utils.read_key_val line in
-            if (k = "Id") then Lwt.return (int_of_string v)
-            else Lwt.return remain
-              >>= fun lines ->
+    | Protocol.Ok (song_id) -> let lines = Utils.split_lines song_id in
+      let rec parse lines =
+        match lines with
+        | [] -> Lwt.return (-1)
+        | line :: remain -> let { key = k; value = v} = Utils.read_key_val line in
+          if (k = "Id") then Lwt.return (int_of_string v)
+          else Lwt.return remain
+            >>= fun lines ->
               parse lines
-        in parse lines
-      | Protocol.Error (_) -> Lwt.return (-1)
+      in parse lines
+    | Protocol.Error (_) -> Lwt.return (-1)
 
 let clear client =
   LwtClient.send client "clear"
@@ -85,26 +83,22 @@ let get_song_id song =
 
 let rec _build_songs_list client songs l =
   match songs with
-  | [] -> let playlist = Playlist (List.rev l) in Lwt.return (Some playlist)
+  | [] -> let playlist = Playlist (List.rev l) in Lwt.return playlist
   | h :: q -> let song_infos_request = "playlistinfo " ^ (get_song_id h) in
     LwtClient.send client song_infos_request
     >>= function
-      | None -> Lwt.return_none
-      | Some response -> match response with
-        | Protocol.Error (_, _, _, ack_message)->
-          Lwt.return (Some (PlaylistError (ack_message)))
-        | Protocol.Ok (song_infos) ->
-          let song = Song.parse (Utils.split_lines song_infos) in
-           _build_songs_list client q (song :: l)
+      | Protocol.Error (_, _, _, ack_message)->
+        Lwt.return (PlaylistError (ack_message))
+      | Protocol.Ok (song_infos) ->
+        let song = Song.parse (Utils.split_lines song_infos) in
+         _build_songs_list client q (song :: l)
 
 let playlist_command_responses_handler client = function
-  | None -> Lwt.return_none
-  | Some response -> match response with
-      | Protocol.Error (_, _, _, ack_message)->
-          Lwt.return (Some (PlaylistError (ack_message)))
-      | Protocol.Ok (response) ->
-          let songs = Utils.split_lines response in
-          _build_songs_list client songs []
+  | Protocol.Error (_, _, _, ack_message)->
+      Lwt.return (PlaylistError (ack_message))
+  | Protocol.Ok (response) ->
+      let songs = Utils.split_lines response in
+      _build_songs_list client songs []
 
 let playlist client =
   LwtClient.send client "playlist"
