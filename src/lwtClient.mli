@@ -48,7 +48,7 @@ val idle:
 (** Send to the mpd server a command. The response of the server is returned
     under the form of a Protocol.response type. *)
 val send:
-  t -> string -> Protocol.response option Lwt.t
+  t -> string -> Protocol.response Lwt.t
 
 (** Create a status request and returns the status under a Mpd.Status.s Lwt.t
     type.*)

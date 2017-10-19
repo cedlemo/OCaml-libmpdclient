@@ -49,11 +49,10 @@ let rec idle client on_event =
 let send client cmd =
   let {connection = c; _} = client in
   LwtConnection.write c (cmd ^ "\n")
-  >>= function
-    | (-1) -> Lwt.return_none (* TODO: Should return a meaningfull value so that the user can exit on this value. *)
-    | _ -> LwtConnection.read_command_response c
-      >>= fun response ->
-      let parsed_response = Some (Protocol.parse_response response) in
+  >>= fun _ ->
+    LwtConnection.read_command_response c
+    >>= fun response ->
+      let parsed_response = Protocol.parse_response response in
       Lwt.return parsed_response
 
 let status client =
