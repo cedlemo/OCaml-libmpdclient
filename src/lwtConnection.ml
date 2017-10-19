@@ -37,7 +37,7 @@ let gethostbyname name =
     (function
       | Not_found -> let m = Printf.sprintf "Host not found, \
                                             Lwt_unix.gethostname: no host found\
-                                            for %s. Exiting...\n" name in
+                                            for %s. Exiting..." name in
           fail_with_message m
 
       | e -> Lwt.fail e
@@ -54,8 +54,8 @@ let open_socket addr port =
     )
     (function
       | Unix.Unix_error (error, fn_name, param_name) ->
-          let m = Printf.sprintf "%s, Unix.%s (%s): unable to open socket. \
-                                  Exiting...\n"
+          let m = Printf.sprintf "%s, Unix.%s (%s): unable to open socket.
+                                  Exiting..."
                                   (Unix.error_message error)
                                   fn_name
                                   param_name in
@@ -86,7 +86,7 @@ let write conn str =
   (function
       | Unix.Unix_error (error, fn_name, param_name) ->
           let m = Printf.sprintf "%s, Unix.%s (%s): unable to write to socket \
-                                  connected to %s:%s. Exiting...\n"
+                                  connected to %s:%s. Exiting..."
                                   (Unix.error_message error)
                                   fn_name
                                   param_name
@@ -109,7 +109,7 @@ let recvstr conn =
   (function
       | Unix.Unix_error (error, fn_name, param_name) ->
           let m = Printf.sprintf "%s, Unix.%s (%s): unable to read from socket \
-                                  connected to %s:%s. Exiting...\n"
+                                  connected to %s:%s. Exiting..."
                                   (Unix.error_message error)
                                   fn_name
                                   param_name
@@ -168,7 +168,7 @@ let close conn =
   (function
       | Unix.Unix_error (error, fn_name, param_name) ->
           let m = Printf.sprintf "%s, Unix.%s (%s): unable to read from socket \
-                                  connected to %s:%s. Exiting...\n"
+                                  connected to %s:%s. Exiting..."
                                   (Unix.error_message error)
                                   fn_name
                                   param_name
