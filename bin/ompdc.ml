@@ -26,9 +26,10 @@ let default_cmd =
   Term.info "ompdc" ~version ~doc ~sdocs ~exits ~man
 
 let cmds = List.concat [Ompdc_playback.cmds;
-                        [Ompdc_status.cmd;
-                         Ompdc_idle.cmd;
-                         help_cmd]
-]
+                         [Ompdc_status.cmd;
+                          Ompdc_idle.cmd;
+                          Ompdc_playback_options.cmd;
+                          help_cmd]
+                       ]
 
 let () = Term.(exit @@ eval_choice default_cmd cmds)
