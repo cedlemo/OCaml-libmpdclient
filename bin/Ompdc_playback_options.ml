@@ -30,7 +30,17 @@ let crossfade =
   let docv = "XFADE" in
   Arg.(value & opt (some int) None & info ["xf"; "crossfade"] ~docs ~doc ~docv)
 
-let playback_options common_opts consume crossfade =
+let mixrampdb =
+  let doc = "Sets the threshold at which songs will be overlapped.
+    Like crossfading but doesn't fade the track volume, just overlaps. The
+    songs need to have MixRamp tags added by an external tool. 0dB is the
+    normalized maximum volume so use negative values, I prefer -17dB.
+    In the absence of mixramp tags crossfading will be used.
+    See http://sourceforge.net/projects/mixramp" in
+  let docv = "MIXRAMPDB" in
+  Arg.(value & opt (some int) None & info ["mixrampdb"] ~docs ~doc ~docv)
+
+let playback_options common_opts consume crossfade mixrampdb =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
   let _ = match consume with
@@ -39,6 +49,10 @@ let playback_options common_opts consume crossfade =
   in
   let _ = match crossfade with
     | Some v -> ignore(Mpd.PlaybackOptions.crossfade client v)
+    | None -> ()
+  in
+  let _ = match mixrampdb with
+    | Some v -> ignore(Mpd.PlaybackOptions.mixrampdb client v)
     | None -> ()
   in
   Mpd.Client.close client
@@ -52,6 +66,7 @@ let cmd =
                `P doc;
                `Blocks help_section; ]
     in
-    Term.(const playback_options $ common_opts_t $ consume $ crossfade),
+    Term.(const playback_options $ common_opts_t $ consume $ crossfade
+                                 $ mixrampdb),
     Term.info "playback_options" ~doc ~sdocs ~exits ~man
 
