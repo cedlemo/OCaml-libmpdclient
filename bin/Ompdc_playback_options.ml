@@ -25,11 +25,20 @@ let consume =
   let docv = "STATE" in
   Arg.(value & opt (some bool) None & info ["c"; "consume"] ~docs ~doc ~docv)
 
-let playback_options common_opts consume =
+let crossfade =
+  let doc = "Sets crossfade XFADE between songs in seconds." in
+  let docv = "XFADE" in
+  Arg.(value & opt (some int) None & info ["xf"; "crossfade"] ~docs ~doc ~docv)
+
+let playback_options common_opts consume crossfade =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
   let _ = match consume with
-    | Some consume_bool -> ignore(Mpd.PlaybackOptions.consume client consume_bool)
+    | Some v -> ignore(Mpd.PlaybackOptions.consume client v)
+    | None -> ()
+  in
+  let _ = match crossfade with
+    | Some v -> ignore(Mpd.PlaybackOptions.crossfade client v)
     | None -> ()
   in
   Mpd.Client.close client
@@ -43,6 +52,6 @@ let cmd =
                `P doc;
                `Blocks help_section; ]
     in
-    Term.(const playback_options $ common_opts_t $ consume),
+    Term.(const playback_options $ common_opts_t $ consume $ crossfade),
     Term.info "playback_options" ~doc ~sdocs ~exits ~man
 
