@@ -23,12 +23,15 @@ let consume =
   let doc = "Sets consume state to STATE, STATE should be false or true.
     When consume is activated, each song played is removed from playlist." in
   let docv = "STATE" in
-  Arg.(value & opt bool false & info ["c"; "consume"] ~docs ~doc ~docv)
+  Arg.(value & opt (some bool) None & info ["c"; "consume"] ~docs ~doc ~docv)
 
 let playback_options common_opts consume =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
-  let _ = Mpd.PlaybackOptions.consume client consume in
+  let _ = match consume with
+    | Some consume_bool -> ignore(Mpd.PlaybackOptions.consume client consume_bool)
+    | None -> ()
+  in
   Mpd.Client.close client
 
 
