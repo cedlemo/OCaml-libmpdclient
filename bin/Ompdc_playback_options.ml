@@ -46,7 +46,13 @@ let random =
   let docv = "RAND_STATE" in
   Arg.(value & opt (some bool) None & info ["rand"; "random"] ~docs ~doc ~docv)
 
-let playback_options common_opts consume crossfade mixrampdb random =
+let repeat =
+  let doc = "Sets repeat state to REPEAT_STATE, REPEAT_STATE should be false \
+             or true." in
+  let docv = "REPEAT_STATE" in
+  Arg.(value & opt (some bool) None & info ["rep"; "repeat"] ~docs ~doc ~docv)
+
+let playback_options common_opts consume crossfade mixrampdb random repeat =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
   let _ = match consume with
@@ -65,6 +71,10 @@ let playback_options common_opts consume crossfade mixrampdb random =
     | Some v -> ignore(Mpd.PlaybackOptions.random client v)
     | None -> ()
   in
+  let _ = match repeat with
+    | Some v -> ignore(Mpd.PlaybackOptions.repeat client v)
+    | None -> ()
+  in
   Mpd.Client.close client
 
 
@@ -77,6 +87,5 @@ let cmd =
                `Blocks help_section; ]
     in
     Term.(const playback_options $ common_opts_t $ consume $ crossfade
-                                 $ mixrampdb $ random),
+                                 $ mixrampdb $ random $ repeat),
     Term.info "playback_options" ~doc ~sdocs ~exits ~man
-
