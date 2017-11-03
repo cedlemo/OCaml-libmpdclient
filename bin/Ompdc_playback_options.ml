@@ -19,6 +19,8 @@
 open Cmdliner
 open Ompdc_common
 
+module Pb_opt = Mpd.PlaybackOptions
+
 let consume =
   let doc = "Sets consume state to STATE, STATE should be false or true.
     When consume is activated, each song played is removed from playlist." in
@@ -55,26 +57,16 @@ let repeat =
 let playback_options common_opts consume crossfade mixrampdb random repeat =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
-  let _ = match consume with
-    | Some v -> ignore(Mpd.PlaybackOptions.consume client v)
+  let on_value_do opt_val fn =
+    match opt_val with
+    | Some v -> ignore(fn client v)
     | None -> ()
   in
-  let _ = match crossfade with
-    | Some v -> ignore(Mpd.PlaybackOptions.crossfade client v)
-    | None -> ()
-  in
-  let _ = match mixrampdb with
-    | Some v -> ignore(Mpd.PlaybackOptions.mixrampdb client v)
-    | None -> ()
-  in
-  let _ = match random with
-    | Some v -> ignore(Mpd.PlaybackOptions.random client v)
-    | None -> ()
-  in
-  let _ = match repeat with
-    | Some v -> ignore(Mpd.PlaybackOptions.repeat client v)
-    | None -> ()
-  in
+  on_value_do consume Pb_opt.consume;
+  on_value_do crossfade Pb_opt.crossfade;
+  on_value_do mixrampdb Pb_opt.mixrampdb;
+  on_value_do random Pb_opt.random;
+  on_value_do repeat Pb_opt.repeat;
   Mpd.Client.close client
 
 
