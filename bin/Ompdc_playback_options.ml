@@ -40,7 +40,13 @@ let mixrampdb =
   let docv = "MIXRAMPDB" in
   Arg.(value & opt (some int) None & info ["mixrampdb"] ~docs ~doc ~docv)
 
-let playback_options common_opts consume crossfade mixrampdb =
+let random =
+  let doc = "Sets random state to RAND_STATE, RAND_STATE should be true or
+  false" in
+  let docv = "RAND_STATE" in
+  Arg.(value & opt (some bool) None & info ["rand"; "random"] ~docs ~doc ~docv)
+
+let playback_options common_opts consume crossfade mixrampdb random =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
   let _ = match consume with
@@ -55,6 +61,10 @@ let playback_options common_opts consume crossfade mixrampdb =
     | Some v -> ignore(Mpd.PlaybackOptions.mixrampdb client v)
     | None -> ()
   in
+  let _ = match random with
+    | Some v -> ignore(Mpd.PlaybackOptions.random client v)
+    | None -> ()
+  in
   Mpd.Client.close client
 
 
@@ -67,6 +77,6 @@ let cmd =
                `Blocks help_section; ]
     in
     Term.(const playback_options $ common_opts_t $ consume $ crossfade
-                                 $ mixrampdb),
+                                 $ mixrampdb $ random),
     Term.info "playback_options" ~doc ~sdocs ~exits ~man
 
