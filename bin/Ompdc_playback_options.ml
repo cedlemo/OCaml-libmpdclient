@@ -59,8 +59,15 @@ let setvol =
   let docv = "VOL" in
   Arg.(value & opt (some int) None & info ["vol"; "volume"] ~docs ~doc ~docv)
 
+let single =
+  let doc = "Sets single state to SINGLE_STATE, SINGLE_STATE should be 0 or 1. When single is
+    activated, playback is stopped after current song, or song is repeated if
+    the 'repeat' mode is enabled." in
+  let docv = "SINGLE_STATE" in
+  Arg.(value & opt (some bool) None & info ["single"] ~docs ~doc ~docv)
+
 let playback_options common_opts consume crossfade mixrampdb random repeat
-                                 setvol =
+                                 setvol single =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
   let on_value_do opt_val fn =
@@ -74,6 +81,7 @@ let playback_options common_opts consume crossfade mixrampdb random repeat
   on_value_do random Pb_opt.random;
   on_value_do repeat Pb_opt.repeat;
   on_value_do setvol Pb_opt.setvol;
+  on_value_do single Pb_opt.single;
   Mpd.Client.close client
 
 
@@ -86,5 +94,5 @@ let cmd =
                `Blocks help_section; ]
     in
     Term.(const playback_options $ common_opts_t $ consume $ crossfade
-                                 $ mixrampdb $ random $ repeat $ setvol),
+                                 $ mixrampdb $ random $ repeat $ setvol $ single),
     Term.info "playback_options" ~doc ~sdocs ~exits ~man
