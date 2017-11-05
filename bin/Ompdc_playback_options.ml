@@ -54,7 +54,13 @@ let repeat =
   let docv = "REPEAT_STATE" in
   Arg.(value & opt (some bool) None & info ["rep"; "repeat"] ~docs ~doc ~docv)
 
-let playback_options common_opts consume crossfade mixrampdb random repeat =
+let setvol =
+  let doc = "Sets volume to VOL, the range of volume is 0-100" in
+  let docv = "VOL" in
+  Arg.(value & opt (some int) None & info ["vol"; "volume"] ~docs ~doc ~docv)
+
+let playback_options common_opts consume crossfade mixrampdb random repeat
+                                 setvol =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
   let on_value_do opt_val fn =
@@ -67,6 +73,7 @@ let playback_options common_opts consume crossfade mixrampdb random repeat =
   on_value_do mixrampdb Pb_opt.mixrampdb;
   on_value_do random Pb_opt.random;
   on_value_do repeat Pb_opt.repeat;
+  on_value_do setvol Pb_opt.setvol;
   Mpd.Client.close client
 
 
@@ -79,5 +86,5 @@ let cmd =
                `Blocks help_section; ]
     in
     Term.(const playback_options $ common_opts_t $ consume $ crossfade
-                                 $ mixrampdb $ random $ repeat),
+                                 $ mixrampdb $ random $ repeat $ setvol),
     Term.info "playback_options" ~doc ~sdocs ~exits ~man
