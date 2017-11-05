@@ -34,7 +34,7 @@ val crossfade: Client.t -> int -> Protocol.response
 val mixrampdb: Client.t -> int -> Protocol.response
 
 (** Type for the command mixrampdelay, it can be integers for seconds or nan. *)
-type mixrampd_t
+type mixrampd_t = Nan | Seconds of int
 
 (** Additional time subtracted from the overlap calculated by mixrampdb. A
     value of "nan" disables MixRamp overlapping and falls back to crossfading. *)
@@ -55,7 +55,11 @@ val setvol: Client.t -> int -> Protocol.response
 val single: Client.t -> bool -> Protocol.response
 
 (** gain_mode type for the command replay_gain_mode. *)
-type gain_mode_t
+type gain_mode_t =
+  | Off
+  | Track
+  | Album
+  | Auto
 
 (** Sets the replay gain mode. One of off, track, album, auto.
     Changing the mode during playback may take several seconds, because the
