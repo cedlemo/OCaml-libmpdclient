@@ -66,8 +66,23 @@ let single =
   let docv = "SINGLE_STATE" in
   Arg.(value & opt (some bool) None & info ["single"] ~docs ~doc ~docv)
 
+let mixrampdelay =
+  let doc = "Additional time subtracted from the overlap calculated by mixrampdb. A
+    value of \"nan\" disables MixRamp overlapping and falls back to crossfading." in
+  let docv = "MIXRAMP_DELAY" in
+  Arg.(value & opt (some string) None & info ["mixrampdelay"] ~docs ~doc ~docv)
+
+let mixrampdelay_wrapper client value =
+  let string_parse str =
+    match str with
+    | "nan" -> Pb_opt.Nan
+    | _ -> try Pb_opt.Seconds (int_of_string str)
+      with Failure _ -> Pb_opt.Nan
+  in
+  Pb_opt.mixrampdelay client (string_parse value)
+
 let playback_options common_opts consume crossfade mixrampdb random repeat
-                                 setvol single =
+                                 setvol single mixrampdelay =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
   let on_value_do opt_val fn =
@@ -82,6 +97,7 @@ let playback_options common_opts consume crossfade mixrampdb random repeat
   on_value_do repeat Pb_opt.repeat;
   on_value_do setvol Pb_opt.setvol;
   on_value_do single Pb_opt.single;
+  on_value_do mixrampdelay mixrampdelay_wrapper;
   Mpd.Client.close client
 
 
@@ -94,5 +110,6 @@ let cmd =
                `Blocks help_section; ]
     in
     Term.(const playback_options $ common_opts_t $ consume $ crossfade
-                                 $ mixrampdb $ random $ repeat $ setvol $ single),
+                                 $ mixrampdb $ random $ repeat $ setvol
+                                 $ single $ mixrampdelay),
     Term.info "playback_options" ~doc ~sdocs ~exits ~man
