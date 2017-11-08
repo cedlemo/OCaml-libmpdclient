@@ -15,3 +15,54 @@
  * You should have received a copy of the GNU General Public License
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
+
+type tags =
+  | Unknown
+  | Artist
+  | Album
+  | Album_artist
+  | Title
+  | Track
+  | Name
+  | Genre
+  | Date
+  | Composer
+  | Performer
+  | Comment
+  | Disc
+  | Musicbrainz_artistid
+  | Musicbrainz_albumid
+  | Musicbrainz_albumartistid
+  | Musicbrainz_trackid
+  | Musicbrainz_releasetrackid
+  | Original_date
+  | Artist_sort
+  | Album_artist_sort
+  | Album_sort
+  | Count
+
+let tag_to_string = function
+  | Unknown -> "unknown"
+  | Artist -> "artist"
+  | Album -> "album"
+  | Album_artist -> "album_artist"
+  | Title -> "title"
+  | Track -> "track"
+  | Name -> "name"
+  | Genre -> "genre"
+  | Date -> "date"
+  | Composer -> "composer"
+  | Performer -> "performer"
+  | Comment -> "comment"
+  | Disc -> "disc"
+  | Musicbrainz_artistid -> "musicbrainz_artistid"
+  | Musicbrainz_albumid -> "musicbrainz_albumid"
+  | Musicbrainz_albumartistid -> "musicbrainz_albumartistid"
+  | Musicbrainz_trackid -> "musicbrainz_trackid"
+  | Musicbrainz_releasetrackid -> "musicbrainz_releasetrackid"
+  | Original_date -> "original_date"
+  | Artist_sort -> "artist_sort"
+  | Album_artist_sort -> "album_artist_sort"
+  | Album_sort -> "album_sort"
+  | Count -> "count"
+

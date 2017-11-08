@@ -18,6 +18,34 @@
 
 (** MusicDatabase module: regroups data base related commands. *)
 
+(** type for the Mpd database tags. *)
+type tags =
+  | Unknown
+  | Artist
+  | Album
+  | Album_artist
+  | Title
+  | Track
+  | Name
+  | Genre
+  | Date
+  | Composer
+  | Performer
+  | Comment
+  | Disc
+  | Musicbrainz_artistid
+  | Musicbrainz_albumid
+  | Musicbrainz_albumartistid
+  | Musicbrainz_trackid
+  | Musicbrainz_releasetrackid
+  | Original_date
+  | Artist_sort
+  | Album_artist_sort
+  | Album_sort
+  | Count
+
+val tag_to_string:
+    tags -> string
 (*
 
 count {TAG} {NEEDLE} [...] [group] [GROUPTYPE]
@@ -27,6 +55,7 @@ Counts the number of songs and their total playtime in the db matching TAG exact
 The group keyword may be used to group the results by a tag. The following prints per-artist counts:
 
 count group artist
+
 find {TYPE} {WHAT} [...] [sort TYPE] [window START:END]
 
 Finds songs in the db that are exactly WHAT. TYPE can be any tag supported by MPD, or one of the special parameters:
