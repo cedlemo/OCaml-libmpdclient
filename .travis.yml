@@ -11,4 +11,4 @@ env:
   - INSTALL=false TESTS=true PACKAGE=ocaml-libmpdclient OCAML_VERSION=4.05
 os:
   - linux
-  - osx
+    #  - osx
