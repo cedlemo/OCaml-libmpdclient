@@ -87,17 +87,6 @@ Additional arguments may specify a filter like the one in the find command.
 The group keyword may be used (repeatedly) to group the results by one or more tags. The following example lists all album names, grouped by their respective (album) artist:
 
 list album group albumartist
-listall [URI]
-
-Lists all songs and directories in URI.
-
-Do not use this command. Do not manage a client-side copy of MPD's database. That is fragile and adds huge overhead. It will break with large databases. Instead, query MPD whenever you need something.
-
-listallinfo [URI]
-
-Same as listall, except it also returns metadata info in the same format as lsinfo.
-
-Do not use this command. Do not manage a client-side copy of MPD's database. That is fragile and adds huge overhead. It will break with large databases. Instead, query MPD whenever you need something.
 
 listfiles [URI]
 
@@ -156,3 +145,5 @@ rescan [URI]
 Same as update, but also rescans unmodified files.
 
  *)
+val update:
+  Client.t -> string option -> Protocol.response
