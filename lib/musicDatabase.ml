@@ -66,9 +66,14 @@ let tag_to_string = function
   | Album_sort -> "album_sort"
   | Count -> "count"
 
-
 let update client uri =
   let cmd = match uri with
   | None -> "update"
   | Some uri' -> "update " ^ uri'
+  in Client.send client cmd
+
+let rescan client uri =
+  let cmd = match uri with
+  | None -> "rescan"
+  | Some uri' -> "rescan " ^ uri'
   in Client.send client cmd
