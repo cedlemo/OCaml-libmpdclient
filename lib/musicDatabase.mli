@@ -132,18 +132,15 @@ If a playlist by that name doesn't exist it is created.
 
 Parameters have the same meaning as for find, except that search is not case sensitive.
 
-update [URI]
-
-Updates the music database: find new files, remove deleted files, update modified files.
-
-URI is a particular directory or song/file to update. If you do not specify it, everything is updated.
-
-Prints "updating_db: JOBID" where JOBID is a positive number identifying the update job. You can read the current job id in the status response.
-
 rescan [URI]
 
 Same as update, but also rescans unmodified files.
 
  *)
+(** Updates the music database: find new files, remove deleted files, update
+    modified files. URI is a particular directory or song/file to update. If
+    you do not specify it, everything is updated.
+    Prints "updating_db: JOBID" where JOBID is a positive number identifying
+    the update job. You can read the current job id in the status response. *)
 val update:
   Client.t -> string option -> Protocol.response
