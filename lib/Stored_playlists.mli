@@ -16,7 +16,7 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-(** StoredPlaylists : Playlists are stored inside the configured playlist
+(** Stored_playlists : Playlists are stored inside the configured playlist
     directory. They are addressed with their file name (without the directory
     and without the .m3u suffix). *)
 
