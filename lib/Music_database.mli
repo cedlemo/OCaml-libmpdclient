@@ -16,7 +16,7 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-(** MusicDatabase module: regroups data base related commands. *)
+(** Music_database module: regroups data base related commands. *)
 
 (** type for the Mpd database tags. *)
 type tags =
