@@ -19,7 +19,7 @@
 open Cmdliner
 open Ompdc_common
 
-module Pb_opt = Mpd.PlaybackOptions
+module Pb_opt = Mpd.Playback_options
 
 let consume =
   let doc = "Sets consume state to STATE, STATE should be false or true.
