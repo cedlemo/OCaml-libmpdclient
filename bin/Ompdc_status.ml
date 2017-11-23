@@ -89,7 +89,7 @@ let get_mpd_status_info status = function
   | Bitrate -> ["bitrate:"; string_of_int @@ Mpd.Status.bitrate status]
   | Xfade -> ["xfade:"; string_of_int @@ Mpd.Status.xfade status]
   | Mixrampdb -> ["mixrampdb:"; string_of_float @@ Mpd.Status.mixrampdb status]
-  | Mixrampdelay -> ["mixrampdelay:"; string_of_int @@ Mpd.Status.mixrampdelay status]
+  | Mixrampdelay -> ["mixrampdelay:"; string_of_float @@ Mpd.Status.mixrampdelay status]
   | Audio -> ["audio:"; Mpd.Status.audio status]
   | Updating_db -> ["updating_db:"; string_of_int @@ Mpd.Status.updating_db status]
   | Error -> ["error:"; Mpd.Status.error status]

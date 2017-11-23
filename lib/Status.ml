@@ -52,7 +52,7 @@ type t =
   bitrate: int; (** instantaneous bitrate in kbps. *)
   xfade: int; (** crossfade in seconds *)
   mixrampdb: float; (** mixramp threshold in dB *)
-  mixrampdelay: int; (** mixrampdelay in seconds *)
+  mixrampdelay: float; (** mixrampdelay in seconds *)
   audio: string; (** sampleRate:bits:channels TODO : Maybe create a specific type later *)
   updating_db: int; (** job id *)
   error: string; (** If there is an error, returns message here *)
@@ -78,7 +78,7 @@ let empty =
     bitrate = 0;
     xfade = 0;
     mixrampdb = 0.0;
-    mixrampdelay = 0;
+    mixrampdelay = 0.0;
     audio = "";
     updating_db = 0;
     error = "";
@@ -108,7 +108,7 @@ let parse lines =
       | "bitrate" -> _parse remain { s with bitrate = int_of_string v }
       | "xfade" -> _parse remain { s with xfade = int_of_string v }
       | "mixrampdb" -> _parse remain { s with mixrampdb = float_of_string v }
-      | "mixrampdelay" -> _parse remain { s with mixrampdelay = int_of_string v }
+      | "mixrampdelay" -> print_endline v; _parse remain { s with mixrampdelay = float_of_string v }
       | "audio" -> _parse remain { s with audio = v }
       | "updating_db" -> _parse remain { s with updating_db = int_of_string v }
       | "error" -> _parse remain { s with error = v }

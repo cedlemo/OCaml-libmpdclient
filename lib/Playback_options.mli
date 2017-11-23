@@ -33,8 +33,8 @@ val crossfade: Client.t -> int -> Protocol.response
     See http://sourceforge.net/projects/mixramp *)
 val mixrampdb: Client.t -> int -> Protocol.response
 
-(** Type for the command mixrampdelay, it can be integers for seconds or nan. *)
-type mixrampd_t = Nan | Seconds of int
+(** Type for the command mixrampdelay, it can be float number for seconds or nan. *)
+type mixrampd_t = Nan | Seconds of float
 
 (** Additional time subtracted from the overlap calculated by mixrampdb. A
     value of "nan" disables MixRamp overlapping and falls back to crossfading. *)

@@ -31,13 +31,13 @@ let mixrampdb client seconds =
 
 type mixrampd_t =
   | Nan
-  | Seconds of int
+  | Seconds of float
 
 let mixrampdelay client delay =
   match delay with
   | Nan -> Client.send client "mixrampdelay nan"
   | Seconds (s) -> Client.send client (String.concat " " ["mixrampdelay";
-                                                           string_of_int s])
+                                                           string_of_float s])
 let random client state =
   match state with
   | true  -> Client.send client "random 1"

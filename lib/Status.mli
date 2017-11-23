@@ -86,7 +86,7 @@ val mixrampdb:
   t -> float
 (** Get the mixrampdelay in seconds *)
 val mixrampdelay:
-  t -> int
+  t -> float
 (** Get information of the audio file of the current song
     (sampleRate:bits:channels) *)
 val audio:

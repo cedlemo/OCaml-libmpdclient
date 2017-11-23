@@ -76,7 +76,7 @@ let mixrampdelay_wrapper client value =
   let string_parse str =
     match str with
     | "nan" -> Pb_opt.Nan
-    | _ -> try Pb_opt.Seconds (int_of_string str)
+    | _ -> try Pb_opt.Seconds (float_of_string str)
       with Failure _ -> Pb_opt.Nan
   in
   Pb_opt.mixrampdelay client (string_parse value)
