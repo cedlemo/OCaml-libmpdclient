@@ -23,18 +23,18 @@ RUN \
 
 RUN \
   echo "ocaml-libmpdclient ALL=(ALL:ALL) NOPASSWD:ALL" | \
-    EDITOR=tee visudo -f /etc/sudoers.d/ocaml-gi
+    EDITOR=tee visudo -f /etc/sudoers.d/ocaml-libmpdclient
 
 USER ocaml-libmpdclient
 
 COPY . /home/ocaml-libmpdclient/ocaml-libmpdclient
 
-RUN sudo chown -R ocaml-gi:ocaml-libmpdclient /home/ocaml-libmpdclient/ocaml-libmpdclient
+RUN sudo chown -R ocaml-libmpdclient:ocaml-libmpdclient /home/ocaml-libmpdclient/ocaml-libmpdclient
 WORKDIR /home/ocaml-libmpdclient/ocaml-libmpdclient
 RUN wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sudo sh -s /usr/local/bin
 RUN /usr/local/bin/opam init --comp 4.05.0
 RUN opam install lwt cmdliner jbuilder odoc
-# RUN echo ". /home/ocaml-gi/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true" > /home/ocaml-gi/ocaml-gi/runtest.sh
-# RUN echo "jbuilder runtest" >> /home/ocaml-gi/ocaml-gi/runtest.sh
-# CMD bash -ex /home/ocaml-gi/ocaml-gi/runtest.sh
+# RUN echo ". /home/ocaml-libmpdclient/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true" > /home/ocaml-libmpdclient/ocaml-libmpdclient/runtest.sh
+# RUN echo "jbuilder runtest" >> /home/ocaml-libmpdclient/ocaml-libmpdclient/runtest.sh
+# CMD bash -ex /home/ocaml-libmpdclient/ocaml-libmpdclient/runtest.sh
 CMD cat /etc/mpd.conf
