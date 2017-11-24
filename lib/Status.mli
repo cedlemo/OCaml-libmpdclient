@@ -16,10 +16,11 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-(** Mpd_status is included in Mpd.Status. *)
+(** Status : get informations on the current status of the Mpd server. *)
 
+(** Main status type that contains all the status information of the server. *)
 type t
-(** Current state of the mpd server. *)
+(** Current state (playing, pause or stopped) of the mpd server. *)
 type state
 (** Get the string representation of a state. *)
 val string_of_state:
