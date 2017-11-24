@@ -28,8 +28,13 @@ RUN \
 USER ocaml-libmpdclient
 
 COPY . /home/ocaml-libmpdclient/ocaml-libmpdclient
-
 RUN sudo chown -R ocaml-libmpdclient:ocaml-libmpdclient /home/ocaml-libmpdclient/ocaml-libmpdclient
+RUN sudo cp /home/ocaml-libmpdclient/ocaml-libmpdclient/travis/mpd.conf /etc/mpd.conf
+RUN mkdir /home/ocaml-libmpdclient/mpd
+RUN mkdir /home/ocaml-libmpdclient/mpd/music
+RUN mkdir /home/ocaml-libmpdclient/mpd/playlists
+RUN wget -P /home/ocaml-libmpdclient/mpd/music -i /home/ocaml-libmpdclient/ocaml-libmpdclient/free_mp3_urls.txt
+RUN mpd
 WORKDIR /home/ocaml-libmpdclient/ocaml-libmpdclient
 RUN wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sudo sh -s /usr/local/bin
 RUN /usr/local/bin/opam init --comp 4.05.0
