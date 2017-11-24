@@ -36,3 +36,4 @@ RUN opam install lwt cmdliner jbuilder odoc
 # RUN echo ". /home/ocaml-gi/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true" > /home/ocaml-gi/ocaml-gi/runtest.sh
 # RUN echo "jbuilder runtest" >> /home/ocaml-gi/ocaml-gi/runtest.sh
 # CMD bash -ex /home/ocaml-gi/ocaml-gi/runtest.sh
+CMD cat /etc/mpd.conf
