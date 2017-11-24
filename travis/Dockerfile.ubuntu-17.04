@@ -9,7 +9,8 @@ RUN \
     mercurial \
     gcc \
     g++ \
-    make \    wget \
+    make \
+    wget \
     mpd \
     libmpd-dev \
     aspcud \
