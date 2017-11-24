@@ -30,6 +30,7 @@ USER ocaml-libmpdclient
 COPY . /home/ocaml-libmpdclient/ocaml-libmpdclient
 RUN sudo chown -R ocaml-libmpdclient:ocaml-libmpdclient /home/ocaml-libmpdclient/ocaml-libmpdclient
 RUN sudo cp /home/ocaml-libmpdclient/ocaml-libmpdclient/travis/mpd.conf /etc/mpd.conf
+RUN sudo chmod 644 /etc/mpd.conf
 RUN mkdir /home/ocaml-libmpdclient/mpd
 RUN mkdir /home/ocaml-libmpdclient/mpd/music
 RUN mkdir /home/ocaml-libmpdclient/mpd/playlists
