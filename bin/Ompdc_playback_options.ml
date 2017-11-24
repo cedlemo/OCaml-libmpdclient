@@ -81,8 +81,26 @@ let mixrampdelay_wrapper client value =
   in
   Pb_opt.mixrampdelay client (string_parse value)
 
+let replay_gain_mode =
+  let doc = "Sets the replay gain mode. One of off, track, album, auto with
+    default (value given) set to auto.
+    Changing the mode during playback may take several seconds, because the
+    new settings does not affect the buffered data.
+    This command triggers the options idle event." in
+  let docv = "REPLAY_GAIN_MODE" in
+  Arg.(value & opt (some string) None & info ["replay_gain_mode"] ~docs ~doc ~docv)
+
+let replay_gain_mode_wrapper client value =
+  let string_parse = function
+    | "album" -> Pb_opt.Album
+    | "auto" -> Pb_opt.Auto
+    | "off" -> Pb_opt.Off
+    | "track" -> Pb_opt.Track
+    | _ -> Pb_opt.Auto
+  in Pb_opt.replay_gain_mode client (string_parse value)
+
 let playback_options common_opts consume crossfade mixrampdb random repeat
-                                 setvol single mixrampdelay =
+                                 setvol single mixrampdelay replay_gain_mode =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
   let on_value_do opt_val fn =
@@ -98,8 +116,8 @@ let playback_options common_opts consume crossfade mixrampdb random repeat
   on_value_do setvol Pb_opt.setvol;
   on_value_do single Pb_opt.single;
   on_value_do mixrampdelay mixrampdelay_wrapper;
+  on_value_do replay_gain_mode replay_gain_mode_wrapper;
   Mpd.Client.close client
-
 
 let cmd =
     let doc = "Configure all the playback options of the Mpd server."
@@ -111,5 +129,5 @@ let cmd =
     in
     Term.(const playback_options $ common_opts_t $ consume $ crossfade
                                  $ mixrampdb $ random $ repeat $ setvol
-                                 $ single $ mixrampdelay),
+                                 $ single $ mixrampdelay $ replay_gain_mode),
     Term.info "playback_options" ~doc ~sdocs ~exits ~man
