@@ -55,6 +55,7 @@ Counts the number of songs and their total playtime in the db matching TAG exact
 The group keyword may be used to group the results by a tag. The following prints per-artist counts:
 
 count group artist
+count genre metal date 2016 group artist
 
 find {TYPE} {WHAT} [...] [sort TYPE] [window START:END]
 
