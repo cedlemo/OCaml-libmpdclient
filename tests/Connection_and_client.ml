@@ -19,11 +19,20 @@
 open OUnit2
 open Mpd
 
-let () =
-  run_test_tt_main
-  (
-    "Mpd client library tests" >:::
-      [
-       Connection_and_client.tests;
-      ]
-  )
+let host = "127.0.0.1"
+let port = 6600
+
+let init_client () =
+  let connection = Mpd.Connection.initialize host port
+  Mpd.Client.initialize connection
+
+
+let test_client_banner test_ctxt =
+  let client = init_client () in
+  assert_equal "Mpd banner" (Mpd.Client.mpd_banner client)
+
+let tests =
+  "Connection and client tests" >:::
+    [
+      "Client banner test" >:: test_client_banner
+    ]
