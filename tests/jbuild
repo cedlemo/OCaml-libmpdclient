@@ -1,11 +1,18 @@
 (executables
- ((names (test))
+ ((names (test travis_test))
   (libraries (ocaml-libmpdclient lwt oUnit))
 ))
 
 (alias
  ((name    runtest)
   (deps    (test.exe))
+  (action  (run ${<}))
+ )
+)
+
+(alias
+ ((name    runtravistest)
+  (deps    (travis_test.exe))
   (action  (run ${<}))
  )
 )
