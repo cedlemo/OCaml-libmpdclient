@@ -29,7 +29,7 @@ let init_client () =
 
 let test_client_banner test_ctxt =
   let client = init_client () in
-  assert_equal ~printer:(fun x -> x) "Mpd banner" (Mpd.Client.mpd_banner client)
+  assert_equal ~printer:(fun x -> x) "OK MPD 0.19.0" (Mpd.Client.mpd_banner client)
 
 let tests =
   "Connection and client tests" >:::
