@@ -36,7 +36,7 @@ let test_client_status test_ctxt =
   match Client.status client with
   | Error message -> assert_equal ~printer:(fun _ -> "This should not have been reached") true false
   | Ok status -> let state = Mpd.(Status.string_of_state (Status.state status)) in
-    assert_equal ~printer:(fun s -> s) "stop" stop
+    assert_equal ~printer:(fun s -> s) "stop" status
 
 let tests =
   "Connection and client tests" >:::
