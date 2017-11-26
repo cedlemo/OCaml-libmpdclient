@@ -33,7 +33,8 @@ let () =
    let connection = Mpd.Connection.initialize host port in
    let client = Mpd.Client.initialize connection in
    print_endline ("banner: " ^ (Mpd.Client.mpd_banner client));
-   let s = Mpd.Client.status client in
-   let vol = Mpd.Status.volume s in
-   print_endline (string_of_int vol);
+   match Mpd.Client.status client with
+   | Error message -> print_endline message
+   | Ok status -> let vol = Mpd.Status.volume status in
+     print_endline (string_of_int vol);
    Mpd.Connection.close connection;
