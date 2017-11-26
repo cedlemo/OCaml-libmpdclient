@@ -53,7 +53,7 @@ val send:
 (** Create a status request and returns the status under a Mpd.Status.s Lwt.t
     type.*)
 val status:
-  t -> Status.t Lwt.t
+  t -> (Status.t, string) Lwt_result.t
 
 (** Does nothing but return "OK". *)
 val ping:

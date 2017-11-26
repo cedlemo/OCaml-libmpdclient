@@ -25,8 +25,6 @@ type state
 (** Get the string representation of a state. *)
 val string_of_state:
   state -> string
-(** Default empty/null state *)
-val empty : t
 (** Parse list of strings into a Mpd Status type *)
 val parse:
   string list -> t
@@ -98,8 +96,3 @@ val updating_db:
 (** Get the error message if there is one *)
 val error:
   t -> string
-(** Build a status error message. When the status request return an error, this
-    function is useful to generate an empty status with the error message field
-    set.*)
-val generate_error:
-  string -> t
