@@ -180,3 +180,6 @@ let updating_db {updating_db = u; _} =
 
 let error {error = e; _} =
   e
+
+let generate_error message  =
+  {empty with error = message}

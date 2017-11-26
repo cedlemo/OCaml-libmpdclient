@@ -96,3 +96,6 @@ val updating_db:
 (** Get the error message if there is one *)
 val error:
   t -> string
+
+val generate_error:
+  string -> t
