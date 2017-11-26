@@ -35,8 +35,8 @@ let status client =
   let response = send client "status" in
   match response with
   | Ok (lines) -> let status_pairs = Utils.split_lines lines in
-  Status.parse status_pairs
-  | Error (ack, ack_cmd_num, cmd, error) -> Status.generate_error error
+      Ok (Status.parse status_pairs)
+  | Error (ack, ack_cmd_num, cmd, error) -> Error(error)
 
 let ping client =
   send client "ping"

@@ -36,10 +36,10 @@ val send:
 val mpd_banner:
   t -> string
 
-(** Create a status request and returns the status under a Mpd.Status.s
-    type.*)
+(** Create a status request and returns the status under a Mpd.Status.t
+    type if no error occurs.*)
 val status:
-  t -> Status.t
+  t -> (Status.t, string) result
 
 (** Does nothing but return "OK". *)
 val ping:
