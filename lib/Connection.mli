@@ -26,6 +26,14 @@ type t
 val initialize:
   string -> int -> t
 
+(** Retrieve the host's string of the initialized connection. *)
+val hostname:
+  t -> string
+
+(** Retrieve the port of the connection of the initialized connection. *)
+val port:
+  t -> intr
+
 (** Close the connection *)
 val close:
   t -> unit

@@ -47,6 +47,13 @@ let initialize hostname port =
   in
   {hostname; port; ip; socket = s}
 
+
+let hostname { hostname; _ } =
+  hostname
+
+let port { port; _ } =
+  port
+
 let close t =
   let open Unix in
   try (
