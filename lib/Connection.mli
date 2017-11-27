@@ -32,7 +32,7 @@ val hostname:
 
 (** Retrieve the port of the connection of the initialized connection. *)
 val port:
-  t -> intr
+  t -> int
 
 (** Close the connection *)
 val close:
