@@ -26,6 +26,10 @@ let init_client () =
   let connection = Mpd.Connection.initialize host port in
   Mpd.Client.initialize connection
 
+let test_connection_initialize test_ctxt =
+  let connection = Mpd.Connection.initialize host port in
+  let _ = assert_equal ~printer:(fn s -> s) host (Connection.hostname connection) in
+  assert_equal ~printer:string_of_int port (Connection.port connection)
 
 let test_client_banner test_ctxt =
   let client = init_client () in
@@ -41,6 +45,7 @@ let test_client_status test_ctxt =
 let tests =
   "Connection and client tests" >:::
     [
+      "Connection initialize test" >:: test_connection_initialize;
       "Client banner test" >:: test_client_banner;
       "Client status test" >:: test_client_status
     ]
