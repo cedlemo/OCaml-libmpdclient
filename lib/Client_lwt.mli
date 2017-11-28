@@ -20,7 +20,7 @@
  with commands and requests in Lwt threads. *)
 
 open Lwt
-open LwtConnection
+open Connection_lwt
 open Status
 open Protocol
 
@@ -28,7 +28,7 @@ type t
 
 (** Initialize the client with a connection. *)
 val initialize:
-  LwtConnection.t -> t Lwt.t
+  Connection_lwt.t -> t Lwt.t
 
 (** Close the client *)
 val close:

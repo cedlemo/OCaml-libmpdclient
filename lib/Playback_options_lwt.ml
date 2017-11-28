@@ -17,15 +17,15 @@
  *)
 
 let consume client = function
-  | true  -> LwtClient.send client "consume 1"
-  | false -> LwtClient.send client "consume 0"
+  | true  -> Client_lwt.send client "consume 1"
+  | false -> Client_lwt.send client "consume 0"
 
 let crossfade client seconds =
-  LwtClient.send client (String.concat " " ["crossfade";
+  Client_lwt.send client (String.concat " " ["crossfade";
                                              string_of_int seconds])
 
 let mixrampdb client seconds =
-  LwtClient.send client (String.concat " " ["mixrampdb";
+  Client_lwt.send client (String.concat " " ["mixrampdb";
                                              string_of_int seconds])
 
 type mixrampd_t =
@@ -33,24 +33,24 @@ type mixrampd_t =
   | Seconds of int
 
 let mixrampdelay client = function
-  | Nan -> LwtClient.send client "mixrampdelay nan"
-  | Seconds (s) -> LwtClient.send client (String.concat " " ["mixrampdb";
+  | Nan -> Client_lwt.send client "mixrampdelay nan"
+  | Seconds (s) -> Client_lwt.send client (String.concat " " ["mixrampdb";
                                                               string_of_int s])
 let random client = function
-  | true  -> LwtClient.send client "random 1"
-  | false -> LwtClient.send client "random 0"
+  | true  -> Client_lwt.send client "random 1"
+  | false -> Client_lwt.send client "random 0"
 
 let repeat client = function
-  | true  -> LwtClient.send client "repeat 1"
-  | false -> LwtClient.send client "repeat 0"
+  | true  -> Client_lwt.send client "repeat 1"
+  | false -> Client_lwt.send client "repeat 0"
 
 let setvol client volume =
-  LwtClient.send client (String.concat " " ["setvol";
+  Client_lwt.send client (String.concat " " ["setvol";
                                              string_of_int volume])
 
 let single client = function
-  | true  -> LwtClient.send client "single 1"
-  | false -> LwtClient.send client "single 0"
+  | true  -> Client_lwt.send client "single 1"
+  | false -> Client_lwt.send client "single 0"
 
 type gain_mode_t =
   | Off
@@ -59,7 +59,7 @@ type gain_mode_t =
   | Auto
 
 let replay_gain_mode client = function
-  | Off -> LwtClient.send client "replay_gain_mode off"
-  | Track -> LwtClient.send client "replay_gain_mode track"
-  | Album -> LwtClient.send client "replay_gain_mode album"
-  | Auto -> LwtClient.send client "replay_gain_mode auto"
+  | Off -> Client_lwt.send client "replay_gain_mode off"
+  | Track -> Client_lwt.send client "replay_gain_mode track"
+  | Album -> Client_lwt.send client "replay_gain_mode album"
+  | Auto -> Client_lwt.send client "replay_gain_mode auto"

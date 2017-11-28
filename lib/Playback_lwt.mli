@@ -21,39 +21,39 @@
 
 (** Plays next song in the playlist. *)
 val next:
-  LwtClient.t -> Protocol.response Lwt.t
+  Client_lwt.t -> Protocol.response Lwt.t
 
 (** Plays previous song in the playlist. *)
 val previous:
-  LwtClient.t -> Protocol.response Lwt.t
+  Client_lwt.t -> Protocol.response Lwt.t
 
 (** Stops playing.*)
 val stop:
-  LwtClient.t -> Protocol.response Lwt.t
+  Client_lwt.t -> Protocol.response Lwt.t
 
 (** Toggles pause/resumers playing *)
 val pause:
-  LwtClient.t -> bool -> Protocol.response Lwt.t
+  Client_lwt.t -> bool -> Protocol.response Lwt.t
 
 (** Begins playing the playlist at song number. *)
 val play:
-  LwtClient.t -> int -> Protocol.response Lwt.t
+  Client_lwt.t -> int -> Protocol.response Lwt.t
 
 (** Begins playing the playlist at song id. *)
 val playid:
-  LwtClient.t -> int -> Protocol.response Lwt.t
+  Client_lwt.t -> int -> Protocol.response Lwt.t
 
 (** Seeks to the position time of entry songpos in the playlist. *)
 val seek:
-  LwtClient.t -> int -> float -> Protocol.response Lwt.t
+  Client_lwt.t -> int -> float -> Protocol.response Lwt.t
 
 (** Seeks to the position time of song id. *)
 val seekid:
-  LwtClient.t -> int -> float -> Protocol.response Lwt.t
+  Client_lwt.t -> int -> float -> Protocol.response Lwt.t
 
 (** Seeks to the position time within the current song.
  TODO : If prefixed by '+' or '-', then the time is relative to the current
  playing position
  *)
 val seekcur:
-  LwtClient.t -> float -> Protocol.response Lwt.t
+  Client_lwt.t -> float -> Protocol.response Lwt.t

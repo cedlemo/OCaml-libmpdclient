@@ -18,16 +18,16 @@
 
 open Lwt.Infix
 
-type t = {connection : LwtConnection.t; mpd_banner : string }
+type t = {connection : Connection_lwt.t; mpd_banner : string }
 
 let initialize connection =
-  LwtConnection.read_mpd_banner connection
+  Connection_lwt.read_mpd_banner connection
   >>= fun message ->
   Lwt.return {connection = connection; mpd_banner = message}
 
 let close client =
 let {connection = connection; _} = client in
-LwtConnection.close connection
+Connection_lwt.close connection
 
 let mpd_banner {mpd_banner = banner; _ } =
   banner
@@ -35,10 +35,10 @@ let mpd_banner {mpd_banner = banner; _ } =
 let rec idle client on_event =
   let {connection = connection; _} = client in
   let cmd = "idle\n" in
-  LwtConnection.write connection cmd
+  Connection_lwt.write connection cmd
   >>= function
   | (-1) -> Lwt.return () (* TODO: Should return a meaningfull value so that the user can exit on this value. *)
-  | _ -> LwtConnection.read_idle_events connection
+  | _ -> Connection_lwt.read_idle_events connection
       >>= fun response ->
         on_event response
         >>=fun stop ->
@@ -48,9 +48,9 @@ let rec idle client on_event =
 
 let send client cmd =
   let {connection = c; _} = client in
-  LwtConnection.write c (cmd ^ "\n")
+  Connection_lwt.write c (cmd ^ "\n")
   >>= fun _ ->
-    LwtConnection.read_command_response c
+    Connection_lwt.read_command_response c
     >>= fun response ->
       let parsed_response = Protocol.parse_response response in
       Lwt.return parsed_response
