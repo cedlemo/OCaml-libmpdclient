@@ -33,21 +33,21 @@ let idle common_opts =
   let open Mpd in
   let {host; port} = common_opts in
   let main_thread =
-    Mpd.LwtConnection.initialize host port
+    Mpd.Connection_lwt.initialize host port
     >>= fun connection ->
       Lwt_io.write_line Lwt_io.stdout "Client on"
       >>= fun () ->
-        Mpd.LwtClient.initialize connection
+        Mpd.Client_lwt.initialize connection
         >>= fun client ->
-          Lwt_io.write_line Lwt_io.stdout (Mpd.LwtClient.mpd_banner client)
+          Lwt_io.write_line Lwt_io.stdout (Mpd.Client_lwt.mpd_banner client)
           >>= fun () ->
-            Mpd.LwtClient.idle client on_mpd_event
+            Mpd.Client_lwt.idle client on_mpd_event
   in
   Lwt_main.run (
     Lwt.catch
       (fun () -> main_thread)
       (function
-        | Mpd.LwtConnection.Lwt_unix_exn message ->
+        | Mpd.Connection_lwt.Lwt_unix_exn message ->
             Lwt_io.write_line Lwt_io.stderr message
         | _ -> Lwt_io.write_line Lwt_io.stderr "Exception not handled. Exit ..."
       )
