@@ -98,13 +98,15 @@ let get_mpd_status_info status = function
 let get_status common_opts fields =
   let {host; port} = common_opts in
   let client = initialize_client {host; port} in
-  let status = Mpd.Client.status client in
-  let rec _parse_fields = function
-    | [] -> ()
-    | i :: remain -> let info = String.concat " " @@ get_mpd_status_info status i in
-    let _ = print_endline info in
-    _parse_fields remain
-  in
+  match Mpd.Client.status client with
+  | Error message -> print_endline message
+  | Ok status ->
+      let rec _parse_fields = function
+        | [] -> ()
+        | i :: remain -> let info = String.concat " " @@ get_mpd_status_info status i in
+        let _ = print_endline info in
+        _parse_fields remain
+        in
   let _ = _parse_fields fields in
   Mpd.Client.close client
 
