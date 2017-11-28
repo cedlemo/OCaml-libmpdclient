@@ -105,7 +105,7 @@ let playback_options common_opts consume crossfade mixrampdb random repeat
   let client = initialize_client {host; port} in
   let on_value_do opt_val fn =
     match opt_val with
-    | Some v -> ignore(fn client v)
+    | Some v -> check_for_mpd_error (fn client v)
     | None -> ()
   in
   on_value_do consume Pb_opt.consume;
