@@ -36,7 +36,12 @@ let status client =
   match response with
   | Ok (lines) -> let status_pairs = Utils.split_lines lines in
       Ok (Status.parse status_pairs)
-  | Error (ack, ack_cmd_num, cmd, error) -> Error(error)
+  | Error (ack, ack_cmd_num, cmd, ack_message) ->
+      let message = String.concat " " ["Error type:";
+                                       Protocol.error_name ack;
+                                       "-- error message:";
+                                       ack_message] in
+      Error message
 
 let ping client =
   send client "ping"
