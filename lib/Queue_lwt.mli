@@ -21,7 +21,7 @@
 (** Playlist type *)
 type t =
   | PlaylistError of string
-  | Playlist of Song.s list
+  | Playlist of Song.t list
 
 (** Adds the file URI to the playlist (directories add recursively). URI can
     also be a single file. *)

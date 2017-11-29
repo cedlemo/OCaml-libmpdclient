@@ -21,7 +21,7 @@ open Lwt.Infix
 
 type t =
   | PlaylistError of string
-  | Playlist of Song.s list
+  | Playlist of Song.t list
 
 let add client uri =
   Client_lwt.send client uri

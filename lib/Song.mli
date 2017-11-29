@@ -20,36 +20,36 @@
  * mpd tags. *)
 
 (** Song type *)
-type s
+type t
 
 (** Empty song type *)
-val empty: s
+val empty: t
 
 (** Parse a list of song attributes to a Song.s type *)
-val parse: string list -> s
+val parse: string list -> t
 
-val album: s -> string
-val albumsort: s -> string
-val albumartist: s -> string
-val albumartistsort: s -> string
-val artist: s -> string
-val artistsort: s -> string
-val comment: s -> string
-val composer: s -> string
-val date: s -> string
-val disc: s -> string
-val duration: s -> float
-val file: s -> string
-val genre: s -> string
-val id: s -> int
-val last_modified: s -> string
-val name: s -> string
-val performer: s -> string
-val pos: s -> int
-val rate:  s -> int
-val time: s -> int
-val title: s -> string
-val track: s -> string
+val album: t -> string
+val albumsort: t -> string
+val albumartist: t -> string
+val albumartistsort: t -> string
+val artist: t -> string
+val artistsort: t -> string
+val comment: t -> string
+val composer: t -> string
+val date: t -> string
+val disc: t -> string
+val duration: t -> float
+val file: t -> string
+val genre: t -> string
+val id: t -> int
+val last_modified: t -> string
+val name: t -> string
+val performer: t -> string
+val pos: t -> int
+val rate:  t -> int
+val time: t -> int
+val title: t -> string
+val track: t -> string
 
 (*
 TAG_MUSICBRAINZ_ARTISTID

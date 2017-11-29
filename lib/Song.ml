@@ -18,7 +18,7 @@
 
 open Utils
 
-type s = {
+type t = {
   album: string;
   albumsort: string; (* TODO : int ? *)
   albumartist: string;

@@ -19,7 +19,7 @@
 open Utils
 
 type p =
-  | PlaylistError of string | Playlist of Song.s list
+  | PlaylistError of string | Playlist of Song.t list
 
 let add client uri =
   Client.send client uri
