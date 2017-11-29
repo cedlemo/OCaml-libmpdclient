@@ -58,8 +58,12 @@ let send client cmd =
 let status client =
   send client "status"
   >>= function
-    | Ok (lines) -> let status_pairs = Utils.split_lines lines in
-        let status = Status.parse status_pairs in Lwt.return (Ok status)
+    | Ok (lines) -> (
+        match lines with
+        | None -> Lwt.return (Error "No status")
+        | Some lines' -> let status_pairs = Utils.split_lines lines' in
+            let status = Status.parse status_pairs in Lwt.return (Ok status)
+    )
     | Error (ack, ack_cmd_num, cmd, error_message) ->
         Lwt.return (Error error_message)
 

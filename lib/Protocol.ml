@@ -30,7 +30,7 @@ type ack_error =
   | Player_sync     (* 55 *)
   | Exist           (* 56 *)
 
-type response = Ok of string | Error of (ack_error * int * string * string)
+type response = Ok of string option | Error of (ack_error * int * string * string)
 
 let error_name = function
   | Not_list      -> "Not_list"
@@ -81,6 +81,7 @@ let parse_error_response mpd_response =
 let parse_response mpd_response =
   let ok_response_reg = Str.regexp "\\(\\(\n\\|.\\)*\\)OK\n" in
   if (Str.string_match ok_response_reg mpd_response 0 == true) then
-    Ok (Str.matched_group 1 mpd_response)
+    let str = Str.matched_group 1 mpd_response in
+    if str = "" then Ok (None) else Ok (Some str)
   else
     Error (parse_error_response mpd_response)

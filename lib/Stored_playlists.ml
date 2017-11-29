@@ -19,7 +19,9 @@
 let listplaylists client =
   match Client.send client "listplaylists" with
   | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> None
-  | Protocol.Ok (response) -> Some (Utils.read_list_playlists response)
+  | Protocol.Ok (response_opt) -> match response_opt with
+      | None -> None
+      | Some response -> Some (Utils.read_list_playlists response)
 
 let load client playlist ?range () =
   let request = match range with

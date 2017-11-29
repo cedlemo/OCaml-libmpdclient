@@ -35,7 +35,7 @@ type ack_error =
   | Exist           (* 56 *)
 
   (** Type of the response of the mpd server. *)
-type response = Ok of string | Error of (ack_error * int * string * string)
+type response = Ok of string option | Error of (ack_error * int * string * string)
 
 (** Get the error name of the error type. *)
 val error_name:

@@ -34,8 +34,12 @@ let mpd_banner {mpd_banner = banner; _ } =
 let status client =
   let response = send client "status" in
   match response with
-  | Ok (lines) -> let status_pairs = Utils.split_lines lines in
-      Ok (Status.parse status_pairs)
+  | Ok (lines) -> (
+    match lines with
+      | None -> Error "Empty status"
+      | Some lines' -> let status_pairs = Utils.split_lines lines' in
+           Ok (Status.parse status_pairs)
+  )
   | Error (ack, ack_cmd_num, cmd, ack_message) ->
       let message = String.concat " " ["Error type:";
                                        Protocol.error_name ack;
@@ -52,8 +56,12 @@ let password client mdp =
 let tagtypes client =
   let response = send client "tagtypes" in
   match response with
-  | Ok (lines) -> let tagid_keys_vals = Utils.split_lines lines in
-  List.rev (Utils.values_of_pairs tagid_keys_vals)
+  | Ok (lines) -> (
+    match lines with
+    | None -> []
+    | Some lines' -> let tagid_keys_vals = Utils.split_lines lines' in
+       List.rev (Utils.values_of_pairs tagid_keys_vals)
+  )
   | Error (ack, ack_cmd_num, cmd, error) -> []
 (*
 (** Remove one or more tags from the list of tag types the client is

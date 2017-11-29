@@ -22,8 +22,9 @@ let listplaylists client =
   Client_lwt.send client "listplaylists"
   >>= function
       | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> Lwt.return None
-      | Protocol.Ok (response) ->
-          let playlists = Utils.read_list_playlists response in
+      | Protocol.Ok (response_opt) -> match response_opt with
+        | None -> Lwt.return None
+        | Some response -> let playlists = Utils.read_list_playlists response in
           Lwt.return (Some playlists)
 
 let load client playlist ?range () =

@@ -30,7 +30,7 @@ match response with
 
 let test_request_ok test_ctxt =  assert_equal true (let response = Protocol.parse_response "test: this is a complex\nresponse: request\nOK\n" in
 match response with
-| Ok (mpd_response) -> if (mpd_response = "test: this is a complex\nresponse: request\n") then true else false
+| Ok (mpd_response) -> if (mpd_response = Some "test: this is a complex\nresponse: request\n") then true else false
 | Error _ -> false
 )
 let test_error_50 test_ctxt =  assert_equal true (let response = Protocol.parse_response "ACK [50@1] {play} error while playing\n" in

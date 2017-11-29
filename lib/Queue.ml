@@ -28,15 +28,19 @@ let addid client uri position =
   let cmd = String.concat " " ["addid"; uri; string_of_int position] in
   let response = Client.send client cmd in
   match response with
-  |Protocol.Ok (song_id) -> let lines = Utils.split_lines song_id in
-  let rec parse lines =
-    match lines with
-      | [] -> -1
-      | line :: remain -> let { key = k; value = v} = Utils.read_key_val line in
-      if (k = "Id") then int_of_string v
-                          else parse remain
-      in parse lines
-      |Protocol.Error (_) -> -1
+  |Protocol.Ok (song_id_opt) -> (
+      match song_id_opt with
+      | None -> -1
+      | Some song_id -> let lines = Utils.split_lines song_id in
+        let rec parse lines =
+          match lines with
+            | [] -> -1
+            | line :: remain -> let { key = k; value = v} = Utils.read_key_val line in
+            if (k = "Id") then int_of_string v
+                                else parse remain
+        in parse lines
+  )
+  |Protocol.Error (_) -> -1
 
 let clear client =
   Client.send client "clear"
@@ -83,35 +87,47 @@ let rec _build_songs_list client songs l =
   | h :: q -> let song_infos_request = "playlistinfo " ^ (get_song_id h) in
   match Client.send client song_infos_request with
   | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> PlaylistError (ack_message)
-  | Protocol.Ok (song_infos) -> let song = Song.parse (Utils.split_lines song_infos) in
-   _build_songs_list client q (song :: l)
+  | Protocol.Ok (song_infos_opt) -> (
+    match song_infos_opt with
+    | None -> PlaylistError ("No song infos for " ^ (get_song_id h))
+    | Some song_infos -> let song = Song.parse (Utils.split_lines song_infos) in
+      _build_songs_list client q (song :: l)
+  )
 
 let playlist client =
   match Client.send client "playlist" with
   | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> PlaylistError (ack_message)
-  | Protocol.Ok (response) -> let songs = Utils.split_lines response in
-    _build_songs_list client songs []
+  | Protocol.Ok (response_opt) -> match response_opt with
+    | None -> Playlist []
+    | Some response -> let songs = Utils.split_lines response in
+      _build_songs_list client songs []
 
 let playlistid client id =
   let request = "playlistid " ^ (string_of_int id) in
   match Client.send client request with
   | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> PlaylistError (ack_message)
-  | Protocol.Ok (response) -> let song = Song.parse (Utils.split_lines response) in
-  Playlist (song::[])
+  | Protocol.Ok (response_opt) -> match response_opt with
+    | None -> Playlist []
+    | Some response ->let song = Song.parse (Utils.split_lines response) in
+      Playlist (song::[])
 
 let playlistfind client tag needle =
   let request = String.concat " " ["playlistfind"; tag; needle] in
   match Client.send client request with
   | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> PlaylistError (ack_message)
-  | Protocol.Ok (response) -> let songs = Utils.split_lines response in
-    _build_songs_list client songs []
+  | Protocol.Ok (response_opt) -> match response_opt with
+    | None -> Playlist []
+    | Some response -> let songs = Utils.split_lines response in
+      _build_songs_list client songs []
 
 let playlistsearch client tag needle =
   let request = String.concat " " ["playlistsearch"; tag; needle] in
   match Client.send client request with
   | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> PlaylistError (ack_message)
-  | Protocol.Ok (response) -> let songs = Utils.split_lines response in
-    _build_songs_list client songs []
+  | Protocol.Ok (response_opt) -> match response_opt with
+    | None -> Playlist []
+    | Some response -> let songs = Utils.split_lines response in
+      _build_songs_list client songs []
 
 let swap client pos1 pos2 =
   let request = String.concat " " ["swap";
