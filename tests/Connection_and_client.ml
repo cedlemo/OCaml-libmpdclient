@@ -29,18 +29,22 @@ let init_client () =
 let test_connection_initialize test_ctxt =
   let connection = Mpd.Connection.initialize host port in
   let _ = assert_equal ~printer:(fun s -> s) host (Connection.hostname connection) in
-  assert_equal ~printer:string_of_int port (Connection.port connection)
+  let _ = assert_equal ~printer:string_of_int port (Connection.port connection) in
+  Mpd.Connection.close connection
 
 let test_client_banner test_ctxt =
   let client = init_client () in
-  assert_equal ~printer:(fun x -> x) "OK MPD 0.19.0\n" (Mpd.Client.mpd_banner client)
+  let _ = assert_equal ~printer:(fun x -> x) "OK MPD 0.19.0\n" (Mpd.Client.mpd_banner client) in
+  Mpd.Client.close client
 
 let test_client_status test_ctxt =
   let client = init_client () in
-  match Client.status client with
-  | Error message -> assert_equal ~printer:(fun _ -> "This should not have been reached") true false
-  | Ok status -> let state = Mpd.(Status.string_of_state (Status.state status)) in
-    assert_equal ~printer:(fun s -> s) "stop" state
+  let _ = match Client.status client with
+    | Error message -> assert_equal ~printer:(fun _ -> "This should not have been reached") true false
+    | Ok status -> let state = Mpd.(Status.string_of_state (Status.state status)) in
+      assert_equal ~printer:(fun s -> s) "stop" state
+  in
+  Mpd.Client.close client
 
 let tests =
   "Connection and client tests" >:::
