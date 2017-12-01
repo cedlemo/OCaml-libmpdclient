@@ -41,7 +41,7 @@ let main_thread =
          >>= fun client ->
            Lwt_io.write_line Lwt_io.stdout (Mpd.LwtClient.mpd_banner client)
            >>= fun () ->
-             Mpd.LwtClient.idle client on_mpd_event
+             Mpd.LwtClient.idle_loop client on_mpd_event
              >>= fun () ->
                Lwt.return 0
    )

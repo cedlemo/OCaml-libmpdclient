@@ -32,7 +32,7 @@ Connection_lwt.close connection
 let mpd_banner {mpd_banner = banner; _ } =
   banner
 
-let rec idle client on_event =
+let rec idle_loop client on_event =
   let {connection = connection; _} = client in
   let cmd = "idle\n" in
   Connection_lwt.write connection cmd

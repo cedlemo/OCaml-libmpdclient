@@ -42,7 +42,7 @@ val mpd_banner:
 (** Loop on mpd event with the "idle" command
     the on_event function take the event response as argument and return
     true to stop or false to continue the loop *)
-val idle:
+val idle_loop:
   t -> (string -> bool Lwt.t) -> unit Lwt.t
 
 (** Send to the mpd server a command. The response of the server is returned
