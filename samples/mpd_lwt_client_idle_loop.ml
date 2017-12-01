@@ -21,7 +21,8 @@ open Lwt
 open Mpd
 
 (* Simple client that connects to a mpd server with the "idle" command and get
- * all the events of the mpd server.*)
+ * all the events of the mpd server.
+ * Leave with Crtl+C *)
 
 let host = "127.0.0.1"
 let port = 6600
@@ -33,20 +34,20 @@ let on_mpd_event = function
 let main_thread =
    Lwt.catch
    (fun () ->
-     Mpd.LwtConnection.initialize host port
+     Mpd.Connection_lwt.initialize host port
      >>= fun connection ->
        Lwt_io.write_line Lwt_io.stdout "Client on"
        >>= fun () ->
-         Mpd.LwtClient.initialize connection
+         Mpd.Client_lwt.initialize connection
          >>= fun client ->
-           Lwt_io.write_line Lwt_io.stdout (Mpd.LwtClient.mpd_banner client)
+           Lwt_io.write_line Lwt_io.stdout (Mpd.Client_lwt.mpd_banner client)
            >>= fun () ->
-             Mpd.LwtClient.idle_loop client on_mpd_event
+             Mpd.Client_lwt.idle_loop client on_mpd_event
              >>= fun () ->
                Lwt.return 0
    )
    (function
-     | Mpd.LwtConnection.Lwt_unix_exn message ->
+     | Mpd.Connection_lwt.Lwt_unix_exn message ->
          Lwt_io.write_line Lwt_io.stderr message
          >>= fun () ->
            Lwt.return 125
