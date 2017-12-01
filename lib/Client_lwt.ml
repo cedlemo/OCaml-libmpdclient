@@ -32,6 +32,16 @@ Connection_lwt.close connection
 let mpd_banner {mpd_banner = banner; _ } =
   banner
 
+let idle client =
+  let {connection = connection; _} = client in
+  let cmd = "idle\n" in
+  Connection_lwt.write connection cmd
+  >>= function
+    | (-1) -> Lwt.return (Error "Connection error: unable to write \"idle\" command.")
+    | _ -> Connection_lwt.read_idle_events connection
+      >>= fun response ->
+        Lwt.return (Ok (Protocol.parse_response response))
+
 let rec idle_loop client on_event =
   let {connection = connection; _} = client in
   let cmd = "idle\n" in
@@ -44,7 +54,7 @@ let rec idle_loop client on_event =
         >>=fun stop ->
           match stop with
           | true -> Lwt.return ()
-          | false -> idle client on_event
+          | false -> idle_loop client on_event
 
 let send client cmd =
   let {connection = c; _} = client in
