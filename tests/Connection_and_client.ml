@@ -46,10 +46,16 @@ let test_client_status test_ctxt =
   in
   Mpd.Client.close client
 
+let test_client_banner test_ctxt =
+  let client = init_client () in
+  let _ = assert_equal ~printer:(fun x -> x) "OK\n" (Mpd.Client.ping client) in
+  Mpd.Client.close client
+
 let tests =
   "Connection and client tests" >:::
     [
       "Connection initialize test" >:: test_connection_initialize;
       "Client banner test" >:: test_client_banner;
-      "Client status test" >:: test_client_status
+      "Client status test" >:: test_client_status;
+      "Client ping test" >:: test_ping_client
     ]
