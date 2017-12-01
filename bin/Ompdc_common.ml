@@ -88,7 +88,11 @@ let initialize_client {host; port} =
 let check_for_mpd_error mpd_response =
   let response = (
     match mpd_response with
-    | Ok msg -> "Mpd response: " ^ msg
+    | Ok msg -> (
+      match msg with
+      | None -> ""
+      | Some str -> "Mpd response: " ^ str
+    )
     | Error (ack_error, ack_cmd_num, ack_cmd, ack_message) ->
         String.concat " " ["Error type:";
                            Mpd.Protocol.error_name ack_error;
