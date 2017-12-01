@@ -32,6 +32,11 @@ let test_connection_initialize test_ctxt =
   let _ = assert_equal ~printer:string_of_int port (Connection.port connection) in
   Mpd.Connection.close connection
 
+let test_client_send test_ctxt =
+  let client = init_client () in
+  let _ = assert_equal ~printer:(fun x -> x) "OK\n" (Mpd.Client.send "ping" client) in
+  Mpd.Client.close client
+
 let test_client_banner test_ctxt =
   let client = init_client () in
   let _ = assert_equal ~printer:(fun x -> x) "OK MPD 0.19.0\n" (Mpd.Client.mpd_banner client) in
@@ -55,6 +60,7 @@ let tests =
   "Connection and client tests" >:::
     [
       "Connection initialize test" >:: test_connection_initialize;
+      "Client send test" >:: test_client_send;
       "Client banner test" >:: test_client_banner;
       "Client status test" >:: test_client_status;
       "Client ping test" >:: test_ping_client
