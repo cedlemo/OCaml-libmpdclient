@@ -64,7 +64,7 @@ let test_client_banner test_ctxt =
   | Error _ -> assert_equal ~printer:(fun _ -> "This should not has been reached") false true
   | Ok response_opt -> match response_opt with
     | None -> assert_equal ~printer:(fun _ -> "This should not has been reached") false true
-    | Some response -> let _ = assert_equal ~printer:(fun x -> x) "OK\n" ()
+    | Some response -> assert_equal ~printer:(fun x -> x) "OK\n"
   in
   Mpd.Client.close client
 
