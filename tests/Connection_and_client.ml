@@ -58,13 +58,13 @@ let test_client_status test_ctxt =
   in
   Mpd.Client.close client
 
-let test_client_banner test_ctxt =
+let test_client_ping test_ctxt =
   let client = init_client () in
   let _ = match Mpd.Client.ping client with
   | Error _ -> assert_equal ~printer:(fun _ -> "This should not has been reached") false true
   | Ok response_opt -> match response_opt with
     | None -> assert_equal ~printer:(fun _ -> "This should not has been reached") false true
-    | Some response -> assert_equal ~printer:(fun x -> x) "OK\n"
+    | Some response -> assert_equal ~printer:(fun x -> x) "OK\n" response
   in
   Mpd.Client.close client
 
@@ -75,5 +75,5 @@ let tests =
       "Client send test" >:: test_client_send;
       "Client banner test" >:: test_client_banner;
       "Client status test" >:: test_client_status;
-      "Client ping test" >:: test_ping_client
+      "Client ping test" >:: test_client_ping
     ]
