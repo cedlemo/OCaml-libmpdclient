@@ -3,5 +3,5 @@
 (executable
  ((name ompdc)
   (public_name ompdc)
-  (libraries (ocaml-libmpdclient lwt lwt.unix cmdliner)))
+  (libraries (ocaml-libmpdclient lwt lwt.unix cmdliner notty notty.lwt)))
 )
