@@ -15,19 +15,52 @@
  * You should have received a copy of the GNU General Public License
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
-
-open Cmdliner
-open Ompdc_common
 open Lwt.Infix
+open Notty
+open Notty_lwt
+open Ompdc_common
 
-let lwt_print_line str =
-  Lwt_io.write_line Lwt_io.stdout str
+module Terminal = Notty_lwt.Term
 
-let on_mpd_event event_name =
-  match event_name with
-  | "mixer" -> print_endline "Mixer related command has been executed"; Lwt.return true
-  | _ -> print_endline (("-" ^ event_name) ^ "-"); Lwt.return false
+let render (w, h) client =
+  Mpd.Client_lwt.status client
+  >>= fun response ->
+    match response with
+    | Error message -> Lwt.return I.(strf ~attr:A.(fg lightblack) "[there is a pb %s]" message)
+    | Ok status -> let state = Mpd.Status.state status in
+       Lwt.return I.(strf ~attr:A.(fg lightblack) "[state %s]" (Mpd.Status.string_of_state state))
 
+let listen_mpd_event client =
+  Mpd.Client_lwt.idle client >>= fun evt -> Lwt.return `Mpd_event
+
+let event term = Lwt_stream.get (Terminal.events term) >|= function
+  | Some (`Resize _ | #Unescape.event as x) -> x
+  | None -> `End
+
+let rec loop term (e, t) dim client =
+  (e <?> t) >>= function
+  | `End | `Key (`Escape, []) ->
+      Lwt.return_unit
+  | `Mpd_event ->
+      render dim client
+      >>= fun img ->
+        Terminal.image term img
+        >>= fun () ->
+            loop term (e, listen_mpd_event client) dim client
+  | `Resize dim ->
+      render dim client
+      >>= fun img ->
+        Terminal.image term img
+        >>= fun () ->
+        loop term (event term, t) dim client
+  | _ -> loop term (event term, t) dim client
+
+let interface client =
+  let tc = Unix.(tcgetattr stdin) in
+  Unix.(tcsetattr stdin TCSANOW { tc with c_isig = false });
+  let term = Terminal.create () in
+  let size = Terminal.size term in
+  loop term (event term, listen_mpd_event client) size client
 
 let idle common_opts =
   let open Mpd in
@@ -35,13 +68,9 @@ let idle common_opts =
   let main_thread =
     Mpd.Connection_lwt.initialize host port
     >>= fun connection ->
-      Lwt_io.write_line Lwt_io.stdout "Client on"
-      >>= fun () ->
-        Mpd.Client_lwt.initialize connection
-        >>= fun client ->
-          Lwt_io.write_line Lwt_io.stdout (Mpd.Client_lwt.mpd_banner client)
-          >>= fun () ->
-            Mpd.Client_lwt.idle client on_mpd_event
+      Mpd.Client_lwt.initialize connection
+      >>= fun client ->
+        interface client
   in
   Lwt_main.run (
     Lwt.catch
@@ -52,6 +81,8 @@ let idle common_opts =
         | _ -> Lwt_io.write_line Lwt_io.stderr "Exception not handled. Exit ..."
       )
   )
+
+open Cmdliner
 let cmd =
   let doc = "Use Ompdc an Mpd server events listener. Quit with Ctl+Alt+C." in
   let man = [ `S Manpage.s_description;
