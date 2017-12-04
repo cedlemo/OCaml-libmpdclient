@@ -26,12 +26,12 @@ let render (w, h) client =
   Mpd.Client_lwt.status client
   >>= fun response ->
     match response with
-    | Error message -> Lwt.return I.(strf ~attr:A.(fg lightblack) "[there is a pb %s]" message)
+    | Error message -> Lwt.return I.(strf ~attr:A.(fg red) "[there is a pb %s]" message)
     | Ok status -> let state = Mpd.Status.state status in
-       Lwt.return I.(strf ~attr:A.(fg lightblack) "[state %s]" (Mpd.Status.string_of_state state))
+       Lwt.return I.(strf ~attr:A.(fg white) "[state %s]" (Mpd.Status.string_of_state state))
 
 let listen_mpd_event client =
-  Mpd.Client_lwt.idle client >>= fun evt -> Lwt.return `Mpd_event
+  Mpd.Client_lwt.idle client >|= fun evt -> `Mpd_event evt
 
 let event term = Lwt_stream.get (Terminal.events term) >|= function
   | Some (`Resize _ | #Unescape.event as x) -> x
@@ -41,7 +41,7 @@ let rec loop term (e, t) dim client =
   (e <?> t) >>= function
   | `End | `Key (`Escape, []) ->
       Lwt.return_unit
-  | `Mpd_event ->
+  | `Mpd_event event_name ->
       render dim client
       >>= fun img ->
         Terminal.image term img
@@ -56,11 +56,13 @@ let rec loop term (e, t) dim client =
   | _ -> loop term (event term, t) dim client
 
 let interface client =
-  let tc = Unix.(tcgetattr stdin) in
-  Unix.(tcsetattr stdin TCSANOW { tc with c_isig = false });
   let term = Terminal.create () in
   let size = Terminal.size term in
-  loop term (event term, listen_mpd_event client) size client
+  render size client
+  >>= fun img ->
+    Terminal.image term img
+    >>= fun () ->
+    loop term (event term, listen_mpd_event client) size client
 
 let idle common_opts =
   let open Mpd in
