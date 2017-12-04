@@ -39,7 +39,7 @@ let idle client =
   >>= function
     | (-1) -> Lwt.return (Error "Connection error: unable to write \"idle\" command.")
     | _ -> Connection_lwt.read_idle_events connection
-           >|= fun response -> Ok (Protocol.parse_response response)
+           >|= fun event_name -> Ok event_name
 
 let rec idle_loop client on_event =
   let {connection = connection; _} = client in

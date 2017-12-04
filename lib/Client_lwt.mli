@@ -41,7 +41,7 @@ val mpd_banner:
 
 (** Wait for an event to occurs in order to return. *)
 val idle:
-  t -> (Protocol.response, string) Pervasives.result Lwt.t
+  t -> (string, string) Pervasives.result Lwt.t
 
 (** Loop on mpd event with the "idle" command
     the on_event function take the event response as argument and return
