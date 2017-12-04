@@ -39,20 +39,18 @@ let idle client =
   >>= function
     | (-1) -> Lwt.return (Error "Connection error: unable to write \"idle\" command.")
     | _ -> Connection_lwt.read_idle_events connection
-      >>= fun response ->
-        Lwt.return (Ok (Protocol.parse_response response))
+           >|= fun response -> Ok (Protocol.parse_response response)
 
 let rec idle_loop client on_event =
   let {connection = connection; _} = client in
   let cmd = "idle\n" in
   Connection_lwt.write connection cmd
   >>= function
-  | (-1) -> Lwt.return () (* TODO: Should return a meaningfull value so that the user can exit on this value. *)
-  | _ -> Connection_lwt.read_idle_events connection
+    | (-1) -> Lwt.return () (* TODO: Should return a meaningfull value so that the user can exit on this value. *)
+    | _ -> Connection_lwt.read_idle_events connection
       >>= fun response ->
         on_event response
-        >>=fun stop ->
-          match stop with
+        >>= function
           | true -> Lwt.return ()
           | false -> idle_loop client on_event
 
@@ -68,7 +66,7 @@ let send client cmd =
 let status client =
   send client "status"
   >>= function
-    | Ok (lines) -> (
+    | Ok lines -> (
         match lines with
         | None -> Lwt.return (Error "No status")
         | Some lines' -> let status_pairs = Utils.split_lines lines' in
