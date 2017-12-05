@@ -28,7 +28,13 @@ let render (w, h) client =
     match response with
     | Error message -> Lwt.return I.(strf ~attr:A.(fg red) "[there is a pb %s]" message)
     | Ok status -> let state = Mpd.Status.state status in
-       Lwt.return I.(strf ~attr:A.(fg white) "[state %s]" (Mpd.Status.string_of_state state))
+       let state_img = match state with
+        | Mpd.Status.Play -> I.(string A.(fg green) "play")
+        | Mpd.Status.Pause -> I.(string A.(fg lightblack) "Pause")
+        | Mpd.Status.Stop -> I.(string A.(fg black ++ bg lightblack) "Stop")
+        | Mpd.Status.ErrState -> I.(string A.(fg red) "State Error")
+       in
+       Lwt.return I.(string A.(fg white) "[state] :" <|> state_img)
 
 let listen_mpd_event client =
   Mpd.Client_lwt.idle client >|= fun evt -> `Mpd_event evt
