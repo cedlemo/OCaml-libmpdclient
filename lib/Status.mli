@@ -21,7 +21,7 @@
 (** Main status type that contains all the status information of the server. *)
 type t
 (** Current state (playing, pause or stopped) of the mpd server. *)
-type state
+type state = Play | Pause | Stop | ErrState
 (** Get the string representation of a state. *)
 val string_of_state:
   state -> string
