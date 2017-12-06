@@ -37,23 +37,21 @@ let gen_volume_img status =
   I.(strf ~attr:A.(fg white)   "[volume] : %d" volume)
 
 let gen_playlist_img status client =
-  (*let current_song = Mpd.Status.song status in
+  let current_song = Mpd.Status.song status in
   Mpd.Queue_lwt.playlist client
   >>= function
     | PlaylistError message -> Lwt.return I.(strf ~attr:A.(fg red) "Error: %s" message)
     | Playlist songs ->
-      let gen_song_img song current =
-        let name = Mpd.Song.name song in
+      let gen_song_img i song =
+        let title = Mpd.Song.title song in
         let artist = Mpd.Song.artist song in
-        if current then
-          I.(strf ~attr:A.(fg lightred ++ bg lightblack) "\t%s : %s" name artist)
+        if current_song = i then
+          I.(strf ~attr:A.(fg lightred ++ bg lightblack) "         + %s : %s" title artist)
         else
-          I.(strf ~attr:A.(fg lightblack) "\t%s : %s" name artist)
+          I.(strf ~attr:A.(fg lightblack) "        - %s : %s" title artist)
       in
-      let rec pack i img = function
-        | [] -> img
-        | h :: q -> pack (i + 1) I.(img <-> (gen_song_img h (i = current_song))) q
-      in*) Lwt.return I.(strf ~attr:A.(fg lightblack) "\t%s : %s" "toto" "toto")(* (pack 0 (gen_song_img (List.hd songs) (0 = current_song)) (List.tl songs)) *)
+      let songs_imgs = List.mapi gen_song_img songs in
+      Lwt.return I.(vcat songs_imgs)
 
 let render (w, h) client =
   Mpd.Client_lwt.status client
@@ -61,10 +59,10 @@ let render (w, h) client =
     match response with
     | Error message -> Lwt.return I.(strf ~attr:A.(fg red) "[there is a pb %s]" message)
     | Ok status -> let state_img = gen_state_img status in
-      let volume_img = gen_volume_img status in (*
+      let volume_img = gen_volume_img status in
       gen_playlist_img status client
-      >>= fun songs_img ->*)
-      Lwt.return I.(state_img <-> volume_img(* <-> songs_img*))
+      >>= fun songs_img ->
+      Lwt.return I.(state_img <-> volume_img <-> songs_img)
 
 let listen_mpd_event client =
   Mpd.Client_lwt.idle client >|= fun evt -> `Mpd_event evt
