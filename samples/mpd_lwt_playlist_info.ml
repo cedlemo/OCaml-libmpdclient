@@ -31,14 +31,14 @@ let lwt_print_line str =
 
 let main_thread =
   let open Mpd in
-  LwtConnection.initialize host port
+  Connection_lwt.initialize host port
   >>= fun connection ->
-    LwtClient.initialize connection
+    Client_lwt.initialize connection
     >>= fun client ->
-      LwtQueue.playlist client
+      Queue_lwt.playlist client
       >>= function
-      | LwtQueue.PlaylistError message -> lwt_print_line ("err" ^ message)
-      | LwtQueue.Playlist playlist ->
+      | Queue_lwt.PlaylistError message -> lwt_print_line ("err" ^ message)
+      | Queue_lwt.Playlist playlist ->
           Lwt.return playlist
           >>= fun p ->
             let n = List.length p in
@@ -51,7 +51,7 @@ let main_thread =
                                  lwt_print_line (String.concat " " ["\t*"; id; title; album])
                               ) p
               >>= fun () ->
-                LwtClient.close client
+                Client_lwt.close client
 
 let () =
   Lwt_main.run main_thread
