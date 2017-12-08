@@ -25,5 +25,6 @@ let () =
     "Mpd client library tests" >:::
       [
        Connection_and_client.tests;
+       Queue_and_playlists.tests;
       ]
   )
