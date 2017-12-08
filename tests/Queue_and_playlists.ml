@@ -34,7 +34,7 @@ let test_stored_playlists_listplaylists test_ctxt =
   | None -> assert_equal ~printer:(fun s -> s) "This should not " "have been reached"
   | Some playlists -> let _ = assert_equal 2 (List.length playlists) in
     let _ = assert_equal ~printer:(fun s -> s) "bach" (List.hd playlists) in
-    assert_equal ~printer:(fun s -> s) "bach1" (List.tl playlists)
+    assert_equal ~printer:(fun s -> s) "bach1" (List.hd (List.tl playlists))
 
 let tests =
   "Queue and playlists tests" >:::
