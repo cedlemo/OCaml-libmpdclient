@@ -24,7 +24,7 @@ let port = 6600
 
 let init_client () =
   let connection = Mpd.Connection.initialize host port in
-  let client = Mpd.Client.initialize connection
+  let client = Mpd.Client.initialize connection in
   let _ = Mpd.Music_database.update client in
   client
 
