@@ -1,0 +1,7 @@
+B ../_build/default/lib
+FLG -open Mpd -w -40
+PKG bytes
+PKG lwt
+PKG result
+PKG str
+PKG unix
