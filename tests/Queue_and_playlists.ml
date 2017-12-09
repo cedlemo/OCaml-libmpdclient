@@ -36,8 +36,20 @@ let test_stored_playlists_listplaylists test_ctxt =
     let _ = assert_equal ~printer:(fun s -> s) "bach1" (List.hd playlists) in
     assert_equal ~printer:(fun s -> s) "bach" (List.hd (List.tl playlists))
 
+let test_stored_playlists_load_playlist test_ctxt =
+  let client = init_client () in
+  match Mpd.Stored_playlists.load client "bach" () with
+  | Error (_, _, _, message) -> assert_equal ~printer:(fun s -> s) "This should not have been reached " message
+  | Ok _ -> let queue = Mpd.Queue.playlist client in
+    let queue_length = match queue with
+                       | Mpd.Queue.PlaylistError _ -> -1
+                       | Mpd.Queue.Playlist p -> List.length p
+    in
+    assert_equal ~printer:(fun i -> string_of_int i) 11 queue_length
+
 let tests =
   "Queue and playlists tests" >:::
     [
-      "test stored playlists listplaylists" >:: test_stored_playlists_listplaylists
+      "test stored playlists listplaylists" >:: test_stored_playlists_listplaylists;
+      "test stored playlists load playlist" >:: test_stored_playlists_load_playlist;
     ]
