@@ -34,7 +34,7 @@ RUN sudo chmod 644 /etc/mpd.conf
 RUN mkdir /home/ocaml-libmpdclient/mpd
 RUN mkdir /home/ocaml-libmpdclient/mpd/music
 RUN mkdir /home/ocaml-libmpdclient/mpd/playlists
-RUN wget -P /home/ocaml-libmpdclient/mpd/music -i /home/ocaml-libmpdclient/ocaml-libmpdclient/free_mp3_urls.txt
+RUN wget -P /home/ocaml-libmpdclient/mpd/music -i /home/ocaml-libmpdclient/ocaml-libmpdclient/travis/free_mp3_urls.txt
 RUN ls -1 /home/ocaml-libmpdclient/mpd/music/ > /home/ocaml-libmpdclient/mpd/playlists/bach.m3u
 RUN echo "=======================================bach playlist content============================================="
 RUN cat /home/ocaml-libmpdclient/mpd/playlists/bach.m3u
