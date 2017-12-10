@@ -36,6 +36,8 @@ RUN mkdir /home/ocaml-libmpdclient/mpd/music
 RUN mkdir /home/ocaml-libmpdclient/mpd/playlists
 RUN wget -P /home/ocaml-libmpdclient/mpd/music -i /home/ocaml-libmpdclient/ocaml-libmpdclient/free_mp3_urls.txt
 RUN ls -1 /home/ocaml-libmpdclient/mpd/music/ > /home/ocaml-libmpdclient/mpd/playlists/bach.m3u
+RUN echo "=======================================bach playlist content============================================="
+RUN cat /home/ocaml-libmpdclient/mpd/playlists/back.m3u
 RUN echo "/home/ocaml-libmpdclient/mpd/music/kunst01.mp3" > /home/ocaml-libmpdclient/mpd/playlists/bach1.m3u
 WORKDIR /home/ocaml-libmpdclient/ocaml-libmpdclient
 RUN wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sudo sh -s /usr/local/bin
