@@ -18,7 +18,8 @@
 
 (** Music_database module: regroups data base related commands. *)
 
-(** type for the Mpd database tags. *)
+(** type for the Mpd database tags and the additionnal tags for
+ *  find command. *)
 type tags =
   | Unknown
   | Artist
@@ -43,9 +44,13 @@ type tags =
   | Album_artist_sort
   | Album_sort
   | Count
+  | File
+  | Base
+  | Modified_since
 
 val tag_to_string:
-    tags -> string
+  tags -> string
+
 (*
 
 count {TAG} {NEEDLE} [...] [group] [GROUPTYPE]

@@ -40,6 +40,9 @@ type tags =
   | Album_artist_sort
   | Album_sort
   | Count
+  | File
+  | Base
+  | Modified_since
 
 let tag_to_string = function
   | Unknown -> "unknown"
@@ -65,6 +68,9 @@ let tag_to_string = function
   | Album_artist_sort -> "album_artist_sort"
   | Album_sort -> "album_sort"
   | Count -> "count"
+  | File -> "file"
+  | Base -> "base"
+  | Modified_since "modified-since"
 
 let update client uri =
   let cmd = match uri with
