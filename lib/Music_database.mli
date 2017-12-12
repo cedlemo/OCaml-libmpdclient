@@ -51,6 +51,8 @@ type tags =
 val tag_to_string:
   tags -> string
 
+val find:
+  Client.t -> (tags * string) list -> ?sort:tags -> ?window:(int * int) -> unit -> (Song.t list, Protocol.ack_error * int * string * string) result
 (*
 
 count {TAG} {NEEDLE} [...] [group] [GROUPTYPE]

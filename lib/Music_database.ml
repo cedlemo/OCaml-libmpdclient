@@ -70,7 +70,29 @@ let tag_to_string = function
   | Count -> "count"
   | File -> "file"
   | Base -> "base"
-  | Modified_since "modified-since"
+  | Modified_since -> "modified-since"
+
+let find client what_list ?sort:sort_tag ?window:window () =
+  let what =
+    List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (tag_to_string tag) param) what_list
+    |> String.concat " "
+  in
+  let sort = match sort_tag with
+    | None -> ""
+    | Some tag -> " sort " ^ (tag_to_string tag)
+  in
+  let window = match window with
+    | None -> ""
+    | Some (start, stop) -> Printf.sprintf " window %s:%s" (string_of_int start) (string_of_int stop)
+  in
+  let cmd = Printf.sprintf "find %s%s%s" what sort window in
+  match Client.send client cmd with
+  | Error err -> Error err
+  | Ok response -> match response with
+      | None -> Ok []
+      | Some r -> let songs = Str.split (Str.regexp_string "file:") r
+        |> List.map (fun s -> Str.split (Str.regexp_string "\n") s |> Song.parse)
+        in Ok songs
 
 let update client uri =
   let cmd = match uri with
