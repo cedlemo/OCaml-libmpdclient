@@ -21,6 +21,9 @@ open Notty_lwt
 open Ompdc_common
 
 module Terminal = Notty_lwt.Term
+let timestamp = ref 0.0
+
+let _ = timestamp := Unix.time ()
 
 let gen_state_img status =
   let state = Mpd.Status.state status in
@@ -36,7 +39,7 @@ let gen_volume_img status =
   let volume = Mpd.Status.volume status in
   I.(strf ~attr:A.(fg white)   "[volume] : %d" volume)
 
-let gen_playlist_img status client =
+let gen_playlist_img status client (w, h) =
   let current_song = Mpd.Status.song status in
   Mpd.Queue_lwt.playlist client
   >>= function
@@ -46,12 +49,17 @@ let gen_playlist_img status client =
         let title = Mpd.Song.title song in
         let artist = Mpd.Song.artist song in
         if current_song = i then
-          I.(strf ~attr:A.(fg lightred ++ bg lightblack) "         + %s : %s" title artist)
+          I.(strf ~attr:A.(fg lightred ++ bg lightblack) "+ %s : %s" title artist)
         else
-          I.(strf ~attr:A.(fg lightblack) "        - %s : %s" title artist)
+          I.(strf ~attr:A.(fg lightblack) "- %s : %s" title artist)
       in
-      let songs_imgs = List.mapi gen_song_img songs in
-      Lwt.return I.(vcat songs_imgs)
+      let song_imgs = List.mapi gen_song_img songs in
+      let lines = List.map (fun i ->
+      let left_margin = 4 in
+      let i_w = I.width i in
+      let remain = let r = w - (i_w + left_margin) in (max r 0) in
+      I.hpad left_margin remain i) song_imgs in
+      Lwt.return I.(vcat lines)
 
 let render (w, h) client =
   Mpd.Client_lwt.status client
@@ -60,7 +68,7 @@ let render (w, h) client =
     | Error message -> Lwt.return I.(strf ~attr:A.(fg red) "[there is a pb %s]" message)
     | Ok status -> let state_img = gen_state_img status in
       let volume_img = gen_volume_img status in
-      gen_playlist_img status client
+      gen_playlist_img status client (w, h)
       >>= fun songs_img ->
       Lwt.return I.(state_img <-> volume_img <-> songs_img)
 
@@ -73,7 +81,7 @@ let event term = Lwt_stream.get (Terminal.events term) >|= function
 
 let rec loop term (e, t) dim client =
   (e <?> t) >>= function
-  | `End | `Key (`Escape, []) ->
+  | `End | `Key (`Escape, []) | `Key (`ASCII 'C', [`Ctrl]) ->
       Lwt.return_unit
   | `Mpd_event event_name ->
       render dim client
@@ -82,12 +90,27 @@ let rec loop term (e, t) dim client =
         >>= fun () ->
             loop term (e, listen_mpd_event client) dim client
   | `Resize dim ->
+      let now = Unix.time () in
+      if (!timestamp -. now >= 1.0) then
+        let _ = timestamp := now in
+        render dim client
+        >>= fun img ->
+          Terminal.image term img
+          >>= fun () ->
+          loop term (event term, t) dim client
+      else loop term (event term, t) dim client
+  | _ ->
+      let now = Unix.time () in
+      if (!timestamp -. now >= 1.0) then
+        let _ = timestamp := now in
+        timestamp := now;
       render dim client
       >>= fun img ->
         Terminal.image term img
         >>= fun () ->
         loop term (event term, t) dim client
-  | _ -> loop term (event term, t) dim client
+      else loop term (event term, t) dim client
+
 
 let interface client =
   let term = Terminal.create () in
