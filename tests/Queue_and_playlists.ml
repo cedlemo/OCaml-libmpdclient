@@ -47,6 +47,12 @@ let test_stored_playlists_load_playlist test_ctxt =
     in
     assert_equal ~printer:(fun i -> string_of_int i) 11 queue_length
 
+let test_music_database_find test_ctxt =
+  let client = init_client () in
+  match Mpd.Music_database.find client [(Music_database.Artist, "bach")] () with
+  | None -> assert_equal ~printer:(fun s -> s) "This should not " "have been reached"
+  | Ok songs -> let _ = assert_equal 11 (List.length songs)
+
 let tests =
   "Queue and playlists tests" >:::
     [
