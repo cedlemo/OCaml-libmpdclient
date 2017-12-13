@@ -76,7 +76,7 @@ let test_music_database_find test_ctxt =
 
 let test_music_database_findadd test_ctxt =
   let client = init_client () in
-  let _ = match Mpd.Music_database.find client [(Music_database.Artist, "Bach JS")] () with
+  let _ = match Mpd.Music_database.findadd client [(Music_database.Artist, "Bach JS")] () with
     | Error (_, _, _, error) -> assert_equal ~printer:(fun s -> s) "This should not have been reached " error
     | Ok _ -> let queue = Mpd.Queue.playlist client in
         let queue_length = match queue with
