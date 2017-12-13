@@ -40,6 +40,7 @@ type tags =
   | Album_artist_sort
   | Album_sort
   | Count
+  | Any
   | File
   | Base
   | Modified_since
