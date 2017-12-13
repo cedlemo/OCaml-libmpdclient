@@ -61,4 +61,5 @@ let tests =
     [
       "test stored playlists listplaylists" >:: test_stored_playlists_listplaylists;
       "test stored playlists load playlist" >:: test_stored_playlists_load_playlist;
+      "test music database find" >:: test_music_database_find
     ]
