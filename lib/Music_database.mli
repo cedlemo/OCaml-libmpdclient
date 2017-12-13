@@ -51,8 +51,17 @@ type tags =
 val tag_to_string:
   tags -> string
 
+(* Find songs in the db that match exactly the a list of pairs (tag, exact_pattern). The
+ * exact_pattern is a string and the tah can be any tag supported by MPD, or
+ * one of the special parameters:
+ * - any            checks all tag values
+ * - file           checks the full path (relative to the music directory)
+ * - base           restricts the search to songs in the given directory (also relative to the music directory)
+ * - modified-since compares the file's time stamp with the given value (ISO 8601 or UNIX time stamp)
+*)
 val find:
   Client.t -> (tags * string) list -> ?sort:tags -> ?window:(int * int) -> unit -> (Song.t list, Protocol.ack_error * int * string * string) result
+
 (*
 
 count {TAG} {NEEDLE} [...] [group] [GROUPTYPE]
@@ -64,19 +73,6 @@ The group keyword may be used to group the results by a tag. The following print
 count group artist
 count genre metal date 2016 group artist
 
-find {TYPE} {WHAT} [...] [sort TYPE] [window START:END]
-
-Finds songs in the db that are exactly WHAT. TYPE can be any tag supported by MPD, or one of the special parameters:
-
-any checks all tag values
-
-file checks the full path (relative to the music directory)
-
-base restricts the search to songs in the given directory (also relative to the music directory)
-
-modified-since compares the file's time stamp with the given value (ISO 8601 or UNIX time stamp)
-
-WHAT is what to find.
 
 sort sorts the result by the specified tag. Without sort, the order is undefined. Only the first tag value will be used, if multiple of the same type exist. To sort by "Artist", "Album" or "AlbumArtist", you should specify "ArtistSort", "AlbumSort" or "AlbumArtistSort" instead. These will automatically fall back to the former if "*Sort" doesn't exist. "AlbumArtist" falls back to just "Artist".
 
