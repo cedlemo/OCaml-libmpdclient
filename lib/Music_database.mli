@@ -63,6 +63,10 @@ val tag_to_string:
 val find:
   Client.t -> (tags * string) list -> ?sort:tags -> ?window:(int * int) -> unit -> (Song.t list, Protocol.ack_error * int * string * string) result
 
+(* Finds songs in the db that and adds them to current playlist. Parameters
+ * have the same meaning as for find. *)
+val findadd:
+  Client.t -> (tags * string) list -> Protocol.response
 (*
 
 count {TAG} {NEEDLE} [...] [group] [GROUPTYPE]
@@ -79,9 +83,6 @@ sort sorts the result by the specified tag. Without sort, the order is undefined
 
 window can be used to query only a portion of the real response. The parameter is two zero-based record numbers; a start number and an end number.
 
-findadd {TYPE} {WHAT} [...]
-
-Finds songs in the db that are exactly WHAT and adds them to current playlist. Parameters have the same meaning as for find.
 
 list {TYPE} [FILTERTYPE] [FILTERWHAT] [...] [group] [GROUPTYPE] [...]
 

@@ -95,6 +95,14 @@ let find client what_list ?sort:sort_tag ?window:window () =
         |> List.map (fun s -> Str.split (Str.regexp_string "\n") s |> Song.parse)
         in Ok songs
 
+let findadd client what_list =
+  let what =
+    List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (tag_to_string tag) param) what_list
+    |> String.concat " "
+  in
+  let cmd = Printf.sprintf "find %s" what in
+  Client.send client cmd
+
 let update client uri =
   let cmd = match uri with
   | None -> "update"
