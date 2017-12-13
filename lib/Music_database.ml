@@ -69,6 +69,7 @@ let tag_to_string = function
   | Album_artist_sort -> "album_artist_sort"
   | Album_sort -> "album_sort"
   | Count -> "count"
+  | Any -> "any"
   | File -> "file"
   | Base -> "base"
   | Modified_since -> "modified-since"
