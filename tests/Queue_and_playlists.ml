@@ -49,6 +49,24 @@ let test_stored_playlists_load_playlist test_ctxt =
       assert_equal ~printer:(fun i -> string_of_int i) 11 queue_length
   in Mpd.Client.close client
 
+let test_queue_clear test_ctxt =
+  let client = init_client () in
+  let queue = Mpd.Queue.playlist client in
+  let queue_length = match queue with
+                     | Mpd.Queue.PlaylistError _ -> -1
+                     | Mpd.Queue.Playlist p -> List.length p
+  in
+  let _ = assert_equal ~printer:(fun i -> string_of_int i) 11 queue_length in
+  let _ = match Mpd.Queue.clear client with
+    | Error (_, _, _, message) -> assert_equal ~printer:(fun s -> s) "This should not have been reached " message
+    | Ok _ -> let queue = Mpd.Queue.playlist client in
+        let queue_length = match queue with
+                           | Mpd.Queue.PlaylistError _ -> -1
+                           | Mpd.Queue.Playlist p -> List.length p
+        in
+        assert_equal ~printer:(fun i -> string_of_int i) 0 queue_length
+  in Mpd.Client.close client
+
 let test_music_database_find test_ctxt =
   let client = init_client () in
   let _ = match Mpd.Music_database.find client [(Music_database.Artist, "Bach JS")] () with
@@ -61,5 +79,6 @@ let tests =
     [
       "test stored playlists listplaylists" >:: test_stored_playlists_listplaylists;
       "test stored playlists load playlist" >:: test_stored_playlists_load_playlist;
-      "test music database find" >:: test_music_database_find
+      "test music database find" >:: test_music_database_find;
+      "test queue clear" >:: test_queue_clear
     ]
