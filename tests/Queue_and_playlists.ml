@@ -50,7 +50,7 @@ let test_stored_playlists_load_playlist test_ctxt =
 let test_music_database_find test_ctxt =
   let client = init_client () in
   match Mpd.Music_database.find client [(Music_database.Artist, "Bach JS")] () with
-  | None -> assert_equal ~printer:(fun s -> s) "This should not " "have been reached"
+  | Error (_, _, _, error) -> assert_equal ~printer:(fun s -> s) "This should not have been reached " error
   | Ok songs -> assert_equal 11 (List.length songs)
 
 let tests =
