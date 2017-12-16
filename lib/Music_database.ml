@@ -87,7 +87,7 @@ let search_find_wrapper cmd_name client what_list ?sort:sort_tag ?window:window 
     | None -> ""
     | Some (start, stop) -> Printf.sprintf " window %s:%s" (string_of_int start) (string_of_int stop)
   in
-  let cmd = Printf.sprintf "% %s%s%s" cmd_name what sort window in
+  let cmd = Printf.sprintf "%s %s%s%s" cmd_name what sort window in
   match Client.send client cmd with
   | Error err -> Error err
   | Ok response -> match response with
