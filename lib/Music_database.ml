@@ -98,6 +98,8 @@ let search_find_wrapper cmd_name client what_list ?sort:sort_tag ?window:window 
 
 let find = search_find_wrapper "find"
 
+let search = search_find_wrapper "search"
+
 let findadd client what_list =
   let what =
     List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (tag_to_string tag) param) what_list

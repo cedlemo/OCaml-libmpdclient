@@ -67,6 +67,12 @@ val find:
  * have the same meaning as for find. *)
 val findadd:
   Client.t -> (tags * string) list -> Protocol.response
+
+(* Searches for any song that contains WHAT. Parameters have the same meaning
+ * as for find, except that search is not case sensitive. *)
+val search:
+  Client.t -> (tags * string) list -> ?sort:tags -> ?window:(int * int) -> unit -> (Song.t list, Protocol.ack_error * int * string * string) result
+
 (*
 
 count {TAG} {NEEDLE} [...] [group] [GROUPTYPE]
