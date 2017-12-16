@@ -100,13 +100,15 @@ let find = search_find_wrapper "find"
 
 let search = search_find_wrapper "search"
 
-let findadd client what_list =
+let search_find_add_wrapper cmd_name client what_list =
   let what =
     List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (tag_to_string tag) param) what_list
     |> String.concat " "
   in
-  let cmd = Printf.sprintf "findadd %s" what in
+  let cmd = Printf.sprintf "%s %s" cmd_name what in
   Client.send client cmd
+
+let findadd = search_find_add_wrapper "findadd"
 
 let update client uri =
   let cmd = match uri with
