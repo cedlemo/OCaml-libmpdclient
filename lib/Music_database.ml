@@ -110,6 +110,8 @@ let search_find_add_wrapper cmd_name client what_list =
 
 let findadd = search_find_add_wrapper "findadd"
 
+let searchadd = search_find_add_wrapper "searchadd"
+
 let update client uri =
   let cmd = match uri with
   | None -> "update"

@@ -73,6 +73,14 @@ val findadd:
 val search:
   Client.t -> (tags * string) list -> ?sort:tags -> ?window:(int * int) -> unit -> (Song.t list, Protocol.ack_error * int * string * string) result
 
+(* Searches for any song that contains WHAT in tag TYPE and adds them to
+ * current playlist.
+ * Parameters have the same meaning as for findadd, except that search is not
+ * case sensitive. *)
+val searchadd:
+  Client.t -> (tags * string) list -> Protocol.response
+
+
 (*
 
 count {TAG} {NEEDLE} [...] [group] [GROUPTYPE]
@@ -125,12 +133,6 @@ This command may be used to list metadata of remote files (e.g. URI beginning wi
 The response consists of lines in the form "KEY: VALUE". Comments with suspicious characters (e.g. newlines) are ignored silently.
 
 The meaning of these depends on the codec, and not all decoder plugins support it. For example, on Ogg files, this lists the Vorbis comments.
-
-search {TYPE} {WHAT} [...] [sort TYPE] [window START:END]
-
-Searches for any song that contains WHAT. Parameters have the same meaning as for find, except that search is not case sensitive.
-
-searchadd {TYPE} {WHAT} [...]
 
 Searches for any song that contains WHAT in tag TYPE and adds them to current playlist.
 
