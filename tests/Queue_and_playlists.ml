@@ -98,6 +98,22 @@ let test_music_database_search test_ctxt =
   let _ = Mpd.Queue.clear client in
   Mpd.Client.close client
 
+let test_music_database_searchadd test_ctxt =
+  let client = init_client () in
+  let _ = match Mpd.Music_database.searchadd client [(Music_database.Artist, "bACH js")] with
+    | Error (_, _, _, error) -> assert_equal ~printer:(fun s -> s) "This should not have been reached " error
+    | Ok _ -> let queue = Mpd.Queue.playlist client in
+        let queue_length = match queue with
+                           | Mpd.Queue.PlaylistError _ -> -1
+                           | Mpd.Queue.Playlist p -> List.length p
+        in
+        assert_equal ~printer:(fun i -> string_of_int i) 11 queue_length
+
+  in
+  let _ = Mpd.Queue.clear client in
+  Mpd.Client.close client
+
+
 let tests =
   "Queue and playlists tests" >:::
     [
@@ -107,4 +123,5 @@ let tests =
       "test queue clear" >:: test_queue_clear;
       "test music database findadd" >:: test_music_database_findadd;
       "test music database search" >:: test_music_database_search;
+      "test music database searchadd" >:: test_music_database_searchadd;
     ]
