@@ -101,7 +101,7 @@ let findadd client what_list =
     List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (tag_to_string tag) param) what_list
     |> String.concat " "
   in
-  let cmd = Printf.sprintf "find %s" what in
+  let cmd = Printf.sprintf "findadd %s" what in
   Client.send client cmd
 
 let update client uri =
