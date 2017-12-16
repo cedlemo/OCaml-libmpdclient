@@ -113,6 +113,17 @@ let test_music_database_searchadd test_ctxt =
   let _ = Mpd.Queue.clear client in
   Mpd.Client.close client
 
+let test_music_database_searchaddpl test_ctxt =
+  let client = init_client () in
+  let new_playlist = "searchaddpl_new_playlist" in
+  let _ = match Mpd.Music_database.searchaddpl client new_playlist [(Music_database.Artist, "bACH js")] with
+    | Error (_, _, _, error) -> assert_equal ~printer:(fun s -> s) "This should not have been reached " error
+    | Ok _ -> match Mpd.Stored_playlists.listplaylists client with
+        | None -> assert_equal ~printer:(fun s -> s) "This should not " "have been reached"
+        | Some playlists -> let _ = assert_equal 3 (List.length playlists) in
+          assert_bool "searchaddpl test: new playlistname not found" (List.mem new_playlist playlists)
+  in Mpd.Client.close client
+
 
 let tests =
   "Queue and playlists tests" >:::
@@ -124,4 +135,5 @@ let tests =
       "test music database findadd" >:: test_music_database_findadd;
       "test music database search" >:: test_music_database_search;
       "test music database searchadd" >:: test_music_database_searchadd;
+      "test music database searchaddpl" >:: test_music_database_searchaddpl;
     ]
