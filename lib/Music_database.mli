@@ -80,8 +80,14 @@ val search:
 val searchadd:
   Client.t -> (tags * string) list -> Protocol.response
 
-(*
+(* Searches for any song that contains WHAT in tag TYPE and adds them to the
+ * playlist named NAME.  If a playlist by that name doesn't exist it is
+ * created. Parameters have the same meaning as for find, except that search is
+ * not case sensitive. *)
+val searchaddpl:
+  Client.t -> string -> (tags * string) list -> Protocol.response
 
+(*
 count {TAG} {NEEDLE} [...] [group] [GROUPTYPE]
 
 Counts the number of songs and their total playtime in the db matching TAG exactly.
@@ -117,11 +123,6 @@ This command may be used to list metadata of remote files (e.g. URI beginning wi
 The response consists of lines in the form "KEY: VALUE". Comments with suspicious characters (e.g. newlines) are ignored silently.
 The meaning of these depends on the codec, and not all decoder plugins support it. For example, on Ogg files, this lists the Vorbis comments.
 Searches for any song that contains WHAT in tag TYPE and adds them to current playlist.
-Parameters have the same meaning as for find, except that search is not case sensitive.
-
-searchaddpl {NAME} {TYPE} {WHAT} [...]
-Searches for any song that contains WHAT in tag TYPE and adds them to the playlist named NAME.
-If a playlist by that name doesn't exist it is created.
 Parameters have the same meaning as for find, except that search is not case sensitive.
 
  *)

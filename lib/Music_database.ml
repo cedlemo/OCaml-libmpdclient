@@ -112,6 +112,9 @@ let findadd = search_find_add_wrapper "findadd"
 
 let searchadd = search_find_add_wrapper "searchadd"
 
+let searchaddpl client playlist_name what_list =
+  search_find_add_wrapper ("searchaddpl " ^ playlist_name) client what_list
+
 let update client uri =
   let cmd = match uri with
   | None -> "update"
