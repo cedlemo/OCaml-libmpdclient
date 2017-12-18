@@ -21,9 +21,6 @@ open Notty_lwt
 open Ompdc_common
 
 module Terminal = Notty_lwt.Term
-let timestamp = ref 0.0
-
-let _ = timestamp := Unix.time ()
 
 let gen_state_img status =
   let state = Mpd.Status.state status in
@@ -79,7 +76,7 @@ let event term = Lwt_stream.get (Terminal.events term) >|= function
   | Some (`Resize _ | #Unescape.event as x) -> x
   | None -> `End
 
-let rec loop term (e, t) dim client =
+let rec loop term (e, t) dim client timestamp =
   (e <?> t) >>= function
   | `End | `Key (`Escape, []) | `Key (`ASCII 'C', [`Ctrl]) ->
       Lwt.return_unit
@@ -88,28 +85,26 @@ let rec loop term (e, t) dim client =
       >>= fun img ->
         Terminal.image term img
         >>= fun () ->
-            loop term (e, listen_mpd_event client) dim client
+            let now = Unix.time () in
+            loop term (e, listen_mpd_event client) dim client now
   | `Resize dim ->
       let now = Unix.time () in
-      if (!timestamp -. now >= 1.0) then
-        let _ = timestamp := now in
+      if (timestamp -. now >= 1.0) then
         render dim client
         >>= fun img ->
           Terminal.image term img
           >>= fun () ->
-          loop term (event term, t) dim client
-      else loop term (event term, t) dim client
+          loop term (event term, t) dim client now
+      else loop term (event term, t) dim client timestamp
   | _ ->
       let now = Unix.time () in
-      if (!timestamp -. now >= 1.0) then
-        let _ = timestamp := now in
-        timestamp := now;
+      if (timestamp -. now >= 1.0) then
       render dim client
       >>= fun img ->
         Terminal.image term img
         >>= fun () ->
-        loop term (event term, t) dim client
-      else loop term (event term, t) dim client
+        loop term (event term, t) dim client now
+      else loop term (event term, t) dim client timestamp
 
 
 let interface client =
@@ -119,7 +114,8 @@ let interface client =
   >>= fun img ->
     Terminal.image term img
     >>= fun () ->
-    loop term (event term, listen_mpd_event client) size client
+    let timestamp = Unix.time () in
+    loop term (event term, listen_mpd_event client) size client timestamp
 
 let idle common_opts =
   let open Mpd in
