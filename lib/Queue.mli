@@ -19,7 +19,7 @@
 (** Module for Mpd current playlist manipulation. *)
 
 (** Playlist type. *)
-type p =
+type t =
   | PlaylistError of string
   | Playlist of Song.t list
 
@@ -59,19 +59,19 @@ val moveid:
 
 (** Get the songs in the playlist *)
 val playlist:
-  Client.t -> p
+  Client.t -> t
 
 (** Get information for one song *)
 val playlistid:
-  Client.t -> int -> p
+  Client.t -> int -> t
 
 (** Finds songs in the current playlist with strict matching.*)
 val playlistfind:
-  Client.t -> string -> string -> p
+  Client.t -> string -> string -> t
 
 (** Searches case-insensitively for partial matches in the current playlist. *)
 val playlistsearch:
-  Client.t -> string -> string -> p
+  Client.t -> string -> string -> t
 
 (** Swaps the positions of SONG1 and SONG2. *)
 val swap:

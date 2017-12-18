@@ -18,7 +18,7 @@
 
 open Utils
 
-type p =
+type t =
   | PlaylistError of string | Playlist of Song.t list
 
 let add client uri =
