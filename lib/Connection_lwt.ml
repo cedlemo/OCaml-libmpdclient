@@ -129,10 +129,6 @@ let check_full_response mpd_data pattern group =
   | true -> Complete (Str.matched_group group mpd_data)
   | false -> Incomplete
 
-let full_mpd_idle_event mpd_data =
-  let pattern = "changed: \\(\\(\n\\|.\\)*\\)\nOK\n" in
-  check_full_response mpd_data pattern 1
-
 let full_mpd_banner mpd_data =
   let pattern = "OK\\(\\(\n\\|.\\)*\\)\n" in
   check_full_response mpd_data pattern 1
@@ -140,6 +136,12 @@ let full_mpd_banner mpd_data =
 let full_mpd_command_response mpd_data =
   let pattern = "\\(\\(\n\\|.\\)*\\)OK\n" in
   check_full_response mpd_data pattern 0
+
+let full_mpd_idle_event mpd_data =
+  let pattern = "changed: \\(\\(\n\\|.\\)*\\)\nOK\n" in
+  match check_full_response mpd_data pattern 2 with
+  | Incomplete -> full_mpd_command_response mpd_data (* Check if there is an empty response that follow an noidle command *)
+  | Complete response -> Complete response
 
 let read connection check_full_data =
   let rec _read connection acc =
