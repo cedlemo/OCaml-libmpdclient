@@ -67,3 +67,8 @@ val ping:
     plaintext password. *)
 val password:
   t -> string -> Protocol.response Lwt.t
+
+(** This command is needed to stop listening after a Client.idle command.
+    An example of usage can be seen in samples/mpd_lwt_client_idle_noidle.exe. *)
+val noidle:
+  t -> unit Lwt.t

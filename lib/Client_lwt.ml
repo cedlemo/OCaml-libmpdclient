@@ -80,3 +80,8 @@ let ping client =
 
 let password client mdp =
   send client (String.concat " " ["password"; mdp])
+
+let noidle client =
+  let {connection = connection; _} = client in
+  Connection_lwt.write connection "noidle\n"
+  >>= fun _ -> Lwt.return_unit
