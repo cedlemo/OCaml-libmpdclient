@@ -44,13 +44,14 @@ type tags =
   | Album_artist_sort
   | Album_sort
   | Count
-  | Any
-  | File
-  | Base
-  | Modified_since
 
 val tag_to_string:
   tags -> string
+
+type search_tags = Any | File | Base | Modified_since | Mpd_tag of tags
+
+val search_tag_to_string:
+  search_tags -> string
 
 (* Find songs in the db that match exactly the a list of pairs (tag, exact_pattern). The
  * exact_pattern is a string and the tah can be any tag supported by MPD, or
@@ -61,31 +62,31 @@ val tag_to_string:
  * - modified-since compares the file's time stamp with the given value (ISO 8601 or UNIX time stamp)
 *)
 val find:
-  Client.t -> (tags * string) list -> ?sort:tags -> ?window:(int * int) -> unit -> (Song.t list, Protocol.ack_error * int * string * string) result
+  Client.t -> (search_tags * string) list -> ?sort:tags -> ?window:(int * int) -> unit -> (Song.t list, Protocol.ack_error * int * string * string) result
 
 (* Finds songs in the db that and adds them to current playlist. Parameters
  * have the same meaning as for find. *)
 val findadd:
-  Client.t -> (tags * string) list -> Protocol.response
+  Client.t -> (search_tags * string) list -> Protocol.response
 
 (* Searches for any song that contains WHAT. Parameters have the same meaning
  * as for find, except that search is not case sensitive. *)
 val search:
-  Client.t -> (tags * string) list -> ?sort:tags -> ?window:(int * int) -> unit -> (Song.t list, Protocol.ack_error * int * string * string) result
+  Client.t -> (search_tags * string) list -> ?sort:tags -> ?window:(int * int) -> unit -> (Song.t list, Protocol.ack_error * int * string * string) result
 
 (* Searches for any song that contains WHAT in tag TYPE and adds them to
  * current playlist.
  * Parameters have the same meaning as for findadd, except that search is not
  * case sensitive. *)
 val searchadd:
-  Client.t -> (tags * string) list -> Protocol.response
+  Client.t -> (search_tags * string) list -> Protocol.response
 
 (* Searches for any song that contains WHAT in tag TYPE and adds them to the
  * playlist named NAME.  If a playlist by that name doesn't exist it is
  * created. Parameters have the same meaning as for find, except that search is
  * not case sensitive. *)
 val searchaddpl:
-  Client.t -> string -> (tags * string) list -> Protocol.response
+  Client.t -> string -> (search_tags * string) list -> Protocol.response
 
 (*
 count {TAG} {NEEDLE} [...] [group] [GROUPTYPE]

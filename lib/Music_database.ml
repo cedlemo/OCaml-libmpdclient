@@ -69,10 +69,16 @@ let tag_to_string = function
   | Album_artist_sort -> "album_artist_sort"
   | Album_sort -> "album_sort"
   | Count -> "count"
+
+type search_tags = Any | File | Base | Modified_since | Mpd_tag of tags
+
+val search_tag_to_string = function
   | Any -> "any"
   | File -> "file"
   | Base -> "base"
   | Modified_since -> "modified-since"
+  | Mpd_tag t -> tag_to_string t
+
 
 let search_find_wrapper cmd_name client what_list ?sort:sort_tag ?window:window () =
   let what =
