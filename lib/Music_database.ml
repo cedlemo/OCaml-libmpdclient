@@ -72,7 +72,7 @@ let tag_to_string = function
 
 type search_tags = Any | File | Base | Modified_since | Mpd_tag of tags
 
-val search_tag_to_string = function
+let search_tag_to_string = function
   | Any -> "any"
   | File -> "file"
   | Base -> "base"
