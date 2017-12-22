@@ -40,10 +40,6 @@ type tags =
   | Album_artist_sort
   | Album_sort
   | Count
-  | Any
-  | File
-  | Base
-  | Modified_since
 
 let tag_to_string = function
   | Unknown -> "unknown"
