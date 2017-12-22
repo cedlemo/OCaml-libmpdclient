@@ -68,15 +68,17 @@ let test_queue_clear test_ctxt =
   in Mpd.Client.close client
 
 let test_music_database_find test_ctxt =
+  let open Music_database in
   let client = init_client () in
-  let _ = match Mpd.Music_database.find client [(Music_database.Artist, "Bach JS")] () with
+  let _ = match find client [(Mpd_tag Artist, "Bach JS")] () with
     | Error (_, _, _, error) -> assert_equal ~printer:(fun s -> s) "This should not have been reached " error
     | Ok songs -> assert_equal 11 (List.length songs)
   in Mpd.Client.close client
 
 let test_music_database_findadd test_ctxt =
+  let open Music_database in
   let client = init_client () in
-  let _ = match Mpd.Music_database.findadd client [(Music_database.Artist, "Bach JS")] with
+  let _ = match findadd client [(Mpd_tag Artist, "Bach JS")] with
     | Error (_, _, _, error) -> assert_equal ~printer:(fun s -> s) "This should not have been reached " error
     | Ok _ -> let queue = Mpd.Queue.playlist client in
         let queue_length = match queue with
@@ -90,8 +92,9 @@ let test_music_database_findadd test_ctxt =
   Mpd.Client.close client
 
 let test_music_database_search test_ctxt =
+  let open Music_database in
   let client = init_client () in
-  let _ = match Mpd.Music_database.search client [(Music_database.Artist, "bACH js")] () with
+  let _ = match search client [(Mpd_tag Artist, "bACH js")] () with
     | Error (_, _, _, error) -> assert_equal ~printer:(fun s -> s) "This should not have been reached " error
     | Ok songs -> assert_equal 11 (List.length songs)
   in
@@ -99,8 +102,9 @@ let test_music_database_search test_ctxt =
   Mpd.Client.close client
 
 let test_music_database_searchadd test_ctxt =
+  let open Music_database in
   let client = init_client () in
-  let _ = match Mpd.Music_database.searchadd client [(Music_database.Artist, "bACH js")] with
+  let _ = match searchadd client [(Mpd_tag Artist, "bACH js")] with
     | Error (_, _, _, error) -> assert_equal ~printer:(fun s -> s) "This should not have been reached " error
     | Ok _ -> let queue = Mpd.Queue.playlist client in
         let queue_length = match queue with
@@ -114,9 +118,10 @@ let test_music_database_searchadd test_ctxt =
   Mpd.Client.close client
 
 let test_music_database_searchaddpl test_ctxt =
+  let open Music_database in
   let client = init_client () in
   let new_playlist = "searchaddpl_new_playlist" in
-  let _ = match Mpd.Music_database.searchaddpl client new_playlist [(Music_database.Artist, "bACH js")] with
+  let _ = match searchaddpl client new_playlist [(Mpd_tag Artist, "bACH js")] with
     | Error (_, _, _, error) -> assert_equal ~printer:(fun s -> s) "This should not have been reached " error
     | Ok _ -> match Mpd.Stored_playlists.listplaylists client with
         | None -> assert_equal ~printer:(fun s -> s) "This should not " "have been reached"
