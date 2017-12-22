@@ -78,7 +78,7 @@ let search_tag_to_string = function
 
 let search_find_wrapper cmd_name client what_list ?sort:sort_tag ?window:window () =
   let what =
-    List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (tag_to_string tag) param) what_list
+    List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (search_tag_to_string tag) param) what_list
     |> String.concat " "
   in
   let sort = match sort_tag with
@@ -104,7 +104,7 @@ let search = search_find_wrapper "search"
 
 let search_find_add_wrapper cmd_name client what_list =
   let what =
-    List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (tag_to_string tag) param) what_list
+    List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (search_tag_to_string tag) param) what_list
     |> String.concat " "
   in
   let cmd = Printf.sprintf "%s %s" cmd_name what in
