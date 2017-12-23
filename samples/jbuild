@@ -10,5 +10,5 @@
 	  mpd_lwt_client_idle_loop
 	  mpd_lwt_client_idle
 	  mpd_lwt_client_idle_noidle))
-  (libraries (ocaml-libmpdclient lwt lwt.unix)))
+  (libraries (libmpdclient lwt lwt.unix)))
 )

@@ -1,6 +1,6 @@
 (executables
  ((names (test travis_test))
-  (libraries (ocaml-libmpdclient lwt oUnit))
+  (libraries (libmpdclient lwt oUnit))
 ))
 
 (alias

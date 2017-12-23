@@ -3,7 +3,7 @@
 
 (library
  ((name        Mpd)
-  (public_name ocaml-libmpdclient)
+  (public_name libmpdclient)
   (libraries (unix lwt str))
  )
 )
