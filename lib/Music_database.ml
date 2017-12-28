@@ -147,7 +147,7 @@ let parse_count_response response group_tag =
 
 let count client what_list ?group:group_tag () =
   let what =
-    List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (search_tag_to_string tag) param) what_list
+    List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (tag_to_string tag) param) what_list
     |> String.concat " "
   in
   let group = match group_tag with
@@ -156,7 +156,7 @@ let count client what_list ?group:group_tag () =
   in
   let cmd = Printf.sprintf "count %s %s" what group in
   match Client.send client cmd with
-  | Error err -> Error err
+  | Error (_, _, _, message) -> Error message
   | Ok response -> match response with
       | None -> Ok []
       | Some r -> Ok (parse_count_response r group_tag)
