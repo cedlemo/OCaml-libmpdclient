@@ -18,8 +18,7 @@
 
 (** Music_database module: regroups data base related commands. *)
 
-(** type for the Mpd database tags and the additionnal tags for
- *  find command. *)
+(** type for the Mpd database tags for find command. *)
 type tags =
   | Unknown
   | Artist
@@ -45,11 +44,14 @@ type tags =
   | Album_sort
   | Count
 
+(** Transform get the string representation of a tag. *)
 val tag_to_string:
   tags -> string
 
+(** type for the supplementary tags for the search commands. *)
 type search_tags = Any | File | Base | Modified_since | Mpd_tag of tags
 
+(** Get the string representation of a search_tag. *)
 val search_tag_to_string:
   search_tags -> string
 
