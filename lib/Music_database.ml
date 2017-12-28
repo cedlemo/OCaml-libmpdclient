@@ -117,6 +117,50 @@ let searchadd = search_find_add_wrapper "searchadd"
 let searchaddpl client playlist_name what_list =
   search_find_add_wrapper ("searchaddpl " ^ playlist_name) client what_list
 
+type song_count = { songs: int; playtime: int; misc: string }
+
+exception EMusic_database of string
+
+let parse_count_response response group_tag =
+  let (has_group, grp) = match group_tag with
+    | Some g -> let grp = tag_to_string g in
+      (true, grp)
+    | None -> (false, "nogroupname")
+  in
+  let (songs, group_pattern) = if has_group then
+   let group_pattern =
+      Printf.sprintf "%s:" (String.capitalize_ascii grp)
+    in
+    (Str.split (Str.regexp_string group_pattern) response, group_pattern)
+  else
+    (Str.split (Str.regexp_string "file:") response, "")
+  in
+    let match_pattern = Printf.sprintf "%s  \\(.*\\)\nsongs:  \\(.*\\)\nplaytime:  \\(.*\\)" group_pattern in
+    List.map (fun s -> if Str.string_match (Str.regexp match_pattern) s 0 then
+      {
+        songs = int_of_string (Str.matched_group 1 s);
+        playtime = int_of_string (Str.matched_group 2 s);
+        misc = Str.matched_group 0 s;
+      }
+    else raise (EMusic_database (Printf.sprintf "Count response parsing: empty for %s" match_pattern))
+    ) songs
+
+let count client what_list ?group:group_tag () =
+  let what =
+    List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (search_tag_to_string tag) param) what_list
+    |> String.concat " "
+  in
+  let group = match group_tag with
+    | None -> ""
+    | Some tag -> " group " ^ (tag_to_string tag)
+  in
+  let cmd = Printf.sprintf "count %s %s" what group in
+  match Client.send client cmd with
+  | Error err -> Error err
+  | Ok response -> match response with
+      | None -> Ok []
+      | Some r -> Ok (parse_count_response r group_tag)
+
 let update client uri =
   let cmd = match uri with
   | None -> "update"

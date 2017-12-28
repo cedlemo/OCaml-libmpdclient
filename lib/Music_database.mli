@@ -90,6 +90,18 @@ val searchadd:
 val searchaddpl:
   Client.t -> string -> (search_tags * string) list -> Protocol.response
 
+(* Counts the number of songs and their total playtime in the db matching TAG
+ * exactly. The group keyword may be used to group the results by a tag. The
+ * following prints per-artist counts:
+ * count group artist
+ * count genre metal date 2016 group artist
+ *)
+
+(** basic type for the response of the count command. *)
+type song_count = { songs: int; playtime: int; misc: string }
+val count:
+  Client.t -> (tags * string) list -> ?group:tags -> unit -> song_count list
+
 (*
 count {TAG} {NEEDLE} [...] [group] [GROUPTYPE]
 
