@@ -45,12 +45,16 @@ let test_play_pause_stop test_ctxt =
     if queue_length () < 0 then ignore(Mpd.Stored_playlists.load client "bach" ());
     let _ = check_state Mpd.Status.Stop in
     let _ = Mpd.Playback.play client in
+    let _ = Unix.sleep 2 in
     let _ = check_state Mpd.Status.Play in
     let _ = Mpd.Playback.pause client in
+    let _ = Unix.sleep 2 in
     let _ = check_state Mpd.Status.Pause in
     let _ = Mpd.Playback.play client in
+    let _ = Unix.sleep 2 in
     let _ = check_state Mpd.Status.Play in
     let _ = Mpd.Playback.stop client in
+    let _ = Unix.sleep 2 in
     check_state Mpd.Status.Stop
   )
 

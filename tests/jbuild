@@ -1,6 +1,6 @@
 (executables
  ((names (test travis_test))
-  (libraries (libmpdclient lwt oUnit))
+  (libraries (libmpdclient lwt unix oUnit))
 ))
 
 (alias
