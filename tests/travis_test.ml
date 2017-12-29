@@ -17,7 +17,6 @@
  *)
 
 open OUnit2
-open Mpd
 
 let () =
   run_test_tt_main
