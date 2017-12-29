@@ -68,6 +68,12 @@ let test_client_ping test_ctxt =
   in
   Mpd.Client.close client
 
+let test_client_tagtypes test_ctxt =
+  let client = init_client () in
+  let tagtypes = Mpd.Client.tagtypes client in
+  let _ = assert_equal ~printer:string_of_bool true (List.length tagtypes > 0) in
+  assert_equal ~printer:string_of_bool true (List.mem "Artist" tagtypes)
+
 let tests =
   "Connection and client tests" >:::
     [
@@ -75,5 +81,6 @@ let tests =
       "Client send test" >:: test_client_send;
       "Client banner test" >:: test_client_banner;
       "Client status test" >:: test_client_status;
-      "Client ping test" >:: test_client_ping
+      "Client ping test" >:: test_client_ping;
+      "Client tagtypes" >:: test_client_tagtypes
     ]
