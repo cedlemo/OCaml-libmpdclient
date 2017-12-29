@@ -26,5 +26,6 @@ let () =
       [
        Connection_and_client.tests;
        Queue_and_playlists.tests;
+       Playback.tests;
       ]
   )
