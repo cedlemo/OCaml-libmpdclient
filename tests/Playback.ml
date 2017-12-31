@@ -43,25 +43,25 @@ let test_play_pause_stop test_ctxt =
       | Ok status -> assert_equal ~printer:Mpd.Status.string_of_state s (Mpd.Status.state status)
     in
     if queue_length () < 0 then ignore(Mpd.Stored_playlists.load client "bach" ());
-    let _ = check_state "Initial state " Mpd.Status.Stop in
+    let _ = check_state Mpd.Status.Stop "Initial state " in
     let _ = (
       match Mpd.Playback.play client 0 with
       | Error (_, _ , _, message) -> assert_equal ~printer:(fun s -> s) "Unable to play " message
-      | Ok _ -> let _ = Unix.sleep 2 in check_state "Play command " Mpd.Status.Play
+      | Ok _ -> let _ = Unix.sleep 2 in check_state Mpd.Status.Play "Play command "
     ) in
     let _ = (
       match Mpd.Playback.pause client true with
       | Error (_, _ , _, message) -> assert_equal ~printer:(fun s -> s) "Unable to pause " message
-      | Ok _ -> let _ = Unix.sleep 2 in check_state "Pause command true " Mpd.Status.Pause
+      | Ok _ -> let _ = Unix.sleep 2 in check_state Mpd.Status.Pause "Pause command true "
     ) in
     let _ = (
       match Mpd.Playback.pause client false with
       | Error (_, _ , _, message) -> assert_equal ~printer:(fun s -> s) "Unable to play " message
-      | Ok _ -> let _ = Unix.sleep 2 in check_state "Pause command false " Mpd.Status.Play
+      | Ok _ -> let _ = Unix.sleep 2 in check_state Mpd.Status.Play "Pause command false "
     ) in
     match Mpd.Playback.stop client with
     | Error (_, _ , _, message) -> assert_equal ~printer:(fun s -> s) "Unable to stop " message
-    | Ok _ -> let _ = Unix.sleep 2 in check_state "Stop command at end" Mpd.Status.Stop
+    | Ok _ -> let _ = Unix.sleep 2 in check_state Mpd.Status.Stop "Stop command at end"
   )
 
 let tests =
