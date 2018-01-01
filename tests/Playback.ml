@@ -42,7 +42,7 @@ let test_play_pause_stop test_ctxt =
       | Error message -> assert_equal ~printer:(fun s -> test_name ^ s) "Unable to get status" message
       | Ok status -> assert_equal ~printer:Mpd.Status.string_of_state s (Mpd.Status.state status)
     in
-    if queue_length () < 0 then ignore(Mpd.Stored_playlists.load client "bach" ());
+    if queue_length () <= 0 then ignore(Mpd.Stored_playlists.load client "bach" ());
     let _ = check_state Mpd.Status.Stop "Initial state " in
     let _ = (
       match Mpd.Playback.play client 1 with
