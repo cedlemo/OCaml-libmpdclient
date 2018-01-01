@@ -40,7 +40,9 @@ let test_play_pause_stop test_ctxt =
     let check_state s test_name =
       match Mpd.Client.status client with
       | Error message -> assert_equal ~printer:(fun s -> test_name ^ s) "Unable to get status" message
-      | Ok status -> assert_equal ~printer:Mpd.Status.string_of_state s (Mpd.Status.state status)
+      | Ok status ->
+          assert_equal ~printer:(fun s -> test_name ^ (Mpd.Status.string_of_state s))
+                       s (Mpd.Status.state status)
     in
     if queue_length () <= 0 then (
       match Mpd.Stored_playlists.load client "bach" () with
