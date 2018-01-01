@@ -62,7 +62,7 @@ let test_play_pause_stop test_ctxt =
     ) in
     let _ = (
       match Mpd.Playback.pause client false with
-      | Error (_, _ , _, message) -> assert_equal ~printer:(fun s -> s) "Unable to play " message
+      | Error (_, _ , _, message) -> assert_equal ~printer:(fun s -> s) "Unable to replay " message
       | Ok _ -> let _ = Unix.sleep 2 in check_state Mpd.Status.Play "Pause command false "
     ) in
     match Mpd.Playback.stop client with

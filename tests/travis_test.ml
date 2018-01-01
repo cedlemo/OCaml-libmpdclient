@@ -23,8 +23,8 @@ let () =
   (
     "Mpd client library tests" >:::
       [
-       Connection_and_client.tests;
-       Queue_and_playlists.tests;
-       Playback.tests;
+       Test_connection_and_client.tests;
+       Test_queue_and_playlists.tests;
+       Test_playback.tests;
       ]
   )
