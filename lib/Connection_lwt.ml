@@ -80,8 +80,9 @@ let write conn str =
   Lwt.catch
   (fun () ->
     let {socket = socket; _} = conn in
-    let len = String.length str in
-    Lwt_unix.send socket str 0 len []
+    let b = Bytes.of_string str in
+    let len = Bytes.length b in
+    Lwt_unix.send socket b 0 len []
   )
   (function
       | Unix.Unix_error (error, fn_name, param_name) ->
@@ -104,7 +105,7 @@ let recvstr conn =
     let buffer = Bytes.create maxlen in
     Lwt_unix.recv socket buffer 0 maxlen []
     >>= fun recvlen ->
-      Lwt.return (String.sub buffer 0 recvlen)
+      Lwt.return Bytes.(to_string (sub buffer 0 recvlen))
   )
   (function
       | Unix.Unix_error (error, fn_name, param_name) ->

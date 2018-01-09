@@ -66,8 +66,9 @@ let close t =
 
 let write t str =
   let open Unix in
-  let len = String.length str in
-  try ignore(Unix.send t.socket str 0 len [])
+  let b = Bytes.of_string str in
+  let len = Bytes.length b in
+  try ignore(Unix.send t.socket b 0 len [])
   with Unix_error (error, fn_name, param_name) ->
     let custom_message = Printf.sprintf ": unable to write %s in socket" str in
     unix_error_message (error, fn_name, param_name) custom_message
@@ -83,7 +84,7 @@ let read t =
   let rec _read s acc =
     try
       let recvlen = Unix.recv s str 0 128 [] in
-      let recvstr = String.sub str 0 recvlen in _read s (recvstr :: acc)
+      let recvstr = Bytes.(to_string (sub str 0 recvlen)) in _read s (recvstr :: acc)
     with
       | Unix.Unix_error (error, fn_name, param_name) ->
         match error with
