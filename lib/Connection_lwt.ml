@@ -101,7 +101,7 @@ let recvstr conn =
   Lwt.catch
   (fun () ->
     let {socket = socket; _} = conn in
-    let maxlen = 8 in
+    let maxlen = 3 in
     let buffer = Bytes.create maxlen in
     Lwt_unix.recv socket buffer 0 maxlen []
     >>= fun recvlen ->
@@ -135,7 +135,7 @@ let full_mpd_banner mpd_data =
   check_full_response mpd_data pattern 1
 
 let full_mpd_command_response mpd_data =
-  let pattern = "\\(\\(\n\\|.\\)*\\)OK\n" in
+  let pattern = "\\(\\(\n\\|.\\)*\\)OK$" in
   check_full_response mpd_data pattern 0
 
 let full_mpd_idle_event mpd_data =
