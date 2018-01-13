@@ -79,7 +79,7 @@ let parse_error_response mpd_response =
   (ack_val, ack_cmd_num, ack_cmd, ack_message)
 
 let parse_response mpd_response =
-  let ok_response_reg = Str.regexp "\\(\\(\n\\|.\\)*\\)OK\n" in
+  let ok_response_reg = Str.regexp "\\(\\(\n\\|.\\)*\\)OK$" in
   if (Str.string_match ok_response_reg mpd_response 0 == true) then
     let str = Str.matched_group 1 mpd_response in
     if str = "" then Ok (None) else Ok (Some str)
