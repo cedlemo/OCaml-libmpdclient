@@ -6,12 +6,12 @@ services:
 
 matrix:
   include:
-    - env: TYPE=ubuntu-17.04
+    - env: TYPE=ubuntu-17.10
 
 install:
   - docker build
       -t ocaml-libmpdclient/${TYPE}
-      -f travis/Dockerfile.${TYPE}
+      -f travis/Dockerfile
       .
 
 script:
