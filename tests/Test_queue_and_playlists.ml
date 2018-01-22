@@ -129,6 +129,12 @@ let test_music_database_searchaddpl test_ctxt =
           assert_bool "searchaddpl test: new playlistname not found" (List.mem new_playlist playlists)
   in Mpd.Client.close client
 
+let test_music_database_count test_ctxt =
+  let open Music_database in
+  let client = init_client () in
+  match count client [] ?group:(Some Artist) () with
+  | Error message -> assert_equal ~printer:(fun s -> s) "This should not have been reached " message
+  | Ok counts -> assert_equal ~printer:(fun s -> string_of_int s) 1 (List.length counts)
 
 let tests =
   "Queue and playlists tests" >:::
@@ -141,4 +147,5 @@ let tests =
       "test music database search" >:: test_music_database_search;
       "test music database searchadd" >:: test_music_database_searchadd;
       "test music database searchaddpl" >:: test_music_database_searchaddpl;
+      "test music database count" >:: test_music_database_count;
     ]
