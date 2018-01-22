@@ -117,7 +117,7 @@ let searchadd = search_find_add_wrapper "searchadd"
 let searchaddpl client playlist_name what_list =
   search_find_add_wrapper ("searchaddpl " ^ playlist_name) client what_list
 
-type song_count = { songs: int; playtime: int; misc: string }
+type song_count = { songs: int; playtime: float; misc: string }
 
 exception EMusic_database of string
 
@@ -139,7 +139,7 @@ let parse_count_response response group_tag =
     List.map (fun s -> if Str.string_match (Str.regexp match_pattern) s 0 then
       {
         songs = int_of_string (Str.matched_group 1 s);
-        playtime = int_of_string (Str.matched_group 2 s);
+        playtime = float_of_string (Str.matched_group 2 s);
         misc = Str.matched_group 0 s;
       }
     else raise (EMusic_database (Printf.sprintf "Count response parsing: empty for %s" match_pattern))

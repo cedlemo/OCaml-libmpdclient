@@ -98,7 +98,7 @@ val searchaddpl:
  *)
 
 (** basic type for the response of the count command. *)
-type song_count = { songs: int; playtime: int; misc: string }
+type song_count = { songs: int; playtime: float; misc: string }
 
 exception EMusic_database of string
 
