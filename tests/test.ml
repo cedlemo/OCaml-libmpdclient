@@ -141,7 +141,11 @@ songs: 11
 playtime: 2491
 "
 
-let test_music_database_count_parse test_ctxt =
+let count_artist_woven_hand =
+"songs: 11
+playtime: 2491
+"
+let test_music_database_count_parse_group_artist test_ctxt =
   try
     let count = Utils.parse_count_response count_group_artist (Some "artist") in
     let _ = assert_equal 2 (List.length count) in
@@ -158,6 +162,18 @@ let test_music_database_count_parse test_ctxt =
 
   with Utils.EMusic_database message -> assert_equal ~printer:(fun s -> s) "" message
 
+let test_music_database_count_parse_artist_woven_hand test_ctxt =
+  try
+    let count = Utils.parse_count_response count_artist_woven_hand None in
+    let _ = assert_equal 1 (List.length count) in
+    let fst = List.nth count 0 in
+    let (songs, time, misc) = fst in
+    let _ = assert_equal 11 songs in
+    let _ = assert_equal 2491. time in
+    assert_equal ~printer:(fun s -> s) "" misc
+
+  with Utils.EMusic_database message -> assert_equal ~printer:(fun s -> s) "" message
+
 let mpd_responses_parsing_tests =
     "Mpd responses parsing tests" >:::
       ["test simple OK" >:: test_simple_ok;
@@ -170,7 +186,8 @@ let mpd_responses_parsing_tests =
        "test Mpd.Song.parse" >:: test_song_parse;
        "test Utils.read_file_path" >:: test_list_playlist_response_parse;
        "test Mpd.utils.read_list_playlists" >:: test_listplaylists_response_parse;
-       "test Mpd.utils.parse_count_response" >:: test_music_database_count_parse;
+       "test Mpd.utils.parse_count_response" >:: test_music_database_count_parse_group_artist;
+       "test Mpd.utils.parse_count_response" >:: test_music_database_count_parse_artist_woven_hand;
       ]
 
   let () =
