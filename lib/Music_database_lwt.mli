@@ -100,8 +100,6 @@ val searchaddpl:
 (** basic type for the response of the count command. *)
 type song_count = { songs: int; playtime: float; misc: string }
 
-exception EMusic_database of string
-
 val count:
   Client_lwt.t -> (tags * string) list -> ?group:tags -> unit -> (song_count list, string) result Lwt.t
 

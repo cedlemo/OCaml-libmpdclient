@@ -123,48 +123,24 @@ let searchaddpl client playlist_name what_list =
 
 type song_count = { songs: int; playtime: float; misc: string }
 
-exception EMusic_database of string
-
-let parse_count_response response group_tag =
-  let (has_group, grp) = match group_tag with
-    | Some g -> let grp = tag_to_string g in
-      (true, grp)
-    | None -> (false, "nogroupname")
-  in
-  let (songs, group_pattern) = if has_group then
-   let group_pattern =
-      Printf.sprintf "%s:" (String.capitalize_ascii grp)
-    in
-    (Str.split (Str.regexp_string group_pattern) response, group_pattern)
-  else
-    (Str.split (Str.regexp_string "file:") response, "")
-  in
-    let match_pattern = Printf.sprintf "%s  \\(.*\\)\nsongs:  \\(.*\\)\nplaytime:  \\(.*\\)" group_pattern in
-    List.map (fun s -> if Str.string_match (Str.regexp match_pattern) s 0 then
-      {
-        songs = int_of_string (Str.matched_group 1 s);
-        playtime = float_of_string (Str.matched_group 2 s);
-        misc = Str.matched_group 0 s;
-      }
-    else raise (EMusic_database (Printf.sprintf "Count response parsing: empty for %s" match_pattern))
-    ) songs
-
 let count client what_list ?group:group_tag () =
   let what =
     List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (tag_to_string tag) param) what_list
     |> String.concat " "
   in
   let group = match group_tag with
-    | None -> ""
-    | Some tag -> " group " ^ (tag_to_string tag)
+    | None -> None
+    | Some tag -> Some (" group " ^ (tag_to_string tag))
   in
-  let cmd = Printf.sprintf "count %s %s" what group in
+  let cmd = Printf.sprintf "count %s %s" what (match group with None -> "" | Some s -> s) in
   Client_lwt.send client cmd
   >>= function
     | Error (_, _, _, message) -> Lwt.return (Error message)
     | Ok response -> match response with
       | None -> Lwt.return (Ok [])
-      | Some r -> Lwt.return (Ok (parse_count_response r group_tag))
+      | Some r -> let result = Utils.parse_count_response r group in
+        let song_counts = List.map (fun (songs, playtime, misc) -> {songs; playtime; misc}) result in
+        Lwt.return (Ok song_counts)
 
 let update client uri =
   let cmd = match uri with
