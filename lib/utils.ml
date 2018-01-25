@@ -91,3 +91,22 @@ let read_list_playlists data =
         get_playlists remain acc
   in
   get_playlists lines []
+
+exception EMusic_database of string
+
+(** Get the count list from the Mpd count command. *)
+let parse_count_response response group_tag =
+  let songs, group_pattern = match group_tag with
+    | None -> (Str.split (Str.regexp_string "file:") response, "")
+    | Some grp -> let group_pattern =
+      Printf.sprintf "%s:" (String.capitalize_ascii grp) in
+      (Str.split (Str.regexp_string group_pattern) response, group_pattern)
+  in
+  let match_pattern = "\\(.*\\)\nsongs: \\(.*\\)\nplaytime: \\(.*\\)\n" in
+  List.map begin fun s ->
+    if Str.string_match (Str.regexp match_pattern) s 1 then
+        (int_of_string (Str.matched_group 2 s),
+         float_of_string (Str.matched_group 3 s),
+         Str.matched_group 1 s)
+    else raise (EMusic_database (Printf.sprintf "Count response parsing: empty for %s" match_pattern))
+  end songs
