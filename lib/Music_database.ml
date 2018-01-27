@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -126,9 +126,9 @@ let count client what_list ?group:group_tag () =
   in
   let group = match group_tag with
     | None -> None
-    | Some tag -> Some (" group " ^ (tag_to_string tag))
+    | Some tag -> Some (tag_to_string tag)
   in
-  let cmd = Printf.sprintf "count %s %s" what (match group with None -> "" | Some s -> s) in
+  let cmd = Printf.sprintf "count %s %s" what (match group with None -> "" | Some s -> " group " ^ s) in
   match Client.send client cmd with
   | Error (_, _, _, message) -> Error message
   | Ok response -> match response with

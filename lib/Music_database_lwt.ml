@@ -130,15 +130,16 @@ let count client what_list ?group:group_tag () =
   in
   let group = match group_tag with
     | None -> None
-    | Some tag -> Some (" group " ^ (tag_to_string tag))
+    | Some tag -> Some (tag_to_string tag)
   in
-  let cmd = Printf.sprintf "count %s %s" what (match group with None -> "" | Some s -> s) in
+  let cmd = Printf.sprintf "count %s %s" what (match group with None -> "" | Some s -> "group " ^ s) in
   Client_lwt.send client cmd
   >>= function
     | Error (_, _, _, message) -> Lwt.return (Error message)
     | Ok response -> match response with
       | None -> Lwt.return (Ok [])
-      | Some r -> let result = Utils.parse_count_response r group in
+      | Some r ->
+        let result = Utils.parse_count_response r group in
         let song_counts = List.map (fun (songs, playtime, misc) -> {songs; playtime; misc}) result in
         Lwt.return (Ok song_counts)
 

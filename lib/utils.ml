@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -98,7 +98,7 @@ exception EMusic_database of string
 let parse_count_response response group_tag =
   match group_tag with
   | None -> let songs = Str.split (Str.regexp_string "songs:") response in
-      let match_pattern = "\\(.*\\)\nplaytime: \\(.*\\)\n" in
+      let match_pattern = "\\(.*\\)\nplaytime: *\\(.*\\)\n" in
       List.map begin fun s ->
         if Str.string_match (Str.regexp match_pattern) s 1 then
           (int_of_string (Str.matched_group 1 s),
@@ -109,7 +109,7 @@ let parse_count_response response group_tag =
   | Some grp ->
       let group_pattern = Printf.sprintf "%s:" (String.capitalize_ascii grp) in
       let songs = Str.split (Str.regexp_string group_pattern) response in
-      let match_pattern = "\\(.*\\)\nsongs: \\(.*\\)\nplaytime: \\(.*\\)\n" in
+      let match_pattern = "\\(.*\\)\nsongs: *\\(.*\\)\nplaytime: *\\(.*\\)\n" in
       List.map begin fun s ->
         if Str.string_match (Str.regexp match_pattern) s 1 then
           (int_of_string (Str.matched_group 2 s),
