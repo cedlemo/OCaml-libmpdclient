@@ -9,6 +9,8 @@
 	  mpd_lwt_playlist_info
 	  mpd_lwt_client_idle_loop
 	  mpd_lwt_client_idle
-	  mpd_lwt_client_idle_noidle))
+	  mpd_lwt_client_idle_noidle
+	  mpd_lwt_count
+	  mpd_count))
   (libraries (libmpdclient lwt lwt.unix)))
 )
