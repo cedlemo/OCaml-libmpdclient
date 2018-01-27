@@ -100,23 +100,19 @@ val searchaddpl:
 (** basic type for the response of the count command. *)
 type song_count = { songs: int; playtime: float; misc: string }
 
+(** Get a count of songs with filters. For examples: count group artist will
+ * return for each artist the number of sons, the total playtime and the
+ * name of the artist in misc.*)
 val count:
   Client_lwt.t -> (tags * string) list -> ?group:tags -> unit -> (song_count list, string) result Lwt.t
 
+(** Get a list based on some filer. For example "list album artist "Elvis Presley""
+ *  will return a list of the album names of Elvis Presley that exists in the
+ *  music database. *)
+val list:
+  Client_lwt.t -> tags -> (tags * string) list -> (string list, string) result Lwt.t
+
 (*
-count {TAG} {NEEDLE} [...] [group] [GROUPTYPE]
-
-Counts the number of songs and their total playtime in the db matching TAG exactly.
-
-The group keyword may be used to group the results by a tag. The following prints per-artist counts:
-
-count group artist
-count genre metal date 2016 group artist
-
-
-sort sorts the result by the specified tag. Without sort, the order is undefined. Only the first tag value will be used, if multiple of the same type exist. To sort by "Artist", "Album" or "AlbumArtist", you should specify "ArtistSort", "AlbumSort" or "AlbumArtistSort" instead. These will automatically fall back to the former if "*Sort" doesn't exist. "AlbumArtist" falls back to just "Artist".
-window can be used to query only a portion of the real response. The parameter is two zero-based record numbers; a start number and an end number.
-
 list {TYPE} [FILTERTYPE] [FILTERWHAT] [...] [group] [GROUPTYPE] [...]
 Lists unique tags values of the specified type. TYPE can be any tag supported by MPD or file.
 Additional arguments may specify a filter like the one in the find command.

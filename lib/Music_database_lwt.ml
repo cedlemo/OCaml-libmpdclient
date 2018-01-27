@@ -143,6 +143,20 @@ let count client what_list ?group:group_tag () =
         let song_counts = List.map (fun (songs, playtime, misc) -> {songs; playtime; misc}) result in
         Lwt.return (Ok song_counts)
 
+let list client tag tag_list =
+  let filter = tag_to_string tag |> String.capitalize_ascii in
+  let tags = List.map (fun (t, p) ->
+                       Printf.sprintf "%s \"%s\"" (tag_to_string t) p) tag_list
+            |> String.concat " " in
+  let cmd = Printf.sprintf "list %s %s" filter tags in
+  Client_lwt.send client cmd
+  >>= function
+  | Error (_, _, _, message) -> Lwt.return (Error message)
+  | Ok response -> match response with
+      | None -> Lwt.return (Ok [])
+      | Some r -> Lwt.return (Ok (Str.split (Str.regexp (filter ^ ": ")) r))
+
+
 let update client uri =
   let cmd = match uri with
   | None -> "update"

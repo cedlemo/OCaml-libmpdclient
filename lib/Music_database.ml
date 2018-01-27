@@ -75,7 +75,6 @@ let search_tag_to_string = function
   | Modified_since -> "modified-since"
   | Mpd_tag t -> tag_to_string t
 
-
 let search_find_wrapper cmd_name client what_list ?sort:sort_tag ?window:window () =
   let what =
     List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (search_tag_to_string tag) param) what_list
@@ -137,6 +136,18 @@ let count client what_list ?group:group_tag () =
           let result = Utils.parse_count_response r group in
           let song_counts = List.map (fun (songs, playtime, misc) -> {songs; playtime; misc}) result in
           Ok song_counts
+
+let list client tag tag_list =
+  let filter = tag_to_string tag |> String.capitalize_ascii in
+  let tags = List.map (fun (t, p) ->
+                       Printf.sprintf "%s \"%s\"" (tag_to_string t) p) tag_list
+            |> String.concat " " in
+  let cmd = Printf.sprintf "list %s %s" filter tags in
+  match Client.send client cmd with
+  | Error (_, _, _, message) -> Error message
+  | Ok response -> match response with
+      | None -> Ok []
+      | Some r -> Ok (Str.split (Str.regexp (filter ^ ": ")) r)
 
 let update client uri =
   let cmd = match uri with
