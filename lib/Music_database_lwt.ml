@@ -154,7 +154,11 @@ let list client tag tag_list =
   | Error (_, _, _, message) -> Lwt.return (Error message)
   | Ok response -> match response with
       | None -> Lwt.return (Ok [])
-      | Some r -> Lwt.return (Ok (Str.split (Str.regexp (filter ^ ": ")) r))
+      | Some r -> let split_pattern = Printf.sprintf "\\(\n\\)*%s: " filter in
+      let l = match Str.split (Str.regexp split_pattern) r with
+        | [] -> []
+        | h :: t -> if h = "" then t else (h :: t)
+      in Lwt.return (Ok l)
 
 
 let update client uri =
