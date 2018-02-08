@@ -128,7 +128,7 @@ let recvstr conn =
 
 type mpd_response =
   | Incomplete
-  | Complete of string
+  | Complete of (string * int)
 
 let check_full_response mpd_data pattern group useless_char =
   let response = Str.regexp pattern in
@@ -161,7 +161,7 @@ let read connection check_full_data =
         Lwt.return s
     | Incomplete -> recvstr connection
         >>= fun response -> let buff = connection.buffer ^ response in
-        let _ connection.buffer = buff in _read connection
+        let _ = connection.buffer = buff in _read connection
     in _read connection
 
 let read_idle_events connection =
