@@ -19,7 +19,12 @@
 open Lwt
 
 type t =
-  { hostname : string; port : int; ip : Unix.inet_addr; socket : Lwt_unix.file_descr }
+  { hostname : string;
+    port : int;
+    ip : Unix.inet_addr;
+    socket : Lwt_unix.file_descr;
+    mutable buffer : string
+  }
 
 exception Lwt_unix_exn of string
 
@@ -72,7 +77,8 @@ let initialize hostname port =
       let conn = { hostname = hostname;
                    port = port;
                    ip = addr;
-                   socket = socket
+                   socket = socket;
+                   buffer = "";
                  }
      in Lwt.return conn
 
@@ -124,34 +130,39 @@ type mpd_response =
   | Incomplete
   | Complete of string
 
-let check_full_response mpd_data pattern group =
+let check_full_response mpd_data pattern group useless_char =
   let response = Str.regexp pattern in
   match Str.string_match response mpd_data 0 with
-  | true -> Complete (Str.matched_group group mpd_data)
+  | true -> Complete (Str.matched_group group mpd_data, useless_char)
   | false -> Incomplete
 
 let full_mpd_banner mpd_data =
   let pattern = "OK\\(\\(\n\\|.\\)*\\)\n" in
-  check_full_response mpd_data pattern 1
+  check_full_response mpd_data pattern 1 1
 
 let full_mpd_command_response mpd_data =
   let pattern = "\\(\\(\n\\|.\\)*\\)OK$" in
-  check_full_response mpd_data pattern 0
+  check_full_response mpd_data pattern 0 3
 
 let full_mpd_idle_event mpd_data =
   let pattern = "changed: \\(\\(\n\\|.\\)*\\)\nOK\n" in
-  match check_full_response mpd_data pattern 2 with
+  match check_full_response mpd_data pattern 2 3 with
   | Incomplete -> full_mpd_command_response mpd_data (* Check if there is an empty response that follow an noidle command *)
   | Complete response -> Complete response
 
 let read connection check_full_data =
-  let rec _read connection acc =
-    let response = String.concat "" (List.rev acc) in
+  let rec _read connection =
+    let response = connection.buffer in
     match check_full_data response with
-    | Complete (s) -> Lwt.return s
+    | Complete (s, u) -> let s_length = String.length s in
+        let start = (s_length - 1) + u in
+        let length = (String.length connection.buffer) - s_length in
+        let _ = connection.buffer =  String.sub connection.buffer start length in
+        Lwt.return s
     | Incomplete -> recvstr connection
-                    >>= fun response -> _read connection (response :: acc)
-    in _read connection []
+        >>= fun response -> let buff = connection.buffer ^ response in
+        let _ connection.buffer = buff in _read connection
+    in _read connection
 
 let read_idle_events connection =
   read connection full_mpd_idle_event
