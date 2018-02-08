@@ -20,7 +20,11 @@ type t = {connection : Connection.t; mpd_banner : string }
 
 let initialize connection =
   let message = Connection.read connection in
-  {connection = connection; mpd_banner = message}
+  let pattern = "OK\\(\\(\n\\|.\\)*\\)\n" in
+  let mpd_banner = match Str.string_match response mpd_data 0 with
+  | true -> Str.matched_group group mpd_data
+  | false -> message
+  in { connection; mpd_banner }
 
 let send client mpd_cmd =
   let {connection = c; _} = client in
