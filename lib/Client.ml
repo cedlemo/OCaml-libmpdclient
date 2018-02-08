@@ -21,8 +21,8 @@ type t = {connection : Connection.t; mpd_banner : string }
 let initialize connection =
   let message = Connection.read connection in
   let pattern = "OK\\(\\(\n\\|.\\)*\\)\n" in
-  let mpd_banner = match Str.string_match response mpd_data 0 with
-  | true -> Str.matched_group group mpd_data
+  let mpd_banner = match Str.string_match (Str.regexp pattern) message 0 with
+  | true -> Str.matched_group 1 message
   | false -> message
   in { connection; mpd_banner }
 
