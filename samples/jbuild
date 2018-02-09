@@ -12,6 +12,7 @@
 	  mpd_lwt_client_idle_noidle
 	  mpd_lwt_count
 	  mpd_count
-	  mpd_lwt_send_ping))
+	  mpd_lwt_send_ping
+	  mpd_lwt_send_cmd))
   (libraries (libmpdclient lwt lwt.unix)))
 )
