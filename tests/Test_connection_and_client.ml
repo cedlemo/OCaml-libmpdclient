@@ -46,7 +46,7 @@ let test_client_send test_ctxt =
 
 let test_client_banner test_ctxt =
   let client = init_client () in
-  let pattern = "MPD \\[0-9\\].\\[0-9\\]\\[0-9\\].\\[0-9\\]" in
+  let pattern = "MPD [0-9].[0-9][0-9].[0-9]" in
   let banner = Mpd.Client.mpd_banner client in
   let msg = Printf.sprintf "Banner : %s" banner in
   let _ = assert_equal true ~msg Str.(string_match (regexp pattern) banner 0) in
