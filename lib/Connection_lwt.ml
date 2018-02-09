@@ -23,7 +23,7 @@ type t =
     port : int;
     ip : Unix.inet_addr;
     socket : Lwt_unix.file_descr;
-    mutable buffer : string
+    mutable buffer : Bytes.t;
   }
 
 exception Lwt_unix_exn of string
@@ -78,7 +78,7 @@ let initialize hostname port =
                    port = port;
                    ip = addr;
                    socket = socket;
-                   buffer = "";
+                   buffer = Bytes.empty;
                  }
      in Lwt.return conn
 
@@ -89,7 +89,7 @@ let port connection =
   Lwt.return connection.port
 
 let buffer connection =
-  Lwt.return connection.buffer
+  Lwt.return (Bytes.to_string connection.buffer)
 
 let write conn str =
   Lwt.catch
@@ -120,7 +120,7 @@ let recvstr conn =
     let buf = Bytes.create maxlen in
     Lwt_unix.recv socket buf 0 maxlen []
     >>= fun recvlen ->
-      Lwt.return Bytes.(to_string (sub buf 0 recvlen))
+      Lwt.return Bytes.(sub buf 0 recvlen)
   )
   (function
       | Unix.Unix_error (error, fn_name, param_name) ->
@@ -161,15 +161,15 @@ let full_mpd_idle_event mpd_data =
 
 let read connection check_full_data =
   let rec _read connection =
-    let response = connection.buffer in
+    let response = Bytes.to_string connection.buffer in
     match check_full_data response with
     | Complete (s, u) -> let s_length = String.length s in
         let start = (s_length - 1) + u in
-        let length = (String.length connection.buffer) - s_length in
-        let _ = connection.buffer <- String.sub connection.buffer start length in
+        let length = (String.length response) - s_length in
+        let _ = connection.buffer <- Bytes.sub connection.buffer start length in
         Lwt.return s
     | Incomplete -> recvstr connection
-        >>= fun response -> let buf = connection.buffer ^ response in
+        >>= fun response -> let buf = Bytes.cat connection.buffer response in
         let _ = connection.buffer <- buf in _read connection
     in _read connection
 
