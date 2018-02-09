@@ -18,19 +18,19 @@
 
 open OUnit2
 open Mpd
-open Lwt.Infix
+open Lwt
 
 let host = "127.0.0.1"
 let port = 6600
 
 let init_client () =
-  Mpd.Connection_lwt.initialize host port
+  Connection_lwt.initialize host port
   >>= fun connection ->
-    Mpd.Client_lwt.initialize connection
+    Client_lwt.initialize connection
 
 let test_connection_initialize test_ctxt =
   ignore(Lwt_main.run begin
-  Mpd.Connection_lwt.initialize host port
+  Connection_lwt.initialize host port
   >>= fun connection ->
     Connection_lwt.hostname connection
     >>= fun h ->
@@ -38,7 +38,7 @@ let test_connection_initialize test_ctxt =
       Connection_lwt.port connection
       >>= fun p ->
       let _ = assert_equal ~printer:string_of_int port p in
-      Mpd.Connection_lwt.close connection
+      Connection_lwt.close connection
   end)
 
 let tests =
