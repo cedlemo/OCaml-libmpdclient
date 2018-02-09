@@ -150,8 +150,8 @@ let full_mpd_banner mpd_data =
   check_full_response mpd_data pattern 1 4
 
 let full_mpd_command_response mpd_data =
-  let pattern = "\\(\\(\n\\|.\\)*\\)OK$" in
-  check_full_response mpd_data pattern 0 3
+  let pattern = "\\(\\(\n\\|.\\)*\\)\nOK$" in
+  check_full_response mpd_data pattern 0 0
 
 let full_mpd_idle_event mpd_data =
   let pattern = "changed: \\(\\(\n\\|.\\)*\\)\nOK\n" in
@@ -163,8 +163,8 @@ let read connection check_full_data =
   let rec _read connection =
     let response = Bytes.to_string connection.buffer in
     match check_full_data response with
-    | Complete (s, u) -> let s_length = String.length s in
-        let start = (s_length - 1) + u in
+    | Complete (s, u) -> let s_length = (String.length s) + u in
+        let start = s_length - 1 in
         let length = (String.length response) - s_length in
         let _ = connection.buffer <- Bytes.sub connection.buffer start length in
         Lwt.return s
