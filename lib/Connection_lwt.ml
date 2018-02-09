@@ -112,11 +112,11 @@ let write conn str =
       | e -> Lwt.fail e
   )
 
-let recvstr conn =
+let recvbytes conn =
   Lwt.catch
   (fun () ->
     let {socket = socket; _} = conn in
-    let maxlen = 3 in
+    let maxlen = 1024 in
     let buf = Bytes.create maxlen in
     Lwt_unix.recv socket buf 0 maxlen []
     >>= fun recvlen ->
@@ -169,7 +169,7 @@ let read connection check_full_data =
         let _ = connection.buffer <- Bytes.sub connection.buffer start length in
         Lwt.return s
     | Incomplete -> recvstr connection
-        >>= fun response -> let buf = Bytes.cat connection.buffer response in
+        >>= fun b -> let buf = Bytes.cat connection.buffer b in
         let _ = connection.buffer <- buf in _read connection
     in _read connection
 

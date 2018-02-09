@@ -42,6 +42,9 @@ val port:
 val buffer:
   t -> string Lwt.t
 
+val recvbytes:
+  t -> Bytes.t Lwt.t
+
 (** Write in a Mpd connection throught a Lwt thread. It fails
     with an exception Mpd_Lwt_unix_exn of string. *)
 val write:

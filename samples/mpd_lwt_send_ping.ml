@@ -28,7 +28,7 @@ let main_thread =
   let open Mpd in
   Connection_lwt.initialize host port
   >>= fun connection ->
-    Connection_lwt.recvstr connection
+    Connection_lwt.recvbytes connection
     >>= fun buf ->
       lwt_print_line (Printf.sprintf "received : %s" (Bytes.to_string buf))
       >>= fun _ ->
