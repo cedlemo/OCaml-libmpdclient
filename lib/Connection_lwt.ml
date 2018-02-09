@@ -166,11 +166,11 @@ let read connection check_full_data =
     | Complete (s, u) -> let s_length = String.length s in
         let start = (s_length - 1) + u in
         let length = (String.length connection.buffer) - s_length in
-        let _ = connection.buffer =  String.sub connection.buffer start length in
+        let _ = connection.buffer <- String.sub connection.buffer start length in
         Lwt.return s
     | Incomplete -> recvstr connection
         >>= fun response -> let buf = connection.buffer ^ response in
-        let _ = connection.buffer = buf in _read connection
+        let _ = connection.buffer <- buf in _read connection
     in _read connection
 
 let read_idle_events connection =
