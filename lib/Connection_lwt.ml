@@ -168,7 +168,7 @@ let read connection check_full_data =
         let length = (String.length response) - s_length in
         let _ = connection.buffer <- Bytes.sub connection.buffer start length in
         Lwt.return s
-    | Incomplete -> recvstr connection
+    | Incomplete -> recvbytes connection
         >>= fun b -> let buf = Bytes.cat connection.buffer b in
         let _ = connection.buffer <- buf in _read connection
     in _read connection
