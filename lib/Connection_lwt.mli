@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -31,6 +31,17 @@ exception Lwt_unix_exn of string
 val initialize:
   string -> int -> t Lwt.t
 
+(** Get the hostname of the current connection. *)
+val hostname:
+  t -> string Lwt.t
+
+(** Get the port of the current connection. *)
+val port:
+  t -> int Lwt.t
+
+val buffer:
+  t -> string Lwt.t
+
 (** Write in a Mpd connection throught a Lwt thread. It fails
     with an exception Mpd_Lwt_unix_exn of string. *)
 val write:
@@ -45,5 +56,6 @@ val read_idle_events:
 val read_command_response:
   t -> string Lwt.t
 
+(** Close the connection. *)
 val close:
   t -> unit Lwt.t

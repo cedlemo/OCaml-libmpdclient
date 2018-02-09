@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -82,6 +82,15 @@ let initialize hostname port =
                  }
      in Lwt.return conn
 
+let hostname connection =
+  Lwt.return connection.hostname
+
+let port connection =
+  Lwt.return connection.port
+
+let buffer connection =
+  Lwt.return connection.buffer
+
 let write conn str =
   Lwt.catch
   (fun () ->
@@ -108,10 +117,10 @@ let recvstr conn =
   (fun () ->
     let {socket = socket; _} = conn in
     let maxlen = 3 in
-    let buffer = Bytes.create maxlen in
-    Lwt_unix.recv socket buffer 0 maxlen []
+    let buf = Bytes.create maxlen in
+    Lwt_unix.recv socket buf 0 maxlen []
     >>= fun recvlen ->
-      Lwt.return Bytes.(to_string (sub buffer 0 recvlen))
+      Lwt.return Bytes.(to_string (sub buf 0 recvlen))
   )
   (function
       | Unix.Unix_error (error, fn_name, param_name) ->
@@ -160,8 +169,8 @@ let read connection check_full_data =
         let _ = connection.buffer =  String.sub connection.buffer start length in
         Lwt.return s
     | Incomplete -> recvstr connection
-        >>= fun response -> let buff = connection.buffer ^ response in
-        let _ = connection.buffer = buff in _read connection
+        >>= fun response -> let buf = connection.buffer ^ response in
+        let _ = connection.buffer = buf in _read connection
     in _read connection
 
 let read_idle_events connection =
