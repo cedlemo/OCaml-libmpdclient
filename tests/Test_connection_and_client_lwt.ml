@@ -41,8 +41,25 @@ let test_connection_initialize test_ctxt =
       Connection_lwt.close connection
   end)
 
+let test_client_send test_ctxt =
+  ignore(Lwt_main.run begin
+  init_client ()
+  >>= fun client ->
+    Mpd.Client_lwt.send client "ping"
+    >>= fun response ->
+      let _ = match response with
+        | Error _ -> assert_equal ~msg:"This should not has been reached" false true
+        | Ok response_opt -> match response_opt with
+          | None -> assert_equal true true
+          | Some response -> assert_equal ~msg:"This should not has been reached" false true
+      in
+      Mpd.Client_lwt.close client
+  end)
+
+
 let tests =
   "Connection and client lwt tests" >:::
     [
       "Connection initialize test" >:: test_connection_initialize;
+      "Client send test" >:: test_client_send;
     ]
