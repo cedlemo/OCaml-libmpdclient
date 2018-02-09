@@ -146,8 +146,8 @@ let check_full_response mpd_data pattern group useless_char =
   | false -> Incomplete
 
 let full_mpd_banner mpd_data =
-  let pattern = "OK\\(\\(\n\\|.\\)*\\)\n" in
-  check_full_response mpd_data pattern 1 3
+  let pattern = "OK \\(\\(\n\\|.\\)*\\)\n" in
+  check_full_response mpd_data pattern 1 4
 
 let full_mpd_command_response mpd_data =
   let pattern = "\\(\\(\n\\|.\\)*\\)OK$" in
