@@ -150,7 +150,7 @@ let full_mpd_banner mpd_data =
   check_full_response mpd_data pattern 1 4
 
 let full_mpd_command_response mpd_data =
-  let pattern = "\\(\\(\n\\|.\\)*\\)\nOK$" in
+  let pattern = "\\(\\(\n\\|.\\)*\\)OK$" in
   check_full_response mpd_data pattern 0 0
 
 let full_mpd_idle_event mpd_data =
@@ -170,8 +170,12 @@ let read connection check_full_data =
         Lwt.return s
     | Incomplete -> recvbytes connection
         >>= fun b -> let buf = Bytes.cat connection.buffer b in
-        let _ = connection.buffer <- buf in _read connection
-    in _read connection
+        let _ = connection.buffer <- buf in
+        Lwt_io.write Lwt_io.stdout (Printf.sprintf "buffer : <-||%s||->\n" (Bytes.to_string connection.buffer))
+        >>= fun () ->
+          _read connection
+    in
+    _read connection
 
 let read_idle_events connection =
   read connection full_mpd_idle_event
