@@ -57,7 +57,6 @@ let test_client_send test_ctxt =
       Mpd.Client_lwt.close client
   end)
 
-
 let tests =
   "Connection and client lwt tests" >:::
     [
