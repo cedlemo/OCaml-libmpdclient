@@ -171,9 +171,7 @@ let read connection check_full_data =
     | Incomplete -> recvbytes connection
         >>= fun b -> let buf = Bytes.cat connection.buffer b in
         let _ = connection.buffer <- buf in
-        Lwt_io.write Lwt_io.stdout (Printf.sprintf "buffer : <-||%s||->\n" (Bytes.to_string connection.buffer))
-        >>= fun () ->
-          _read connection
+        _read connection
     in
     _read connection
 
