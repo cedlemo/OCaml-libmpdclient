@@ -51,7 +51,8 @@ let test_client_send test_ctxt =
         | Error _ -> assert_equal ~msg:"This should not has been reached" false true
         | Ok response_opt -> match response_opt with
           | None -> assert_equal true true
-          | Some response -> assert_equal ~msg:"This should not has been reached" false true
+          | Some response -> let msg = Printf.sprintf "response: -%s-" response in
+              assert_equal ~msg false true
       in
       Mpd.Client_lwt.close client
   end)
