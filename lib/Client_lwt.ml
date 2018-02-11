@@ -82,6 +82,15 @@ let password client mdp =
   send client (String.concat " " ["password"; mdp])
 
 let noidle client =
+  (*  let {connection = c; _} = client in
+  Connection_lwt.write c "noidle\n"
+  >>= fun _ ->
+   Connection_lwt.read_no_idle_response c
+    >>= fun response ->
+      Lwt_io.write Lwt_io.stdout (Printf.sprintf "response in client çç%sçç\n" response)
+      >>= fun () ->
+      let parsed_response = Protocol.parse_response response in
+      Lwt.return parsed_response *)
   let {connection = connection; _} = client in
   Connection_lwt.write connection "noidle\n"
   >>= fun _ -> Lwt.return_unit

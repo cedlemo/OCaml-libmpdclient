@@ -59,6 +59,9 @@ val read_idle_events:
 val read_command_response:
   t -> string Lwt.t
 
+val read_no_idle_response:
+  t -> string Lwt.t
+
 (** Close the connection. *)
 val close:
   t -> unit Lwt.t
