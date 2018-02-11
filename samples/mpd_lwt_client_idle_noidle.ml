@@ -53,7 +53,7 @@ let main_thread =
                      Lwt_io.write_line Lwt_io.stdout "Thread two: send noidle"
                      >>= fun () ->
                        Mpd.Client_lwt.noidle client
-                       >>= fun () ->
+                       >>= fun _ ->
                          Lwt_io.write_line Lwt_io.stdout "Thread two: noidle sent"
                );
 
