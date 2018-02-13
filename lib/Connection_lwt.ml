@@ -153,15 +153,12 @@ let full_mpd_command_response mpd_data =
   let pattern = "\\(\\(\n\\|.\\)*\\)OK\n" in
   check_full_response mpd_data pattern 0 0
 
-let no_idle_response mpd_data =
+(* let no_idle_response mpd_data =
   let pattern = "^\\(OK\n\\)\\(\n|.\\)*" in
   check_full_response mpd_data pattern 1 0
-
+*)
 let full_mpd_idle_event mpd_data =
   let pattern = "changed: \\(\\(\n\\|.\\)*\\)\nOK\n" in
-(*  match check_full_response mpd_data pattern 1 13 with
-  | Incomplete -> no_idle_response mpd_data
-  | Complete response -> Complete response *)
   match check_full_response mpd_data pattern 1 13 with
   | Incomplete -> full_mpd_command_response mpd_data (* Check if there is an empty response that follow an noidle command *)
   | Complete response -> Complete response
@@ -172,48 +169,33 @@ let read connection check_full_data =
     match check_full_data response with
     | Complete (s, u) -> let s_length = (String.length s) + u in
         let buff_len = String.length response in
-        (*Lwt_io.write Lwt_io.stdout (Printf.sprintf "buff_len %d, s length %d, u length %d" buff_len s_length u)
-        >>= fun () -> *)
         if s_length = buff_len then
           let _ = connection.buffer <- Bytes.empty in
-          (* Lwt_io.write Lwt_io.stdout (Printf.sprintf "empty o_%s_o\n" (Bytes.to_string connection.buffer))
-          >>= fun () -> *)
           Lwt.return s
         else
           let start = s_length - 1 in
           let length = buff_len - s_length in
           let _ = connection.buffer <- Bytes.sub connection.buffer start length in
-         (* Lwt_io.write Lwt_io.stdout (Printf.sprintf "o_%s_o\n" (Bytes.to_string connection.buffer))
-          >>= fun () -> *)
           Lwt.return s
     | Incomplete -> recvbytes connection
         >>= fun b -> let buf = Bytes.cat connection.buffer b in
-        (*Lwt_io.write Lwt_io.stdout (Printf.sprintf "-|%s|-\n" (Bytes.to_string buf))
-        >>= fun () -> *)
         let _ = connection.buffer <- buf in
         _read connection
     in
     _read connection
 
 let read_idle_events connection =
-  (* Lwt_io.write Lwt_io.stdout "read_idle_events \n"
-  >>= fun () -> *)
   read connection full_mpd_idle_event
 
 let read_mpd_banner connection =
-  (* Lwt_io.write Lwt_io.stdout "read_mpd_banner \n"
-  >>= fun () -> *)
   read connection full_mpd_banner
 
 let read_command_response connection =
-  (* Lwt_io.write Lwt_io.stdout "read_command_response \n"
-  >>= fun () -> *)
   read connection full_mpd_command_response
 
-let read_no_idle_response connection =
-  (* Lwt_io.write Lwt_io.stdout "read_no_idle_response \n"
-  >>= fun () -> *)
+(* let read_no_idle_response connection =
   read connection no_idle_response
+*)
 
 let close conn =
   Lwt.catch
