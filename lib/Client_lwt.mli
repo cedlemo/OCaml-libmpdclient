@@ -25,63 +25,55 @@ open Status
 open Protocol
 
 type t
+(** Type for a Mpd Client to be used with Lwt promises. *)
 
+val initialize: Connection_lwt.t -> t Lwt.t
 (** Initialize the client with a connection. *)
-val initialize:
-  Connection_lwt.t -> t Lwt.t
 
+val close: t -> unit Lwt.t
 (** Close the client *)
-val close:
-  t -> unit Lwt.t
 
+val mpd_banner: t -> string
 (** Return the mpd banner that the server send at the first connection of the
     client. *)
-val mpd_banner:
-  t -> string
 
+val idle: t -> (string, string) Pervasives.result Lwt.t
 (** Wait for an event to occur in order to return. When a Client send this
  *  command to the Mpd server throught its connection, the Mpd server do
  *  not answer to any other command except the noidle command. The idea is
  *  to first cancel the promise that has send the "idle" command with
  *  Lwt.cancel and then send the noidle command to the Mpd server. An
  *  example can be found in samples/mpd_lwt_client_idle_noidle.ml. *)
-val idle:
-  t -> (string, string) Pervasives.result Lwt.t
 
+val idle_loop: t -> (string -> bool Lwt.t) -> unit Lwt.t
 (** Loop on mpd event with the "idle" command
     the on_event function take the event response as argument and return
     true to stop or false to continue the loop *)
-val idle_loop:
-  t -> (string -> bool Lwt.t) -> unit Lwt.t
 
+val send: t -> string -> Protocol.response Lwt.t
 (** Send to the mpd server a command. The response of the server is returned
     under the form of a Protocol.response type. *)
-val send:
-  t -> string -> Protocol.response Lwt.t
 
+val request:
+  t -> string -> Protocol.response Lwt.t
 (** Send to the mpd server a request. The response of the server is returned
     under the form of a Protocol.response type. A request is different from
     a command because a command generate an action from Mpd and returns "OK" or
     an error while a request does not generate an action from Mpd and returns
     "some data to analyse"OK or an error.*)
-val request:
-  t -> string -> Protocol.response Lwt.t
 
+val status: t -> (Status.t, string) Pervasives.result Lwt.t
 (** Create a status request and returns the status under a Mpd.Status.s Lwt.t
     type.*)
-val status:
-  t -> (Status.t, string) Pervasives.result Lwt.t
 
+val ping: t -> Protocol.response Lwt.t
 (** Does nothing but return "OK". *)
-val ping:
-  t -> Protocol.response Lwt.t
 
+val password: t -> string -> Protocol.response Lwt.t
 (** This is used for authentication with the server. PASSWORD is simply the
     plaintext password. *)
-val password:
-  t -> string -> Protocol.response Lwt.t
 
-(** This command is needed to stop listening after a Client.idle command.
-    An example of usage can be seen in samples/mpd_lwt_client_idle_noidle.exe. *)
 val noidle:
   t -> Protocol.response Lwt.t
+(** This command is needed to stop listening after a Client.idle command.
+    An example of usage can be seen in samples/mpd_lwt_client_idle_noidle.exe. *)

@@ -21,47 +21,41 @@
 
 open Lwt
 
-(** Lwt connection type for thread usage *)
 type t
+(** Lwt connection type for thread usage *)
 
 exception Lwt_unix_exn of string
+(** Custom exception. *)
 
+val initialize: string -> int -> t Lwt.t
 (** Create the connection in a Lwt thread, throws an exception Mpd_Lwt_unix_exn
     of string when an error occurs. *)
-val initialize:
-  string -> int -> t Lwt.t
 
+val hostname: t -> string Lwt.t
 (** Get the hostname of the current connection. *)
-val hostname:
-  t -> string Lwt.t
 
+val port: t -> int Lwt.t
 (** Get the port of the current connection. *)
-val port:
-  t -> int Lwt.t
 
-val buffer:
-  t -> string Lwt.t
+val buffer: t -> string Lwt.t
+(** Get the buffer used by the connection. *)
 
-val recvbytes:
-  t -> Bytes.t Lwt.t
+val recvbytes: t -> Bytes.t Lwt.t
+(** Read from the connection. *)
 
+val write: t -> string -> int Lwt.t
 (** Write in a Mpd connection throught a Lwt thread. It fails
     with an exception Mpd_Lwt_unix_exn of string. *)
-val write:
-  t -> string -> int Lwt.t
 
-val read_mpd_banner:
-  t -> string Lwt.t
+(**/**)
+val read_mpd_banner: t -> string Lwt.t
 
-val read_idle_events:
-  t -> string Lwt.t
+val read_idle_events: t -> string Lwt.t
 
-val read_request_response:
-  t -> string Lwt.t
+val read_request_response: t -> string Lwt.t
 
-val read_command_response:
-  t -> string Lwt.t
+val read_command_response: t -> string Lwt.t
+(**/**)
 
+val close: t -> unit Lwt.t
 (** Close the connection. *)
-val close:
-  t -> unit Lwt.t
