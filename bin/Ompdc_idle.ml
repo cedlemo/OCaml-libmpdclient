@@ -49,7 +49,7 @@ let update_status status client =
   match status with
   | Error _ -> Lwt.return status
   | Ok s -> Mpd.Client_lwt.noidle client
-      >>= fun () ->
+      >>= fun _ ->
         let now = Unix.time () in
         if ((now -. s.timestamp) > 4.0) then fetch_status client
         else Lwt.return status

@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -20,7 +20,11 @@ type t = {connection : Connection.t; mpd_banner : string }
 
 let initialize connection =
   let message = Connection.read connection in
-  {connection = connection; mpd_banner = message}
+  let pattern = "OK \\(.*\\)\n" in
+  let mpd_banner = match Str.string_match (Str.regexp pattern) message 0 with
+  | true -> Str.matched_group 1 message
+  | false -> message
+  in { connection; mpd_banner }
 
 let send client mpd_cmd =
   let {connection = c; _} = client in

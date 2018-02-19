@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -39,7 +39,12 @@ val close:
 val mpd_banner:
   t -> string
 
-(** Wait for an event to occurs in order to return. *)
+(** Wait for an event to occur in order to return. When a Client send this
+ *  command to the Mpd server throught its connection, the Mpd server do
+ *  not answer to any other command except the noidle command. The idea is
+ *  to first cancel the promise that has send the "idle" command with
+ *  Lwt.cancel and then send the noidle command to the Mpd server. An
+ *  example can be found in samples/mpd_lwt_client_idle_noidle.ml. *)
 val idle:
   t -> (string, string) Pervasives.result Lwt.t
 
@@ -52,6 +57,14 @@ val idle_loop:
 (** Send to the mpd server a command. The response of the server is returned
     under the form of a Protocol.response type. *)
 val send:
+  t -> string -> Protocol.response Lwt.t
+
+(** Send to the mpd server a request. The response of the server is returned
+    under the form of a Protocol.response type. A request is different from
+    a command because a command generate an action from Mpd and returns "OK" or
+    an error while a request does not generate an action from Mpd and returns
+    "some data to analyse"OK or an error.*)
+val request:
   t -> string -> Protocol.response Lwt.t
 
 (** Create a status request and returns the status under a Mpd.Status.s Lwt.t
@@ -71,4 +84,4 @@ val password:
 (** This command is needed to stop listening after a Client.idle command.
     An example of usage can be seen in samples/mpd_lwt_client_idle_noidle.exe. *)
 val noidle:
-  t -> unit Lwt.t
+  t -> Protocol.response Lwt.t

@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -19,7 +19,12 @@
 open Lwt
 
 type t =
-  { hostname : string; port : int; ip : Unix.inet_addr; socket : Lwt_unix.file_descr }
+  { hostname : string;
+    port : int;
+    ip : Unix.inet_addr;
+    socket : Lwt_unix.file_descr;
+    mutable buffer : Bytes.t;
+  }
 
 exception Lwt_unix_exn of string
 
@@ -72,9 +77,19 @@ let initialize hostname port =
       let conn = { hostname = hostname;
                    port = port;
                    ip = addr;
-                   socket = socket
+                   socket = socket;
+                   buffer = Bytes.empty;
                  }
      in Lwt.return conn
+
+let hostname connection =
+  Lwt.return connection.hostname
+
+let port connection =
+  Lwt.return connection.port
+
+let buffer connection =
+  Lwt.return (Bytes.to_string connection.buffer)
 
 let write conn str =
   Lwt.catch
@@ -97,15 +112,15 @@ let write conn str =
       | e -> Lwt.fail e
   )
 
-let recvstr conn =
+let recvbytes conn =
   Lwt.catch
   (fun () ->
     let {socket = socket; _} = conn in
-    let maxlen = 3 in
-    let buffer = Bytes.create maxlen in
-    Lwt_unix.recv socket buffer 0 maxlen []
+    let maxlen = 1024 in
+    let buf = Bytes.create maxlen in
+    Lwt_unix.recv socket buf 0 maxlen []
     >>= fun recvlen ->
-      Lwt.return Bytes.(to_string (sub buffer 0 recvlen))
+      Lwt.return Bytes.(sub buf 0 recvlen)
   )
   (function
       | Unix.Unix_error (error, fn_name, param_name) ->
@@ -122,36 +137,52 @@ let recvstr conn =
 
 type mpd_response =
   | Incomplete
-  | Complete of string
+  | Complete of (string * int)
 
-let check_full_response mpd_data pattern group =
+let check_full_response mpd_data pattern group useless_char =
   let response = Str.regexp pattern in
   match Str.string_match response mpd_data 0 with
-  | true -> Complete (Str.matched_group group mpd_data)
+  | true -> Complete (Str.matched_group group mpd_data, useless_char)
   | false -> Incomplete
 
 let full_mpd_banner mpd_data =
-  let pattern = "OK\\(\\(\n\\|.\\)*\\)\n" in
-  check_full_response mpd_data pattern 1
+  let pattern = "OK \\(\\(\n\\|.\\)*\\)\n" in
+  check_full_response mpd_data pattern 1 4
 
-let full_mpd_command_response mpd_data =
-  let pattern = "\\(\\(\n\\|.\\)*\\)OK$" in
-  check_full_response mpd_data pattern 0
+let request_response mpd_data =
+  let pattern = "\\(\\(\n\\|.\\)*OK\n\\)" in
+  check_full_response mpd_data pattern 1 0
+
+let command_response mpd_data =
+  let pattern = "^\\(OK\n\\)\\(\n\\|.\\)*" in
+  check_full_response mpd_data pattern 1 0
 
 let full_mpd_idle_event mpd_data =
-  let pattern = "changed: \\(\\(\n\\|.\\)*\\)\nOK\n" in
-  match check_full_response mpd_data pattern 2 with
-  | Incomplete -> full_mpd_command_response mpd_data (* Check if there is an empty response that follow an noidle command *)
+  let pattern = "changed: \\(\\(\n\\|.\\)*\\)OK\n" in
+  match check_full_response mpd_data pattern 1 12 with
+  | Incomplete -> command_response mpd_data (* Check if there is an empty response that follow an noidle command *)
   | Complete response -> Complete response
 
 let read connection check_full_data =
-  let rec _read connection acc =
-    let response = String.concat "" (List.rev acc) in
+  let rec _read connection =
+    let response = Bytes.to_string connection.buffer in
     match check_full_data response with
-    | Complete (s) -> Lwt.return s
-    | Incomplete -> recvstr connection
-                    >>= fun response -> _read connection (response :: acc)
-    in _read connection []
+    | Complete (s, u) -> let s_length = (String.length s) + u in
+        let buff_len = String.length response in
+        if s_length = buff_len then
+          let _ = connection.buffer <- Bytes.empty in
+          Lwt.return s
+        else
+          let start = s_length - 1 in
+          let length = buff_len - s_length in
+          let _ = connection.buffer <- Bytes.sub connection.buffer start length in
+          Lwt.return s
+    | Incomplete -> recvbytes connection
+        >>= fun b -> let buf = Bytes.cat connection.buffer b in
+        let _ = connection.buffer <- buf in
+        _read connection
+    in
+    _read connection
 
 let read_idle_events connection =
   read connection full_mpd_idle_event
@@ -159,8 +190,11 @@ let read_idle_events connection =
 let read_mpd_banner connection =
   read connection full_mpd_banner
 
+let read_request_response connection =
+  read connection request_response
+
 let read_command_response connection =
-  read connection full_mpd_command_response
+  read connection command_response
 
 let close conn =
   Lwt.catch

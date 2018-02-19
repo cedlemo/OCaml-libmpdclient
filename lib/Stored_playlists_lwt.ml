@@ -19,7 +19,7 @@
 open Lwt.Infix
 
 let listplaylists client =
-  Client_lwt.send client "listplaylists"
+  Client_lwt.request client "listplaylists"
   >>= function
       | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> Lwt.return None
       | Protocol.Ok (response_opt) -> match response_opt with
@@ -33,7 +33,7 @@ let load client playlist ?range () =
     | Some (s, e) -> let r = String.concat ":" [string_of_int s; string_of_int e] in
       String.concat " " ["load"; playlist; r]
   in
-  Client_lwt.send client request
+  Client_lwt.request client request
 
 let playlistadd client playlist uri =
   let request = String.concat " " ["playlistadd"; playlist; uri] in

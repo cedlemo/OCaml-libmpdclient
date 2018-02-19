@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -36,19 +36,20 @@ let test_client_send test_ctxt =
   let client = init_client () in
   let _ = (
     match Mpd.Client.send client "ping" with
-    | Error _ -> assert_equal ~printer:(fun _ -> "This should not has been reached") false true
+    | Error _ -> assert_equal ~msg:"This should not has been reached" false true
     | Ok response_opt -> match response_opt with
       | None -> assert_equal true true
-      | Some response -> assert_equal ~printer:(fun _ -> "This should not has been reached") false true
+      | Some response -> assert_equal ~msg:"This should not has been reached" false true
   )
   in
   Mpd.Client.close client
 
 let test_client_banner test_ctxt =
   let client = init_client () in
-  let pattern = "OK MPD \\[0-9\\].\\[0-9\\]\\[0-9\\].\\[0-9\\]" in
+  let pattern = "MPD [0-9].[0-9][0-9].[0-9]" in
   let banner = Mpd.Client.mpd_banner client in
-  let _ = assert Str.(string_match (regexp pattern) banner 0) in
+  let msg = Printf.sprintf "Banner : %s" banner in
+  let _ = assert_equal true ~msg Str.(string_match (regexp pattern) banner 0) in
   Mpd.Client.close client
 
 let test_client_status test_ctxt =
@@ -63,10 +64,10 @@ let test_client_status test_ctxt =
 let test_client_ping test_ctxt =
   let client = init_client () in
   let _ = match Mpd.Client.ping client with
-  | Error _ -> assert_equal ~printer:(fun _ -> "This should not has been reached") false true
+  | Error _ -> assert_equal ~msg:"This should not has been reached" false true
   | Ok response_opt -> match response_opt with
     | None -> assert_equal true true
-    | Some response -> assert_equal ~printer:(fun _ -> "This should not has been reached") false true
+    | Some response -> assert_equal ~msg:"This should not has been reached" false true
   in
   Mpd.Client.close client
 
