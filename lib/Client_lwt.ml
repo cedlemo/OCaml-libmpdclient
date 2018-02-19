@@ -63,8 +63,17 @@ let send client cmd =
       let parsed_response = Protocol.parse_response response in
       Lwt.return parsed_response
 
+let request client cmd =
+  let {connection = c; _} = client in
+  Connection_lwt.write c (cmd ^ "\n")
+  >>= fun _ ->
+    Connection_lwt.read_request_response c
+    >>= fun response ->
+      let parsed_response = Protocol.parse_response response in
+      Lwt.return parsed_response
+
 let status client =
-  send client "status"
+  request client "status"
   >>= function
     | Ok lines -> (
         match lines with
@@ -82,6 +91,11 @@ let password client mdp =
   send client (String.concat " " ["password"; mdp])
 
 let noidle client =
-  let {connection = connection; _} = client in
+  send client "noidle"
+  (* let {connection = connection; _} = client in
   Connection_lwt.write connection "noidle\n"
-  >>= fun _ -> Lwt.return_unit
+  >>= fun _ ->
+    Connection_lwt.read_no_idle_response c
+    >>= fun response ->
+      let parsed_response = Protocol.parse_response response in
+      Lwt.return parsed_response *)

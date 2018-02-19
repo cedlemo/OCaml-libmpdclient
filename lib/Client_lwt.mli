@@ -54,6 +54,14 @@ val idle_loop:
 val send:
   t -> string -> Protocol.response Lwt.t
 
+(** Send to the mpd server a request. The response of the server is returned
+    under the form of a Protocol.response type. A request is different from
+    a command because a command generate an action from Mpd and returns "OK" or
+    an error while a request does not generate an action from Mpd and returns
+    "some data to analyse"OK or an error.*)
+val request:
+  t -> string -> Protocol.response Lwt.t
+
 (** Create a status request and returns the status under a Mpd.Status.s Lwt.t
     type.*)
 val status:
@@ -71,4 +79,4 @@ val password:
 (** This command is needed to stop listening after a Client.idle command.
     An example of usage can be seen in samples/mpd_lwt_client_idle_noidle.exe. *)
 val noidle:
-  t -> unit Lwt.t
+  t -> Protocol.response Lwt.t

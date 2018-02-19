@@ -28,7 +28,7 @@ let add client uri =
 
 let addid client uri position =
   let cmd = String.concat " " ["addid"; uri; string_of_int position] in
-  Client_lwt.send client cmd
+  Client_lwt.request client cmd
   >>= function
     | Protocol.Ok (response) ->(
         match response with
@@ -80,7 +80,7 @@ let moveid client id position_to =
                                                 string_of_int position_to])
 
 let get_song_id song =
-  let pattern = "\\([0-9]+\\):file:.*" in
+let pattern = "\\([0-9]+\\):file:.*" in
   let found = Str.string_match (Str.regexp pattern) song 0 in
   if found then Str.matched_group 1 song
   else "none"
@@ -88,8 +88,10 @@ let get_song_id song =
 let rec _build_songs_list client songs l =
   match songs with
   | [] -> let playlist = Playlist (List.rev l) in Lwt.return playlist
-  | h :: q -> let song_infos_request = "playlistinfo " ^ (get_song_id h) in
-    Client_lwt.send client song_infos_request
+  | h :: q -> Logs_lwt.err (fun m -> m "get song id with song : --%s--" h)
+          >>= fun () ->
+let song_infos_request = "playlistinfo " ^ (get_song_id h) in
+    Client_lwt.request client song_infos_request
     >>= function
       | Protocol.Error (_, _, _, ack_message)->
         Lwt.return (PlaylistError (ack_message))
@@ -107,25 +109,25 @@ let playlist_command_responses_handler client = function
       _build_songs_list client songs []
 
 let playlist client =
-  Client_lwt.send client "playlist"
+  Client_lwt.request client "playlist"
   >>= fun response ->
     playlist_command_responses_handler client response
 
 let playlistid client id =
   let request = "playlistid " ^ (string_of_int id) in
-  Client_lwt.send client request
+  Client_lwt.request client request
   >>= fun response ->
     playlist_command_responses_handler client response
 
 let playlistfind client tag needle =
   let request = String.concat " " ["playlistfind"; tag; needle] in
-  Client_lwt.send client request
+  Client_lwt.request client request
   >>= fun response ->
     playlist_command_responses_handler client response
 
 let playlistsearch client tag needle =
   let request = String.concat " " ["playlistsearch"; tag; needle] in
-  Client_lwt.send client request
+  Client_lwt.request client request
   >>= fun response ->
     playlist_command_responses_handler client response
 

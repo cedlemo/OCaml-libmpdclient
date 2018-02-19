@@ -56,6 +56,9 @@ val read_mpd_banner:
 val read_idle_events:
   t -> string Lwt.t
 
+val read_request_response:
+  t -> string Lwt.t
+
 val read_command_response:
   t -> string Lwt.t
 

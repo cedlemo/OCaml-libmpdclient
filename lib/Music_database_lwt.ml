@@ -92,7 +92,7 @@ let search_find_wrapper cmd_name client what_list ?sort:sort_tag ?window:window 
     | Some (start, stop) -> Printf.sprintf " window %s:%s" (string_of_int start) (string_of_int stop)
   in
   let cmd = Printf.sprintf "%s %s%s%s" cmd_name what sort window in
-  Client_lwt.send client cmd
+  Client_lwt.request client cmd
   >>= function
     | Error err -> Lwt.return (Error err)
     | Ok response -> match response with
@@ -112,7 +112,7 @@ let search_find_add_wrapper cmd_name client what_list =
     |> String.concat " "
   in
   let cmd = Printf.sprintf "%s %s" cmd_name what in
-  Client_lwt.send client cmd
+  Client_lwt.request client cmd
 
 let findadd = search_find_add_wrapper "findadd"
 
@@ -133,7 +133,7 @@ let count client what_list ?group:group_tag () =
     | Some tag -> Some (tag_to_string tag)
   in
   let cmd = Printf.sprintf "count %s %s" what (match group with None -> "" | Some s -> "group " ^ s) in
-  Client_lwt.send client cmd
+  Client_lwt.request client cmd
   >>= function
     | Error (_, _, _, message) -> Lwt.return (Error message)
     | Ok response -> match response with
@@ -149,7 +149,7 @@ let list client tag tag_list =
                        Printf.sprintf "%s \"%s\"" (tag_to_string t) p) tag_list
             |> String.concat " " in
   let cmd = Printf.sprintf "list %s %s" filter tags in
-  Client_lwt.send client cmd
+  Client_lwt.request client cmd
   >>= function
   | Error (_, _, _, message) -> Lwt.return (Error message)
   | Ok response -> match response with

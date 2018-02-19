@@ -28,6 +28,69 @@ type t =
 
 exception Lwt_unix_exn of string
 
+let reporter path =
+  let open Logs in
+  let buf_fmt ~like =
+    let b = Buffer.create 512 in
+    Fmt.with_buffer ~like b,
+    fun () -> let m = Buffer.contents b in Buffer.reset b; m
+  in
+  let app, app_flush = buf_fmt ~like:Fmt.stdout in
+  let dst, dst_flush = buf_fmt ~like:Fmt.stderr in
+  let reporter = Logs_fmt.reporter ~app ~dst () in
+  let report src level ~over k msgf =
+    let k () =
+      let write () =
+        let flags = [Unix.O_WRONLY; Unix.O_CREAT; Unix.O_APPEND] in
+        let perm = 0o777 in
+        let log_file = path ^ "/libmpdclient.log" in
+        let err_file =  path ^ "/libmpdclient.err" in
+        Lwt_io.open_file ~flags ~perm ~mode:Lwt_io.Output log_file
+        >>= fun fd_log ->
+          Lwt_io.open_file ~flags ~perm ~mode:Lwt_io.Output err_file
+          >>= fun fd_err ->
+            Lwt.return (fd_log, fd_err)
+            >>= fun (fd_log', fd_err') ->
+              match level with
+              | Logs.App -> Lwt_io.write fd_log' (app_flush ())
+              | _ -> Lwt_io.write fd_err' (dst_flush ())
+                >>= fun () ->
+                  Lwt_io.close fd_log'
+                  >>= fun () ->
+                    Lwt_io.close fd_err'
+      in
+      let unblock () = over (); Lwt.return_unit in
+      Lwt.finalize write unblock |> Lwt.ignore_result;
+      k ()
+    in
+    reporter.Logs.report src level ~over:(fun () -> ()) k msgf;
+  in
+  { Logs.report = report }
+
+let file_exists f = try ignore (Unix.stat f); true with _ -> false
+
+let setup () =
+  try
+    let home = Sys.getenv "HOME" in
+    let config = Printf.sprintf "%s/.config" home in
+    let path = config ^ "/rameau" in
+    let _ = if not (file_exists config) then Unix.mkdir config 0o755 in
+    let _ = if not (file_exists path) then Unix.mkdir path 0o755 in
+    Logs.set_reporter (reporter path);
+    Logs.set_level (Some Debug);
+    Lwt.return_unit
+  with
+  | Not_found -> Lwt.fail_with "Unable to get the HOME env variable"
+  | Unix.Unix_error (e, _, _) -> let message = Unix.error_message e in
+      Lwt.fail_with message
+
+let _log message =
+  Logs_lwt.debug (fun m -> m "%s" message)
+
+let _err message =
+  Logs_lwt.err (fun m -> m "%s" message)
+
+
 let fail_with_message m =
   Lwt.fail (Lwt_unix_exn m)
 
@@ -69,6 +132,8 @@ let open_socket addr port =
     )
 
 let initialize hostname port =
+  setup ()
+  >>= fun () ->
   gethostbyname hostname
   >>= fun addrs ->
     let addr = List.hd addrs in
@@ -149,18 +214,18 @@ let full_mpd_banner mpd_data =
   let pattern = "OK \\(\\(\n\\|.\\)*\\)\n" in
   check_full_response mpd_data pattern 1 4
 
-let full_mpd_command_response mpd_data =
-  let pattern = "\\(\\(\n\\|.\\)*\\)OK\n" in
-  check_full_response mpd_data pattern 0 0
-
-(* let no_idle_response mpd_data =
-  let pattern = "^\\(OK\n\\)\\(\n|.\\)*" in
+let request_response mpd_data =
+  let pattern = "\\(\\(\n\\|.\\)*OK\n\\)" in
   check_full_response mpd_data pattern 1 0
-*)
+
+let command_response mpd_data =
+  let pattern = "^\\(OK\n\\)\\(\n\\|.\\)*" in
+  check_full_response mpd_data pattern 1 0
+
 let full_mpd_idle_event mpd_data =
-  let pattern = "changed: \\(\\(\n\\|.\\)*\\)\nOK\n" in
+  let pattern = "changed: \\(\\(\n\\|.\\)*\\)OK\n" in
   match check_full_response mpd_data pattern 1 13 with
-  | Incomplete -> full_mpd_command_response mpd_data (* Check if there is an empty response that follow an noidle command *)
+  | Incomplete -> command_response mpd_data (* Check if there is an empty response that follow an noidle command *)
   | Complete response -> Complete response
 
 let read connection check_full_data =
@@ -170,16 +235,23 @@ let read connection check_full_data =
     | Complete (s, u) -> let s_length = (String.length s) + u in
         let buff_len = String.length response in
         if s_length = buff_len then
+          Logs_lwt.err (fun m -> m "matched : %s buf: %s then empty" s response)
+          >>= fun () ->
           let _ = connection.buffer <- Bytes.empty in
           Lwt.return s
         else
           let start = s_length - 1 in
           let length = buff_len - s_length in
           let _ = connection.buffer <- Bytes.sub connection.buffer start length in
+          Logs_lwt.err (fun m -> m "matched : %s buf: %s then remain o_%s_o" s response (Bytes.to_string connection.buffer))
+        >>= fun () ->
+
           Lwt.return s
     | Incomplete -> recvbytes connection
         >>= fun b -> let buf = Bytes.cat connection.buffer b in
         let _ = connection.buffer <- buf in
+        Logs_lwt.err (fun m -> m "-|%s|-" (Bytes.to_string buf))
+        >>= fun () ->
         _read connection
     in
     _read connection
@@ -190,12 +262,11 @@ let read_idle_events connection =
 let read_mpd_banner connection =
   read connection full_mpd_banner
 
-let read_command_response connection =
-  read connection full_mpd_command_response
+let read_request_response connection =
+  read connection request_response
 
-(* let read_no_idle_response connection =
-  read connection no_idle_response
-*)
+let read_command_response connection =
+  read connection command_response
 
 let close conn =
   Lwt.catch
