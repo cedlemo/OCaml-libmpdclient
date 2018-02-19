@@ -4,6 +4,6 @@
 (library
  ((name        Mpd)
   (public_name libmpdclient)
-  (libraries (unix lwt str logs fmt logs.fmt logs.lwt))
+  (libraries (unix lwt str))
  )
 )

@@ -88,9 +88,7 @@ let pattern = "\\([0-9]+\\):file:.*" in
 let rec _build_songs_list client songs l =
   match songs with
   | [] -> let playlist = Playlist (List.rev l) in Lwt.return playlist
-  | h :: q -> Logs_lwt.err (fun m -> m "get song id with song : --%s--" h)
-          >>= fun () ->
-let song_infos_request = "playlistinfo " ^ (get_song_id h) in
+  | h :: q -> let song_infos_request = "playlistinfo " ^ (get_song_id h) in
     Client_lwt.request client song_infos_request
     >>= function
       | Protocol.Error (_, _, _, ack_message)->
