@@ -224,7 +224,7 @@ let command_response mpd_data =
 
 let full_mpd_idle_event mpd_data =
   let pattern = "changed: \\(\\(\n\\|.\\)*\\)OK\n" in
-  match check_full_response mpd_data pattern 1 13 with
+  match check_full_response mpd_data pattern 1 12 with
   | Incomplete -> command_response mpd_data (* Check if there is an empty response that follow an noidle command *)
   | Complete response -> Complete response
 
