@@ -66,7 +66,7 @@ let test_client_banner test_ctxt =
       let msg = Printf.sprintf "Banner : %s" banner in
       let _ = assert_equal true ~msg Str.(string_match (regexp pattern) banner 0) in
       Mpd.Client_lwt.close client
-  end
+  end)
 
 let test_client_status test_ctxt =
   ignore(Lwt_main.run begin
@@ -79,7 +79,7 @@ let test_client_status test_ctxt =
           assert_equal ~printer:(fun s -> s) "stop" state
     in
     Mpd.Client_lwt.close client
-  end
+  end)
 
 let tests =
   "Connection and client lwt tests" >:::
