@@ -60,7 +60,7 @@ let test_client_send test_ctxt =
 let test_client_banner test_ctxt =
   ignore(Lwt_main.run begin
     init_client ()
-    >> fun client ->
+    >>= fun client ->
       let pattern = "MPD [0-9].[0-9][0-9].[0-9]" in
       let banner = Mpd.Client_lwt.mpd_banner client in
       let msg = Printf.sprintf "Banner : %s" banner in
@@ -84,8 +84,8 @@ let test_client_status test_ctxt =
 let tests =
   "Connection and client lwt tests" >:::
     [
-      "Connection initialize test" >:: test_connection_initialize;
-      "Client send test" >:: test_client_send;
-      "Client bannder" >:: test_client_banner;
-      "Client status" >:: test_client_status;
+      "Connection lwt initialize test" >:: test_connection_initialize;
+      "Client lwt send test" >:: test_client_send;
+      "Client lwt bander" >:: test_client_banner;
+      "Client lwt status" >:: test_client_status;
     ]
