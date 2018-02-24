@@ -73,12 +73,15 @@ let test_client_status test_ctxt =
     init_client ()
     >>= fun client ->
       Client_lwt.status client
-      >> function
-        | Error message -> assert_equal ~printer:(fun _ -> "This should not have been reached") true false
+      >>= function
+        | Error message ->
+            assert_equal ~printer:(fun _ -> "This should not have been reached") true false;
+            Lwt.return_unit
         | Ok status -> let state = Mpd.(Status.string_of_state (Status.state status)) in
-          assert_equal ~printer:(fun s -> s) "stop" state
-    in
-    Mpd.Client_lwt.close client
+            assert_equal ~printer:(fun s -> s) "stop" state;
+            Lwt.return_unit
+        >>= fun () ->
+          Mpd.Client_lwt.close client
   end)
 
 let tests =
