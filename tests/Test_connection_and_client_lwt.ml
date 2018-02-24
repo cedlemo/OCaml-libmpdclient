@@ -57,9 +57,21 @@ let test_client_send test_ctxt =
       Mpd.Client_lwt.close client
   end)
 
+let test_client_banner test_ctxt =
+  ignore(Lwt_main.run begin
+    init_client ()
+    >> fun client ->
+      let pattern = "MPD [0-9].[0-9][0-9].[0-9]" in
+      let banner = Mpd.Client_lwt.mpd_banner client in
+      let msg = Printf.sprintf "Banner : %s" banner in
+      let _ = assert_equal true ~msg Str.(string_match (regexp pattern) banner 0) in
+      Mpd.Client_lwt.close client
+  end
+
 let tests =
   "Connection and client lwt tests" >:::
     [
       "Connection initialize test" >:: test_connection_initialize;
       "Client send test" >:: test_client_send;
+      "Client bannder" >:: test_client_banner;
     ]
