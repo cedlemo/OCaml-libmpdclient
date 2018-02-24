@@ -68,10 +68,24 @@ let test_client_banner test_ctxt =
       Mpd.Client_lwt.close client
   end
 
+let test_client_status test_ctxt =
+  ignore(Lwt_main.run begin
+    init_client ()
+    >>= fun client ->
+      Client_lwt.status client
+      >> function
+        | Error message -> assert_equal ~printer:(fun _ -> "This should not have been reached") true false
+        | Ok status -> let state = Mpd.(Status.string_of_state (Status.state status)) in
+          assert_equal ~printer:(fun s -> s) "stop" state
+    in
+    Mpd.Client_lwt.close client
+  end
+
 let tests =
   "Connection and client lwt tests" >:::
     [
       "Connection initialize test" >:: test_connection_initialize;
       "Client send test" >:: test_client_send;
       "Client bannder" >:: test_client_banner;
+      "Client status" >:: test_client_status;
     ]
