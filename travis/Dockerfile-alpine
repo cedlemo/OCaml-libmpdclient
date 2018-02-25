@@ -1,9 +1,9 @@
-FROM ocaml/opam:alpine-3.5_ocaml-4.06.0
+FROM ocaml/opam:alpine_ocaml-4.06.0
 
 RUN \
   sudo addgroup -S ocaml-libmpdclient && sudo adduser -S -G ocaml-libmpdclient ocaml-libmpdclient
 
-RUN sudo apk add git m4
+RUN sudo apk update && sudo apk add git m4 mpd
 
 RUN \
   echo "ocaml-libmpdclient ALL=(ALL:ALL) NOPASSWD:ALL" | \
@@ -12,19 +12,18 @@ RUN \
 USER ocaml-libmpdclient
 
 COPY . /home/ocaml-libmpdclient/ocaml-libmpdclient
-RUN sudo chown -R ocaml-libmpdclient:ocaml-libmpdclient /home/ocaml-libmpdclient/ocaml-libmpdclient \
-   && sudo cp /home/ocaml-libmpdclient/ocaml-libmpdclient/travis/mpd.conf /etc/mpd.conf \
-   && sudo chmod 644 /etc/mpd.conf \
-   && mkdir /home/ocaml-libmpdclient/mpd \
-   && mkdir /home/ocaml-libmpdclient/mpd/music \
-   && mkdir /home/ocaml-libmpdclient/mpd/playlists \
-   && cp /home/ocaml-libmpdclient/ocaml-libmpdclient/travis/*.mp3 /home/ocaml-libmpdclient/mpd/music/ \
-   && ls -1 /home/ocaml-libmpdclient/mpd/music/ > /home/ocaml-libmpdclient/mpd/playlists/bach.m3u \
-   && echo "/home/ocaml-libmpdclient/mpd/music/kunst01.mp3" > /home/ocaml-libmpdclient/mpd/playlists/bach1.m3u \
-   && opam init \
-   && opam install lwt cmdliner jbuilder odoc ounit
+RUN sudo chown -R ocaml-libmpdclient:ocaml-libmpdclient /home/ocaml-libmpdclient/ocaml-libmpdclient
+RUN mkdir -p /tmp/mpd/{music,playlists,tag_cache} \
+  && echo ls -l /tmp/mpd \
+  && cp /home/ocaml-libmpdclient/ocaml-libmpdclient/travis/mpd.conf /tmp/mpd.conf \
+  && cp /home/ocaml-libmpdclient/ocaml-libmpdclient/travis/*.mp3 /tmp/mpd/music/ \
+  && ls -1 /home/ocaml-libmpdclient/mpd/music/ > /tmp/mpd/playlists/bach.m3u \
+  && echo "/home/ocaml-libmpdclient/mpd/music/kunst01.mp3" > /tmp/mpd/playlists/bach1.m3u
 WORKDIR /home/ocaml-libmpdclient/ocaml-libmpdclient
+RUN wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sudo sh -s /usr/local/bin \
+  && /usr/local/bin/opam init --comp 4.06.0 \
+  && opam install lwt cmdliner jbuilder odoc ounit
 RUN echo ". /home/ocaml-libmpdclient/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true" > /home/ocaml-libmpdclient/ocaml-libmpdclient/runtest.sh \
-   && echo "mpd" >> /home/ocaml-libmpdclient/ocaml-libmpdclient/runtest.sh \
-   && echo "jbuilder build @runtravistest" >> /home/ocaml-libmpdclient/ocaml-libmpdclient/runtest.sh
+  && echo "mpd /tmp/mpd.conf" >> /home/ocaml-libmpdclient/ocaml-libmpdclient/runtest.sh \
+  && echo "jbuilder runtest" >> /home/ocaml-libmpdclient/ocaml-libmpdclient/runtest.sh
 CMD bash -ex /home/ocaml-libmpdclient/ocaml-libmpdclient/runtest.sh
