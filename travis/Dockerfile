@@ -43,5 +43,5 @@ RUN /usr/local/bin/opam init --comp 4.06.0
 RUN opam install lwt cmdliner jbuilder odoc ounit
 RUN echo ". /home/ocaml-libmpdclient/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true" > /home/ocaml-libmpdclient/ocaml-libmpdclient/runtest.sh
 RUN echo "mpd" >> /home/ocaml-libmpdclient/ocaml-libmpdclient/runtest.sh
-RUN echo "jbuilder build @runtravistest" >> /home/ocaml-libmpdclient/ocaml-libmpdclient/runtest.sh
+RUN echo "jbuilder runtest" >> /home/ocaml-libmpdclient/ocaml-libmpdclient/runtest.sh
 CMD bash -ex /home/ocaml-libmpdclient/ocaml-libmpdclient/runtest.sh

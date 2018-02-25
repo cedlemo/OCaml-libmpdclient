@@ -21,12 +21,12 @@ open Mpd
 
 let bad_branch () = assert_equal ~printer:(fun s -> s) "This should not " "have been reached"
 
-let test_simple_ok test_ctxt =
+let test_protocol_parse_response_simple_ok test_ctxt =
   match Protocol.parse_response "OK\n" with
   | Ok _ -> assert true
   | Error _ -> bad_branch ()
 
-let test_request_ok test_ctxt =
+let test_protocol_parse_response_request_ok test_ctxt =
   match Protocol.parse_response "test: this is a complex\nresponse: request\nOK\n" with
   | Error _ -> bad_branch ()
   | Ok response -> match response with
@@ -34,13 +34,13 @@ let test_request_ok test_ctxt =
     | Some s -> let expected = "test: this is a complex\nresponse: request\n" in
       assert_equal ~printer:(fun s -> s) expected s
 
-let test_error_50 test_ctxt =
+let test_protocol_parse_response_error_50 test_ctxt =
   match Protocol.parse_response "ACK [50@1] {play} error while playing\n" with
   | Ok _ -> bad_branch ()
   | Error (er_val, cmd_num, cmd, message) ->
       assert (er_val = No_exist && cmd_num = 1 && cmd = "play" && message = "error while playing")
 
-let test_error_1 test_ctxt =
+let test_protocol_parse_response_error_1 test_ctxt =
   match Protocol.parse_response "ACK [1@12] {play} error while playing\n" with
   | Ok _ -> bad_branch ()
   | Error (er_val, cmd_num, cmd, message) ->
@@ -174,12 +174,12 @@ let test_music_database_count_parse_artist_woven_hand test_ctxt =
 
   with Utils.EMusic_database message -> assert_equal ~printer:(fun s -> s) "" message
 
-let mpd_responses_parsing_tests =
+let tests =
     "Mpd responses parsing tests" >:::
-      ["test simple OK" >:: test_simple_ok;
-       "test request OK" >:: test_request_ok;
-       "test error 50" >:: test_error_50;
-       "test error 1" >:: test_error_1;
+      ["test protocol parse response simple OK" >:: test_protocol_parse_response_simple_ok;
+       "test protocol parse response request OK" >:: test_protocol_parse_response_request_ok;
+       "test protocol parse response error 50" >:: test_protocol_parse_response_error_50;
+       "test prototol parse response error 1" >:: test_protocol_parse_response_error_1;
        "test Mpd.utils.num_on_num_parse simple int" >:: test_num_on_num_parse_simple_int;
        "test Mpd.utils.num_on_num_parse num_on_num" >:: test_num_on_num_parse_num_on_num;
        "test Mpd.utils.read_key_value" >:: test_read_key_val;
@@ -189,6 +189,3 @@ let mpd_responses_parsing_tests =
        "test Mpd.utils.parse_count_response" >:: test_music_database_count_parse_group_artist;
        "test Mpd.utils.parse_count_response" >:: test_music_database_count_parse_artist_woven_hand;
       ]
-
-  let () =
-    run_test_tt_main mpd_responses_parsing_tests
