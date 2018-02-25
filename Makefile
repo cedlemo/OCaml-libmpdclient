@@ -6,3 +6,7 @@ documentation :
 	rm -rf docs/*
 	cp -rf _build/default/_doc/libmpdclient/* docs/
 	jbuilder clean
+
+.PHONY : test
+test :
+	jbuilder runtest
