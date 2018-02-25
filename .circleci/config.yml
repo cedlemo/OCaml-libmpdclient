@@ -1,0 +1,30 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: ocaml/opam:alpine_ocaml-4.06.0
+        environment:
+          TERM: xterm
+    steps:
+      - checkout
+      - run:
+          name: Install Alpine packages
+          command: sudo apk update && sudo apk add git m4 mpd
+      - run:
+          name: Install OCaml packages.
+          command: opam install lwt cmdliner jbuilder odoc ounit
+      - run:
+          name: Prepare the mpd data for tests.
+          command:
+                  mkdir -p /tmp/mpd/{music,playlists,tag_cache} \
+                  && cp travis/mpd.conf /tmp/mpd.conf \
+                  && cp travis/*.mp3 /tmp/mpd/music/ \
+                  && ls -1 /tmp/mpd/music/ > /tmp/mpd/playlists/bach.m3u \
+                  && echo "/tmp/mpd/music/kunst01.mp3" > /tmp/mpd/playlists/bach1.m3u
+      - run:
+          name: Run Mpd server in background.
+          command: mpd /tmp/mpd/mpd.conf
+          background: true
+      - run:
+          name: Run the tests
+          command: make test
