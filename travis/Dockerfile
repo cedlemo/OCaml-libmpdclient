@@ -36,7 +36,7 @@ RUN wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - |
 RUN echo ". /home/ocaml-libmpdclient/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true" > /home/ocaml-libmpdclient/ocaml-libmpdclient/runtest.sh \
   && echo "mpd /tmp/mpd.conf" >> /home/ocaml-libmpdclient/ocaml-libmpdclient/runtest.sh \
   && echo "jbuilder runtest" >> /home/ocaml-libmpdclient/ocaml-libmpdclient/runtest.sh
-RUN mkdir -p /tmp/mpd/{music,playlists} \
+RUN mkdir -p /tmp/mpd/{music,playlists,tag_cache} \
   && cp /home/ocaml-libmpdclient/ocaml-libmpdclient/travis/mpd.conf /tmp/mpd/mpd.conf \
   && cp /home/ocaml-libmpdclient/ocaml-libmpdclient/travis/*.mp3 /tmp/mpd/music/ \
   && ls -1 /home/ocaml-libmpdclient/mpd/music/ > /tmp/mpd/playlists/bach.m3u \
