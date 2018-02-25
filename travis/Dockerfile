@@ -29,7 +29,7 @@ USER ocaml-libmpdclient
 
 COPY . /home/ocaml-libmpdclient/ocaml-libmpdclient
 RUN sudo chown -R ocaml-libmpdclient:ocaml-libmpdclient /home/ocaml-libmpdclient/ocaml-libmpdclient
-RUN mkdir /tmp/mpd/{music,playlists}
+RUN mkdir -p /tmp/mpd/{music,playlists}
 RUN cp /home/ocaml-libmpdclient/ocaml-libmpdclient/travis/mpd.conf /tmp/mpd.conf \
   && /home/ocaml-libmpdclient/ocaml-libmpdclient/travis/*.mp3 /tmp/mpd/music/ \
   && ls -1 /home/ocaml-libmpdclient/mpd/music/ > /tmp/mpd/playlists/bach.m3u \
