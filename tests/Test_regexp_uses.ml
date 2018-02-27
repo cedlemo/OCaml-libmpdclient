@@ -178,10 +178,10 @@ let test_connection_lwt_mpd_banner_regex test_ctxt =
   let data = "OK MPD 1.23.4\n" in
   let pattern = "OK \\(\\(\n\\|.\\)*\\)\n" in
   match Str.string_match (Str.regexp pattern) data 0 with
-  | false -> assert_equal ~mesg:"No banner found" true false
+  | false -> assert_equal ~msg:"No banner found" true false
   | true -> let result = Str.matched_group 1 data in
       let _ = assert_equal ~printer:(fun s -> s) "MPD 1.23.4" result in
-      assert_equal ~mesg:"Non used char"
+      assert_equal ~msg:"Non used char"
                    ~printer:string_of_int
                    4 String.((length data) - (length result))
 
@@ -189,10 +189,10 @@ let test_connection_lwt_request_response_regex test_ctxt =
   let data = "this is a test\nOK\n" in
   let pattern = "\\(\\(\n\\|.\\)*OK\n\\)" in
   match Str.string_match (Str.regexp pattern) data 0 with
-  | false -> assert_equal ~mesg:"No banner found" true false
+  | false -> assert_equal ~msg:"No banner found" true false
   | true -> let result = Str.matched_group 1 data in
       let _ = assert_equal ~printer:(fun s -> s) "this is a test\nOK" result in
-      assert_equal ~mesg:"Non used char"
+      assert_equal ~msg:"Non used char"
                    ~printer:string_of_int
                    0 String.((length data) - (length result))
 
