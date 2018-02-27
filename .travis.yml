@@ -11,7 +11,7 @@ matrix:
 install:
   - docker build
       -t ocaml-libmpdclient/${TYPE}
-      -f travis/Dockerfile-${TYPE}
+      -f .travis/Dockerfile-${TYPE}
       .
 
 script:
