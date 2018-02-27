@@ -1,8 +1,8 @@
-FROM ubuntu:17.10
+FROM ocaml/opam:ubuntu-16.04_ocaml-4.06.0
 
 RUN \
-  apt update && \
-  apt install -y \
+  sudo apt update && \
+  sudo apt install -y \
     sudo \
     git \
     darcs \
@@ -20,29 +20,30 @@ RUN \
     patch
 
 RUN \
-  useradd --user-group --create-home ocaml-libmpdclient
+  sudo useradd --user-group --create-home ocaml-libmpdclient
 
 RUN \
   echo "ocaml-libmpdclient ALL=(ALL:ALL) NOPASSWD:ALL" | \
-    EDITOR=tee visudo -f /etc/sudoers.d/ocaml-libmpdclient
+    sudo EDITOR=tee visudo -f /etc/sudoers.d/ocaml-libmpdclient
 
 USER ocaml-libmpdclient
 ENV WDIR=/home/ocaml-libmpdclient/ocaml-libmpdclient
 ENV TMP=$WDIR/tmp
+ENV U=ocaml-libmpdclient
+ENV HOME=/home/ocaml-libmpdclient
 COPY . /home/ocaml-libmpdclient/ocaml-libmpdclient
-RUN sudo chown -R $USER:$USER $WDIR
+RUN sudo chown -R $U:$U $WDIR
 WORKDIR /home/ocaml-libmpdclient/ocaml-libmpdclient
-RUN wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sudo sh -s /usr/local/bin \
-  && /usr/local/bin/opam init --comp 4.06.0
+RUN opam init --comp 4.06.0
 RUN opam install lwt cmdliner jbuilder odoc ounit
-RUN mkdir -p $TMP/mpd/{music,playlists,tag_cache} \
-  && echo ls -l $TMP/mpd \
+RUN mkdir -p $TMP/mpd/music && mkdir $TMP/mpd/playlists \
   && cp $WDIR/travis/mpd.conf $TMP/mpd/mpd.conf \
   && cp $WDIR/travis/*.mp3 $TMP/mpd/music/ \
-  && ls -1 /home/ocaml-libmpdclient/mpd/music/ > $TMP/mpd/playlists/bach.m3u \
-  && echo "/home/ocaml-libmpdclient/mpd/music/kunst01.mp3" > $TMP/mpd/playlists/bach1.m3u
+  && ls -1 $TMP/mpd/music/ > $TMP/mpd/playlists/bach.m3u \
+  && echo $TMP"/mpd/music/kunst01.mp3" > $TMP/mpd/playlists/bach1.m3u \
+  && cat $TMP/mpd/playlists/bach.m3u \
+  && cat $TMP/mpd/playlists/bach1.m3u
 RUN echo ". /home/ocaml-libmpdclient/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true" > $WDIR/runtest.sh \
-  && echo "mpd /tmp/mpd.conf" >> $WDIR/runtest.sh \
+  && echo "mpd "$TMP"/mpd/mpd.conf" >> $WDIR/runtest.sh \
   && echo "jbuilder runtest" >> $WDIR/runtest.sh
-
 CMD bash -ex $WDIR/runtest.sh
