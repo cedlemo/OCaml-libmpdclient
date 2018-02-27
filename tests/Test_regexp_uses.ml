@@ -185,29 +185,43 @@ let test_connection_lwt_mpd_banner_regex test_ctxt =
                    ~printer:string_of_int
                    4 String.((length data) - (length result))
 
+let test_connection_lwt_request_response_regex test_ctxt =
+  let data = "this is a test\nOK\n" in
+  let pattern = "\\(\\(\n\\|.\\)*OK\n\\)" in
+  match Str.string_match (Str.regexp pattern) data 0 with
+  | false -> assert_equal ~message:"No banner found" true false
+  | true -> let result = Str.matched_group 1 data in
+      let _ = assert_equal ~printer:(fun s -> s) "this is a test\nOK" result in
+      assert_equal ~message:"Non used char"
+                   ~printer:string_of_int
+                   0 String.((length data) - (length result))
+
+
 let tests =
     "Mpd responses parsing tests" >:::
       ["test protocol parse response simple OK" >::
-        test_protocol_parse_response_simple_ok;
+         test_protocol_parse_response_simple_ok;
        "test protocol parse response request OK" >::
-        test_protocol_parse_response_request_ok;
+         test_protocol_parse_response_request_ok;
        "test protocol parse response error 50" >::
-        test_protocol_parse_response_error_50;
+         test_protocol_parse_response_error_50;
        "test prototol parse response error 1" >::
-        test_protocol_parse_response_error_1;
+         test_protocol_parse_response_error_1;
        "test Mpd.utils.num_on_num_parse simple int" >::
-        test_num_on_num_parse_simple_int;
+         test_num_on_num_parse_simple_int;
        "test Mpd.utils.num_on_num_parse num_on_num" >::
-        test_num_on_num_parse_num_on_num;
+         test_num_on_num_parse_num_on_num;
        "test Mpd.utils.read_key_value" >:: test_read_key_val;
        "test Mpd.Song.parse" >:: test_song_parse;
        "test Utils.read_file_path" >:: test_list_playlist_response_parse;
        "test Mpd.utils.read_list_playlists" >::
-        test_listplaylists_response_parse;
+         test_listplaylists_response_parse;
        "test Mpd.utils.parse_count_response" >::
-        test_music_database_count_parse_group_artist;
+         test_music_database_count_parse_group_artist;
        "test Mpd.utils.parse_count_response" >::
-        test_music_database_count_parse_artist_woven_hand;
+         test_music_database_count_parse_artist_woven_hand;
        "test connection lwt mpd banner regex" >::
-        test_connection_lwt_mpd_banner_regex;
+         test_connection_lwt_mpd_banner_regex;
+       "test connection lwt request response regex" >::
+         test_connection_lwt_request_response_regex;
       ]
