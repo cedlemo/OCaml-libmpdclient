@@ -33,8 +33,8 @@ let test_stored_playlists_listplaylists test_ctxt =
   let _ = match Mpd.Stored_playlists.listplaylists client with
     | None -> assert_equal ~printer:(fun s -> s) "This should not " "have been reached"
     | Some playlists -> let _ = assert_equal 2 (List.length playlists) in
-      let _ = assert_equal ~printer:(fun s -> s) "bach1" (List.hd playlists) in
-      assert_equal ~printer:(fun s -> s) "bach" (List.hd (List.tl playlists))
+      let _ = assert_equal ~printer:(fun s -> s) "bach" (List.hd playlists) in
+      assert_equal ~printer:(fun s -> s) "bach1" (List.hd (List.tl playlists))
   in Mpd.Client.close client
 
 let test_stored_playlists_load_playlist test_ctxt =
