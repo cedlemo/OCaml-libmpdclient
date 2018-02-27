@@ -174,18 +174,40 @@ let test_music_database_count_parse_artist_woven_hand test_ctxt =
 
   with Utils.EMusic_database message -> assert_equal ~printer:(fun s -> s) "" message
 
+let test_connection_lwt_mpd_banner_regex test_ctxt =
+  let data = "OK MPD 1.23.4\n" in
+  let pattern = "OK \\(\\(\n\\|.\\)*\\)\n" in
+  match Str.string_match (Str.regexp pattern) data 0 with
+  | false -> assert_equal ~message:"No banner found" true false
+  | true -> let result = Str.matched_group 1 data in
+      let _ = assert_equal ~printer:(fun s -> s) "MPD 1.23.4" result in
+      assert_equal ~message:"Non used char"
+                   ~printer:string_of_int
+                   4 String.((length data) - (length result))
+
 let tests =
     "Mpd responses parsing tests" >:::
-      ["test protocol parse response simple OK" >:: test_protocol_parse_response_simple_ok;
-       "test protocol parse response request OK" >:: test_protocol_parse_response_request_ok;
-       "test protocol parse response error 50" >:: test_protocol_parse_response_error_50;
-       "test prototol parse response error 1" >:: test_protocol_parse_response_error_1;
-       "test Mpd.utils.num_on_num_parse simple int" >:: test_num_on_num_parse_simple_int;
-       "test Mpd.utils.num_on_num_parse num_on_num" >:: test_num_on_num_parse_num_on_num;
+      ["test protocol parse response simple OK" >::
+        test_protocol_parse_response_simple_ok;
+       "test protocol parse response request OK" >::
+        test_protocol_parse_response_request_ok;
+       "test protocol parse response error 50" >::
+        test_protocol_parse_response_error_50;
+       "test prototol parse response error 1" >::
+        test_protocol_parse_response_error_1;
+       "test Mpd.utils.num_on_num_parse simple int" >::
+        test_num_on_num_parse_simple_int;
+       "test Mpd.utils.num_on_num_parse num_on_num" >::
+        test_num_on_num_parse_num_on_num;
        "test Mpd.utils.read_key_value" >:: test_read_key_val;
        "test Mpd.Song.parse" >:: test_song_parse;
        "test Utils.read_file_path" >:: test_list_playlist_response_parse;
-       "test Mpd.utils.read_list_playlists" >:: test_listplaylists_response_parse;
-       "test Mpd.utils.parse_count_response" >:: test_music_database_count_parse_group_artist;
-       "test Mpd.utils.parse_count_response" >:: test_music_database_count_parse_artist_woven_hand;
+       "test Mpd.utils.read_list_playlists" >::
+        test_listplaylists_response_parse;
+       "test Mpd.utils.parse_count_response" >::
+        test_music_database_count_parse_group_artist;
+       "test Mpd.utils.parse_count_response" >::
+        test_music_database_count_parse_artist_woven_hand;
+       "test connection lwt mpd banner regex" >::
+        test_connection_lwt_mpd_banner_regex;
       ]
