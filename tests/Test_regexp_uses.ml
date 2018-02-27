@@ -191,7 +191,7 @@ let test_connection_lwt_request_response_regex test_ctxt =
   match Str.string_match (Str.regexp pattern) data 0 with
   | false -> assert_equal ~msg:"No banner found" true false
   | true -> let result = Str.matched_group 1 data in
-      let _ = assert_equal ~printer:(fun s -> s) "this is a test\nOK" result in
+      let _ = assert_equal ~printer:(fun s -> s) "this is a test\nOK\n" result in
       assert_equal ~msg:"Non used char"
                    ~printer:string_of_int
                    0 String.((length data) - (length result))
