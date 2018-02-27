@@ -27,7 +27,7 @@ RUN mkdir -p $TMP/mpd/music && mkdir $TMP/mpd/playlists \
   && ls -1 $TMP/mpd/music/ > $TMP/mpd/playlists/bach.m3u \
   && echo $TMP"/mpd/music/kunst01.mp3" > $TMP/mpd/playlists/bach1.m3u \
   && cat $TMP/mpd/playlists/bach.m3u \
-  && cat $TMP/mpd/playlists/bach1.m3u
+  && cat $TMP/mpd/playlists/bach1.m3u \
   && echo ". /home/ocaml-libmpdclient/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true" > $WDIR/runtest.sh \
   && echo "mpd "$TMP"/mpd/mpd.conf" >> $WDIR/runtest.sh \
   && echo "jbuilder runtest" >> $WDIR/runtest.sh
