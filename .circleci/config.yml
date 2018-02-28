@@ -27,4 +27,4 @@ jobs:
           background: true
       - run:
           name: Run the tests
-          command: make test
+          command: eval `opam config env` && make test
