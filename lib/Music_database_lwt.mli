@@ -18,7 +18,6 @@
 
 (** Music_database module with Lwt: regroups data base related commands. *)
 
-(** type for the Mpd database tags for find command. *)
 type tags =
   | Unknown
   | Artist
@@ -43,75 +42,97 @@ type tags =
   | Album_artist_sort
   | Album_sort
   | Count
+(** type for the Mpd database tags for find command. *)
 
-(** Transform get the string representation of a tag. *)
 val tag_to_string:
   tags -> string
+(** Transform get the string representation of a tag. *)
 
-(** type for the supplementary tags for the search commands. *)
 type search_tags = Any | File | Base | Modified_since | Mpd_tag of tags
+(** type for the supplementary tags for the search commands. *)
 
-(** Get the string representation of a search_tag. *)
 val search_tag_to_string:
   search_tags -> string
+(** Get the string representation of a search_tag. *)
 
-(* Find songs in the db that match exactly the a list of pairs (tag, exact_pattern). The
- * exact_pattern is a string and the tah can be any tag supported by MPD, or
- * one of the special parameters:
- * - any            checks all tag values
- * - file           checks the full path (relative to the music directory)
- * - base           restricts the search to songs in the given directory (also relative to the music directory)
- * - modified-since compares the file's time stamp with the given value (ISO 8601 or UNIX time stamp)
-*)
 val find:
-  Client_lwt.t -> (search_tags * string) list -> ?sort:tags -> ?window:(int * int) -> unit -> (Song.t list, Protocol.ack_error * int * string * string) result Lwt.t
+  Client_lwt.t -> (search_tags * string) list -> ?sort:tags
+  -> ?window:(int * int) -> unit
+  -> (Song.t list, Protocol.ack_error * int * string * string) result Lwt.t
+(** Find songs in the db that match exactly the a list of pairs (tag, exact_pattern). The
+    exact_pattern is a string and the tah can be any tag supported by MPD, or
+    one of the special parameters:
+    - any            checks all tag values
+    - file           checks the full path (relative to the music directory)
+    - base           restricts the search to songs in the given directory
+                     (also relative to the music directory)
+    - modified-since compares the file's time stamp with the given value
+                     (ISO 8601 or UNIX time stamp)
+*)
 
-(* Finds songs in the db that and adds them to current playlist. Parameters
- * have the same meaning as for find. *)
 val findadd:
   Client_lwt.t -> (search_tags * string) list -> Protocol.response Lwt.t
+(* Finds songs in the db that and adds them to current playlist. Parameters
+   have the same meaning as for find. *)
 
-(* Searches for any song that contains WHAT. Parameters have the same meaning
- * as for find, except that search is not case sensitive. *)
 val search:
-  Client_lwt.t -> (search_tags * string) list -> ?sort:tags -> ?window:(int * int) -> unit -> (Song.t list, Protocol.ack_error * int * string * string) result Lwt.t
+  Client_lwt.t -> (search_tags * string) list -> ?sort:tags
+  -> ?window:(int * int) -> unit
+  -> (Song.t list, Protocol.ack_error * int * string * string) result Lwt.t
+(** Searches for any song that contains WHAT. Parameters have the same meaning
+   as for find, except that search is not case sensitive. *)
 
-(* Searches for any song that contains WHAT in tag TYPE and adds them to
- * current playlist.
- * Parameters have the same meaning as for findadd, except that search is not
- * case sensitive. *)
 val searchadd:
   Client_lwt.t -> (search_tags * string) list -> Protocol.response Lwt.t
+(** Searches for any song that contains WHAT in tag TYPE and adds them to
+   current playlist.
+   Parameters have the same meaning as for findadd, except that search is not
+   case sensitive. *)
 
-(* Searches for any song that contains WHAT in tag TYPE and adds them to the
- * playlist named NAME.  If a playlist by that name doesn't exist it is
- * created. Parameters have the same meaning as for find, except that search is
- * not case sensitive. *)
 val searchaddpl:
   Client_lwt.t -> string -> (search_tags * string) list -> Protocol.response Lwt.t
+(** Searches for any song that contains WHAT in tag TYPE and adds them to the
+   playlist named NAME.  If a playlist by that name doesn't exist it is
+   created. Parameters have the same meaning as for find, except that search is
+   not case sensitive. *)
 
-(* Counts the number of songs and their total playtime in the db matching TAG
- * exactly. The group keyword may be used to group the results by a tag. The
- * following prints per-artist counts:
- * count group artist
- * count genre metal date 2016 group artist
+type song_count = { songs: int; playtime: float; misc: string }
+(** basic type for the response of the count command. *)
+
+val count:
+  Client_lwt.t -> (tags * string) list -> ?group:tags -> unit
+  -> (song_count list, string) result Lwt.t
+(** Get a count of songs with filters. For examples: count group artist will
+   return for each artist the number of sons, the total playtime and the
+   name of the artist in misc.
+   Counts the number of songs and their total playtime in the db matching TAG
+   exactly. The group keyword may be used to group the results by a tag. The
+   following prints per-artist counts:
+   count group artist
+   count genre metal date 2016 group artist
  *)
 
-(** basic type for the response of the count command. *)
-type song_count = { songs: int; playtime: float; misc: string }
 
-(** Get a count of songs with filters. For examples: count group artist will
- * return for each artist the number of sons, the total playtime and the
- * name of the artist in misc.*)
-val count:
-  Client_lwt.t -> (tags * string) list -> ?group:tags -> unit -> (song_count list, string) result Lwt.t
-
-(** Get a list based on some filer. For example "list album artist "Elvis Presley""
- *  will return a list of the album names of Elvis Presley that exists in the
- *  music database. *)
 val list:
-  Client_lwt.t -> tags -> (tags * string) list -> (string list, string) result Lwt.t
+  Client_lwt.t -> tags -> (tags * string) list
+  -> (string list, string) result Lwt.t
+(** Get a list based on some filer. For example "list album artist "Elvis Presley""
+    will return a list of the album names of Elvis Presley that exists in the
+    music database. *)
 
+val update:
+  Client_lwt.t -> string option -> Protocol.response Lwt.t
+(** Updates the music database: find new files, remove deleted files, update
+    modified files. URI is a particular directory or song/file to update. If
+    you do not specify it, everything is updated.
+    Prints "updating_db: JOBID" where JOBID is a positive number identifying
+    the update job. You can read the current job id in the status response. *)
+
+val rescan:
+  Client_lwt.t -> string option -> Protocol.response Lwt.t
+(** Same as update, but also rescans unmodified files. *)
+
+(**/**)
 (*
 list {TYPE} [FILTERTYPE] [FILTERWHAT] [...] [group] [GROUPTYPE] [...]
 Lists unique tags values of the specified type. TYPE can be any tag supported by MPD or file.
@@ -138,14 +159,4 @@ Searches for any song that contains WHAT in tag TYPE and adds them to current pl
 Parameters have the same meaning as for find, except that search is not case sensitive.
 
  *)
-(** Updates the music database: find new files, remove deleted files, update
-    modified files. URI is a particular directory or song/file to update. If
-    you do not specify it, everything is updated.
-    Prints "updating_db: JOBID" where JOBID is a positive number identifying
-    the update job. You can read the current job id in the status response. *)
-val update:
-  Client_lwt.t -> string option -> Protocol.response Lwt.t
-
-(** Same as update, but also rescans unmodified files. *)
-val rescan:
-  Client_lwt.t -> string option -> Protocol.response Lwt.t
+(**/**)

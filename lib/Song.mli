@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 (** Song module used to store and retrieve information of a song based on
  * mpd tags. *)
 
-(** Song type *)
 type t
+(** Song type *)
 
-(** Empty song type *)
 val empty: t
+(** Empty song type *)
 
-(** Parse a list of song attributes to a Song.s type *)
 val parse: string list -> t
+(** Parse a list of song attributes to a Song.s type *)
 
 val album: t -> string
 val albumsort: t -> string

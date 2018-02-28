@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -19,32 +19,32 @@
 (** Controlling playback functions.
   https://www.musicpd.org/doc/protocol/playback_commands.html *)
 
-(** Plays next song in the playlist. *)
 val next: Client.t -> Protocol.response
+(** Plays next song in the playlist. *)
 
-(** Plays previous song in the playlist. *)
 val previous: Client.t -> Protocol.response
+(** Plays previous song in the playlist. *)
 
-(** Stops playing.*)
 val stop: Client.t -> Protocol.response
+(** Stops playing.*)
 
-(** Toggles pause/resumers playing *)
 val pause: Client.t -> bool -> Protocol.response
+(** Toggles pause/resumers playing *)
 
-(** Begins playing the playlist at song number. *)
 val play: Client.t -> int -> Protocol.response
+(** Begins playing the playlist at song number. *)
 
-(** Begins playing the playlist at song id. *)
 val playid: Client.t -> int -> Protocol.response
+(** Begins playing the playlist at song id. *)
 
-(** Seeks to the position time of entry songpos in the playlist. *)
 val seek: Client.t -> int -> float -> Protocol.response
+(** Seeks to the position time of entry songpos in the playlist. *)
 
-(** Seeks to the position time of song id. *)
 val seekid: Client.t -> int -> float -> Protocol.response
+(** Seeks to the position time of song id. *)
 
+val seekcur: Client.t -> float -> Protocol.response
 (** Seeks to the position time within the current song.
  TODO : If prefixed by '+' or '-', then the time is relative to the current
  playing position
  *)
-val seekcur: Client.t -> float -> Protocol.response
