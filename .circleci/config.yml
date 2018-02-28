@@ -16,10 +16,10 @@ jobs:
       - run:
           name: Prepare the mpd data for tests.
           command:
-                  mkdir -p /tmp/mpd/music \
-                  && mkdir /tmp/mpd/playlists \
-                  && cp .travis/*.mp3 /tmp/mpd/music/ \
-                  && ls -1 /tmp/mpd/music/ > /tmp/mpd/playlists/bach.m3u \
+                  mkdir -p /tmp/mpd/music
+                  && mkdir /tmp/mpd/playlists
+                  && cp .travis/*.mp3 /tmp/mpd/music/
+                  && ls -1 /tmp/mpd/music/ > /tmp/mpd/playlists/bach.m3u
                   && echo "/tmp/mpd/music/kunst01.mp3" > /tmp/mpd/playlists/bach1.m3u
       - run:
           name: Run Mpd server in background.
