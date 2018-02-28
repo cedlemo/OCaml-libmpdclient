@@ -28,7 +28,7 @@ RUN \
 
 USER ocaml-libmpdclient
 ENV WDIR=/home/ocaml-libmpdclient/ocaml-libmpdclient
-ENV TMP=$WDIR/tmp
+ENV TMP=/tmp
 ENV U=ocaml-libmpdclient
 ENV HOME=/home/ocaml-libmpdclient
 COPY . /home/ocaml-libmpdclient/ocaml-libmpdclient
