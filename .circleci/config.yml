@@ -29,7 +29,7 @@ jobs:
                    | sudo EDITOR=tee visudo -f /etc/sudoers.d/ocaml-libmpdclient
       - run:
           name: Run Mpd server in background.
-          command: mpd .travis/mpd.conf
+          command: sudo mpd .travis/mpd.conf
           background: true
       - run:
           name: Run the tests
