@@ -14,6 +14,12 @@ jobs:
           name: Install OCaml packages.
           command: opam install -y lwt cmdliner jbuilder odoc ounit
       - run:
+          name: Create user to run mpd
+          command: sudo addgroup -S ocaml-libmpdclient
+                   && sudo adduser -S -G ocaml-libmpdclient ocaml-libmpdclient
+                   && echo "ocaml-libmpdclient ALL=(ALL:ALL) NOPASSWD:ALL"
+                   | sudo EDITOR=tee visudo -f /etc/sudoers.d/ocaml-libmpdclient
+      - run:
           name: Prepare the mpd data for tests.
           command:
                   mkdir -p /tmp/mpd/music
@@ -21,12 +27,7 @@ jobs:
                   && cp .travis/*.mp3 /tmp/mpd/music/
                   && ls -1 /tmp/mpd/music/ > /tmp/mpd/playlists/bach.m3u
                   && echo "/tmp/mpd/music/kunst01.mp3" > /tmp/mpd/playlists/bach1.m3u
-      - run:
-          name: Create user to run mpd
-          command: sudo addgroup -S ocaml-libmpdclient
-                   && sudo adduser -S -G ocaml-libmpdclient ocaml-libmpdclient
-                   && echo "ocaml-libmpdclient ALL=(ALL:ALL) NOPASSWD:ALL"
-                   | sudo EDITOR=tee visudo -f /etc/sudoers.d/ocaml-libmpdclient
+          && sudo chown -R ocaml-libmpdclient:ocaml-libmpdclient /tmp/mpd
       - run:
           name: Run Mpd server in background.
           command: sudo mpd .travis/mpd.conf
