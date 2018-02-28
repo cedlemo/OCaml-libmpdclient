@@ -21,13 +21,12 @@ jobs:
                    | sudo EDITOR=tee visudo -f /etc/sudoers.d/ocaml-libmpdclient
       - run:
           name: Prepare the mpd data for tests.
-          command:
-                  mkdir -p /tmp/mpd/music
+          command: mkdir -p /tmp/mpd/music
                   && mkdir /tmp/mpd/playlists
                   && cp .travis/*.mp3 /tmp/mpd/music/
                   && ls -1 /tmp/mpd/music/ > /tmp/mpd/playlists/bach.m3u
                   && echo "/tmp/mpd/music/kunst01.mp3" > /tmp/mpd/playlists/bach1.m3u
-          && sudo chown -R ocaml-libmpdclient:ocaml-libmpdclient /tmp/mpd
+                  && sudo chown -R ocaml-libmpdclient:ocaml-libmpdclient /tmp/mpd
       - run:
           name: Run Mpd server in background.
           command: sudo mpd .travis/mpd.conf
