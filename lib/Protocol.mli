@@ -44,7 +44,7 @@ val error_name:
 
 val str_error_to_val:
   string -> ack_error
-(** Returns the related type for the error returned by the server as a string. *)
+(** Return the related type for the error returned by the server as a string. *)
 
 val parse_error_response:
   string -> (ack_error * int * string * string)

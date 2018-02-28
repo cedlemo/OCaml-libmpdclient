@@ -72,26 +72,26 @@ val find:
 
 val findadd:
   Client_lwt.t -> (search_tags * string) list -> Protocol.response Lwt.t
-(* Finds songs in the db that and adds them to current playlist. Parameters
+(* Find songs in the db that and adds them to current playlist. Parameters
    have the same meaning as for find. *)
 
 val search:
   Client_lwt.t -> (search_tags * string) list -> ?sort:tags
   -> ?window:(int * int) -> unit
   -> (Song.t list, Protocol.ack_error * int * string * string) result Lwt.t
-(** Searches for any song that contains WHAT. Parameters have the same meaning
+(** Search for any song that contains WHAT. Parameters have the same meaning
    as for find, except that search is not case sensitive. *)
 
 val searchadd:
   Client_lwt.t -> (search_tags * string) list -> Protocol.response Lwt.t
-(** Searches for any song that contains WHAT in tag TYPE and adds them to
+(** Search for any song that contains WHAT in tag TYPE and adds them to
    current playlist.
    Parameters have the same meaning as for findadd, except that search is not
    case sensitive. *)
 
 val searchaddpl:
   Client_lwt.t -> string -> (search_tags * string) list -> Protocol.response Lwt.t
-(** Searches for any song that contains WHAT in tag TYPE and adds them to the
+(** Search for any song that contains WHAT in tag TYPE and adds them to the
    playlist named NAME.  If a playlist by that name doesn't exist it is
    created. Parameters have the same meaning as for find, except that search is
    not case sensitive. *)
@@ -122,7 +122,7 @@ val list:
 
 val update:
   Client_lwt.t -> string option -> Protocol.response Lwt.t
-(** Updates the music database: find new files, remove deleted files, update
+(** Update the music database: find new files, remove deleted files, update
     modified files. URI is a particular directory or song/file to update. If
     you do not specify it, everything is updated.
     Prints "updating_db: JOBID" where JOBID is a positive number identifying

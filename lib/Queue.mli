@@ -25,35 +25,35 @@ type t =
 
 val add:
   Client.t -> string -> Protocol.response
-(** Adds the file URI to the playlist (directories add recursively). URI can
+(** Add the file URI to the playlist (directories add recursively). URI can
     also be a single file. *)
 
 val addid:
   Client.t -> string -> int -> int
-(** Adds a song to the playlist (non-recursive) and returns the song id.
+(** Add a song to the playlist (non-recursive) and returns the song id.
     URI is always a single file or URL. *)
 
 val clear:
   Client.t -> Protocol.response
-(** Clears the current playlist. *)
+(** Clear the current playlist. *)
 
 val delete:
   Client.t -> int -> ?position_end:int -> unit -> Protocol.response
-(** Deletes a song or a set of songs from the playlist. The song or the range
+(** Delete a song or a set of songs from the playlist. The song or the range
     of songs are identified by the position in the playlist. *)
 
 val deleteid:
   Client.t -> int -> Protocol.response
-(** Deletes the song SONGID from the playlist. *)
+(** Delete the song SONGID from the playlist. *)
 
 val move:
   Client.t -> int -> ?position_end:int -> int -> unit -> Protocol.response
-(** Moves the song at FROM or range of songs at START:END to TO in
+(** Move the song at FROM or range of songs at START:END to TO in
     the playlist. *)
 
 val moveid:
   Client.t -> int -> int -> Protocol.response
-(** Moves the song with FROM (songid) to TO (playlist index) in the playlist.
+(** Move the song with FROM (songid) to TO (playlist index) in the playlist.
     If TO is negative, it is relative to the current song in the playlist
     (if there is one). *)
 
@@ -67,19 +67,19 @@ val playlistid:
 
 val playlistfind:
   Client.t -> string -> string -> t
-(** Finds songs in the current playlist with strict matching.*)
+(** Find songs in the current playlist with strict matching.*)
 
 val playlistsearch:
   Client.t -> string -> string -> t
-(** Searches case-insensitively for partial matches in the current playlist. *)
+(** Search case-insensitively for partial matches in the current playlist. *)
 
 val swap:
   Client.t -> int -> int -> Protocol.response
-(** Swaps the positions of SONG1 and SONG2. *)
+(** Swap the positions of SONG1 and SONG2. *)
 
 val shuffle:
   Client.t -> ?range:(int * int) -> unit -> Protocol.response
-(** Shuffles the current playlist. START:END is optional and specifies a range
+(** Shuffle the current playlist. START:END is optional and specifies a range
     of songs. *)
 
 val prio:
@@ -95,18 +95,18 @@ val prioid:
 
 val swapid:
   Client.t -> int -> int -> Protocol.response
-(** Swaps the positions of SONG1 and SONG2 (both song ids). *)
+(** Swap the positions of SONG1 and SONG2 (both song ids). *)
 
 val rangeid:
   Client.t -> int -> ?range:(float * float) -> unit -> Protocol.response
-(** Specifies the portion of the song that shall be played. START and END are
+(** Specify the portion of the song that shall be played. START and END are
   offsets in seconds (fractional seconds allowed); both are optional. Omitting
   both (i.e. sending just ":") means "remove the range, play everything". A song
   that is currently playing cannot be manipulated this way. *)
 
 val cleartagid:
   Client.t -> int -> string -> Protocol.response
-(** Removes tags from the specified song. If TAG is not specified, then all tag
+(** Remove tags from the specified song. If TAG is not specified, then all tag
     values will be removed. Editing song tags is only possible for remote songs.
 *)
 

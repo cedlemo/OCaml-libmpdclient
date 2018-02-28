@@ -20,31 +20,31 @@
   https://www.musicpd.org/doc/protocol/playback_commands.html *)
 
 val next: Client.t -> Protocol.response
-(** Plays next song in the playlist. *)
+(** Play next song in the playlist. *)
 
 val previous: Client.t -> Protocol.response
-(** Plays previous song in the playlist. *)
+(** Play previous song in the playlist. *)
 
 val stop: Client.t -> Protocol.response
-(** Stops playing.*)
+(** Stop playing.*)
 
 val pause: Client.t -> bool -> Protocol.response
-(** Toggles pause/resumers playing *)
+(** Toggle pause/resumers playing *)
 
 val play: Client.t -> int -> Protocol.response
-(** Begins playing the playlist at song number. *)
+(** Begin playing the playlist at song number. *)
 
 val playid: Client.t -> int -> Protocol.response
-(** Begins playing the playlist at song id. *)
+(** Begin playing the playlist at song id. *)
 
 val seek: Client.t -> int -> float -> Protocol.response
-(** Seeks to the position time of entry songpos in the playlist. *)
+(** Seek to the position time of entry songpos in the playlist. *)
 
 val seekid: Client.t -> int -> float -> Protocol.response
-(** Seeks to the position time of song id. *)
+(** Seek to the position time of song id. *)
 
 val seekcur: Client.t -> float -> Protocol.response
-(** Seeks to the position time within the current song.
+(** Seek to the position time within the current song.
  TODO : If prefixed by '+' or '-', then the time is relative to the current
  playing position
  *)

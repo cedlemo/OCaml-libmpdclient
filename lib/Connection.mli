@@ -39,4 +39,3 @@ val write: t -> string -> unit
 
 val read: t -> string
 (** Read in an Mpd connection *)
-

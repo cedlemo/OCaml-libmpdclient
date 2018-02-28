@@ -68,25 +68,25 @@ val find:
 
 val findadd:
   Client.t -> (search_tags * string) list -> Protocol.response
-(** Finds songs in the db that and adds them to current playlist. Parameters
+(** Find songs in the db that and adds them to current playlist. Parameters
     have the same meaning as for find. *)
 
 val search:
   Client.t -> (search_tags * string) list -> ?sort:tags -> ?window:(int * int)
   -> unit -> (Song.t list, Protocol.ack_error * int * string * string) result
-(** Searches for any song that contains WHAT. Parameters have the same meaning
+(** Search for any song that contains WHAT. Parameters have the same meaning
     as for find, except that search is not case sensitive. *)
 
 val searchadd:
   Client.t -> (search_tags * string) list -> Protocol.response
-(** Searches for any song that contains WHAT in tag TYPE and adds them to
+(** Search for any song that contains WHAT in tag TYPE and adds them to
     current playlist.
     Parameters have the same meaning as for findadd, except that search is not
     case sensitive. *)
 
 val searchaddpl:
   Client.t -> string -> (search_tags * string) list -> Protocol.response
-(** Searches for any song that contains WHAT in tag TYPE and adds them to the
+(** Search for any song that contains WHAT in tag TYPE and adds them to the
    playlist named NAME.  If a playlist by that name doesn't exist it is
    created. Parameters have the same meaning as for find, except that search is
    not case sensitive. *)
@@ -112,7 +112,6 @@ val list:
 (** Get a list based on some filer. For example "list album artist "Elvis Presley""
     will return a list of the album names of Elvis Presley that exists in the
     music database. *)
-
 
 val update:
   Client.t -> string option -> Protocol.response

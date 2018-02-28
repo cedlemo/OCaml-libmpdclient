@@ -45,12 +45,12 @@ val password: t -> string -> Protocol.response
     plaintext password. *)
 
 val close: t -> unit
-(** Closes the connection to MPD. MPD will try to send the remaining output
+(** Close the connection to MPD. MPD will try to send the remaining output
     buffer before it actually closes the connection, but that cannot be
     guaranteed. This command will not generate a response. *)
 
 val tagtypes: t -> string list
-(** Shows a list of available tag types. It is an intersection of the
+(** Show a list of available tag types. It is an intersection of the
     metadata_to_use setting and this client's tag mask.
     About the tag mask: each client can decide to disable any number of tag
     types, which will be omitted from responses to this client. That is a good
