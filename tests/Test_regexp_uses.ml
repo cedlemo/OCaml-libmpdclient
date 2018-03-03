@@ -189,7 +189,7 @@ let test_connection_lwt_request_response_regex test_ctxt =
   let data = "this is a test\nOK\n" in
   let pattern = "\\(\\(\n\\|.\\)*OK\n\\)" in
   match Str.string_match (Str.regexp pattern) data 0 with
-  | false -> assert_equal ~msg:"No banner found" true false
+  | false -> assert_equal ~msg:"Bad pattern for request response" true false
   | true -> let result = Str.matched_group 1 data in
       let _ = assert_equal ~printer:(fun s -> s) "this is a test\nOK\n" result in
       assert_equal ~msg:"Non used char"
@@ -200,7 +200,7 @@ let test_connection_lwt_command_response_regex test_ctxt =
   let data = "OK\ntototata\n" in
   let pattern = "^\\(OK\n\\)\\(\n\\|.\\)*" in
   match Str.string_match (Str.regexp pattern) data 0 with
-  | false -> assert_equal ~msg:"No banner found" true false
+  | false -> assert_equal ~msg:"Bad pattern for command response" true false
   | true -> let result = Str.matched_group 1 data in
       let _ = assert_equal ~printer:(fun s -> s) "OK\n" result in
       assert_equal ~msg:"Non used char"
