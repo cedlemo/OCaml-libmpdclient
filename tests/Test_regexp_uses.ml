@@ -207,6 +207,17 @@ let test_connection_lwt_command_response_regex test_ctxt =
                    ~printer:string_of_int
                    9 String.((length data) - (length result))
 
+let test_connection_lwt_full_mpd_idle_event test_ctxt =
+  let data = "Changed: mixerOK\n" in
+  let pattern = "changed: \\(\\(\n\\|.\\)*\\)OK\n" in
+  match Str.string_match (Str.regexp pattern) data 0 with
+  | false -> assert_equal ~msg:"Bad pattern for idle event" true false
+  | true -> let result = Str.matched_group 1 data in
+      let _ = assert_equal ~printer:(fun s -> s) "mixer" result in
+      assert_equal ~msg:"Non used char"
+                   ~printer:string_of_int
+                   12 String.((length data) - (length result))
+
 let tests =
     "Mpd responses parsing tests" >:::
       ["test protocol parse response simple OK" >::
@@ -236,4 +247,6 @@ let tests =
          test_connection_lwt_request_response_regex;
        "test connection lwt command response regex" >::
          test_connection_lwt_command_response_regex;
+       "test connection lwt full mpd idle event" >::
+         test_connection_lwt_full_mpd_idle_event;
       ]
