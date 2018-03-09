@@ -1,5 +1,5 @@
 (*
- * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -17,17 +17,16 @@
  *)
 
 open OUnit2
+open Mpd
 
-let () =
-  run_test_tt_main
-  (
-    "Mpd client library tests" >:::
-      [
-        Test_connection_and_client.tests;
-        Test_connection_and_client_lwt.tests;
-        Test_queue_and_playlists.tests;
-        Test_playback.tests;
-        Test_playback_lwt.tests;
-        Test_regexp_uses.tests;
-      ]
-)
+let host = "127.0.0.1"
+let port = 6600
+
+let init_client () =
+  Connection_lwt.initialize host port
+  >>= fun connection ->
+    Client_lwt.initialize connection
+
+
+let tests =
+  "Playback and Playback_options tests" >::: []
