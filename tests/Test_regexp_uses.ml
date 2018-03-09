@@ -208,7 +208,7 @@ let test_connection_lwt_command_response_regex test_ctxt =
                    9 String.((length data) - (length result))
 
 let test_connection_lwt_full_mpd_idle_event test_ctxt =
-  let data = "Changed: mixerOK\n" in
+  let data = "changed: mixerOK\n" in
   let pattern = "changed: \\(\\(\n\\|.\\)*\\)OK\n" in
   match Str.string_match (Str.regexp pattern) data 0 with
   | false -> assert_equal ~msg:"Bad pattern for idle event" true false
