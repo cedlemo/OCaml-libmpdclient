@@ -8,7 +8,10 @@
 This is an attempt to write a library in order to access to the mpd server.
 This lib is based on the mpd protocol ([specifications](https://www.musicpd.org/doc/protocol/)).
 
-## Parts :
+Executables that illustrate the usage of OCaml-libmpdclient can be
+found in the bin and samples directories of this repository.
+
+## Progress :
 
 *  Querying MPD's status     (*done*)
 *  Controlling playback	     (*done*)
@@ -48,10 +51,3 @@ This lib is based on the mpd protocol ([specifications](https://www.musicpd.org/
     received: OK MPD 0.19.0
 
     received: OK
-
-## TODO :
-
-* The music database
-* Improve connection error when no mpd found or bad host or bad port.
-* Continue OCaml-mpdc : a command line tool which is a Mpd client.
-  * finish status commands (link parameters to theirs mpd call)
