@@ -28,6 +28,14 @@ let init_client () =
   >>= fun connection ->
     Client_lwt.initialize connection
 
+let run_test f =
+  ignore(Lwt_main.run begin
+    init_client ()
+    >>= client ->
+      f client
+      >>= () ->
+        Mpd.Client_lwt.close client
+  end)
 
 let tests =
   "Playback and Playback_options tests" >::: []
