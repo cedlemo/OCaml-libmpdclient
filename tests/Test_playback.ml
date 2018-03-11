@@ -31,12 +31,22 @@ let run_test f =
   let _ = f client in
   Mpd.Client.close client
 
+let ensure_playlist_is_loaded client =
+  let queue_length () = match Mpd.Queue.playlist client with
+                        | Mpd.Queue.PlaylistError _ -> -1
+                        | Mpd.Queue.Playlist p -> List.length p
+  in
+  if queue_length () <= 0 then (
+    match Mpd.Stored_playlists.load client "bach" () with
+    | Error (_, _, _, message) ->
+        let information = "Error when loading playlist" in
+        assert_equal ~printer:(fun s -> s)  information message
+    | Ok _ ->
+        ()
+  )
+
 let test_play_pause_stop test_ctxt =
   run_test (fun client ->
-    let queue_length () = match Mpd.Queue.playlist client with
-                          | Mpd.Queue.PlaylistError _ -> -1
-                          | Mpd.Queue.Playlist p -> List.length p
-    in
     let check_state s test_name =
       match Mpd.Client.status client with
       | Error message ->
@@ -51,14 +61,7 @@ let test_play_pause_stop test_ctxt =
       let _ = Unix.sleep 2 in
       check_state s test_name
     in
-    if queue_length () <= 0 then (
-      match Mpd.Stored_playlists.load client "bach" () with
-      | Error (_, _, _, message) ->
-          let information = "Error when loading playlist" in
-          assert_equal ~printer:(fun s -> s)  information message
-      | Ok _ ->
-          ()
-    );
+    let _ = ensure_playlist_is_loaded client in
     let _ = check_state Mpd.Status.Stop "Initial state " in
     let _ = (
       match Mpd.Playback.pause client false with
