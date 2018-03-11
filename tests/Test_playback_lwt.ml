@@ -57,7 +57,7 @@ let test_play_pause_stop test_ctxt =
               test_name ^ (Mpd.Status.string_of_state s)
             ) s (Mpd.Status.state status)
     in
-    let delayed_check_state s test_name =
+    let check_state_w_delay s test_name =
       Lwt_unix.sleep 2.0
       >>= fun () ->
         check_state s test_name
@@ -76,7 +76,50 @@ let test_play_pause_stop test_ctxt =
       end
       else Lwt.return_unit
       >>= fun () ->
-      check_state Mpd.Status.Stop "Initial state "
+        check_state Mpd.Status.Stop "Initial state "
+      >>= fun () ->
+        Mpd.Playback_lwt.pause client false
+        >>= function
+        | Error (_, _ , _, message) ->
+            let _ = assert_equal ~printer:(fun s -> s)
+                                 "Unable to disable pause "
+                                 message in
+            Lwt.return_unit
+        | Ok _ ->
+            let message = "Pause command false before play" in
+            check_state_w_delay Mpd.Status.Stop message
+      >>= fun () ->
+        Mpd.Playback_lwt.play client 1
+        >>= function
+        | Error (_, _ , _, message) ->
+            let _ = assert_equal ~printer:(fun s -> s) "Unable to play " message in
+            Lwt.return_unit
+        | Ok _ ->
+            check_state_w_delay Mpd.Status.Play "Play command "
+      >>= fun () ->
+        Mpd.Playback_lwt.pause client true
+          >>= function
+          | Error (_, _ , _, message) ->
+              let _ = assert_equal ~printer:(fun s -> s) "Unable to pause " message in
+              Lwt.return_unit
+          | Ok _ ->
+              check_state_w_delay Mpd.Status.Pause "Pause command true "
+      >>= fun () ->
+        Mpd.Playback_lwt.pause client false
+          >>= function
+          | Error (_, _ , _, message) ->
+              let _ = assert_equal ~printer:(fun s -> s) "Unable to pause " message in
+              Lwt.return_unit
+          | Ok _ ->
+              check_state_w_delay Mpd.Status.Pause "Pause command false "
+      >>= fun () ->
+        Mpd.Playback_lwt.stop client
+        >>= function
+        | Error (_, _ , _, message) ->
+            let _ = assert_equal ~printer:(fun s -> s) "Unable to stop " message in
+            Lwt.return_unit
+        | Ok _ ->
+            check_state_w_delay Mpd.Status.Stop "Stop command at end"
   end
 
 let tests =
