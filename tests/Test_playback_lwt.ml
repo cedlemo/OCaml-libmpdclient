@@ -127,5 +127,5 @@ let test_play_pause_stop test_ctxt =
 let tests =
   "Playback and Playback_options tests" >:::
     [
-      "Test play pause stop" >:: test_play_pause_stop
+(*      "Test play pause stop" >:: test_play_pause_stop *)
     ]
