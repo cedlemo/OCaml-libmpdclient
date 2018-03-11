@@ -1,0 +1,5 @@
+# jbuilder runtest
+# OCAMLPARAM: unset
+$ /home/cedlemo/.opam/4.05.0/bin/ocamlfind printconf path > /tmp/jbuildf9f403.output
+$ /home/cedlemo/.opam/4.05.0/bin/ocamlc.opt -config > /tmp/jbuildf5f541.output
+$ (cd _build/default && /home/cedlemo/.opam/4.05.0/bin/ocamldep.opt -modules -impl Test_playback_lwt.ml) > _build/default/Test_playback_lwt.ml.d

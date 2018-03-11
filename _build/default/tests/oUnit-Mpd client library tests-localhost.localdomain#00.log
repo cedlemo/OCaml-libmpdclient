@@ -1,0 +1,28 @@
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Runner: processes
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Chooser: simple
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Configuration suite_name = "Mpd client library tests"
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Configuration cache_filename = "/home/cedlemo/Projects/OCaml/OCaml-libmpdclient/_build/default/tests/oUnit-$(suite_name).cache"
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Configuration display = "true"
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Configuration results_style_1_X = "false"
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Configuration verbose = "false"
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Configuration health_check_interval = "1."
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Configuration testdata_dir = "none"
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Configuration chooser = "simple"
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Configuration output_html_dir = "none"
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Configuration processes_kill_period = "5."
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Configuration runner = "processes"
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Configuration shards = "2"
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Configuration processes_grace_period = "5."
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Configuration log_encoding = "utf-8"
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Configuration output_junit_file = "none"
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Configuration output_file = "/home/cedlemo/Projects/OCaml/OCaml-libmpdclient/_build/default/tests/oUnit-$(suite_name)-$(shard_id).log"
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Using 2 workers maximum.
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Starting worker number localhost.localdomain#01.
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Worker localhost.localdomain#01 started.
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Starting worker number localhost.localdomain#02.
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: Worker localhost.localdomain#02 started.
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: 2 tests running: Mpd client library tests:0:Connection and client tests:1:Client send test, Mpd client library tests:0:Connection and client tests:0:Connection initialize test.
+2018-03-11T08:12:02+00:00 localhost.localdomain#01 I: Start test Mpd client library tests:0:Connection and client tests:0:Connection initialize test.
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: 2 tests running: Mpd client library tests:0:Connection and client tests:1:Client send test, Mpd client library tests:0:Connection and client tests:0:Connection initialize test.
+2018-03-11T08:12:02+00:00 localhost.localdomain#02 I: Start test Mpd client library tests:0:Connection and client tests:1:Client send test.
+2018-03-11T08:12:02+00:00 localhost.localdomain#00 I: 2 tests running: Mpd client library tests:0:Connection and client tests:1:Client send test, Mpd client library tests:0:Connection and client tests:0:Connection initialize test.
