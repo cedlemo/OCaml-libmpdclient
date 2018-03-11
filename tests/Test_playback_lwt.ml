@@ -89,7 +89,7 @@ let test_play_pause_stop test_ctxt =
             Lwt.return_unit
         | Ok _ ->
             let message = "Pause command false before play" in
-            check_state_w_delay Mpd.Status.Stop message
+            check_state Mpd.Status.Stop message
       >>= fun () ->
         Mpd.Playback_lwt.play client 1
         >>= function
@@ -97,7 +97,7 @@ let test_play_pause_stop test_ctxt =
             let _ = assert_equal ~printer "Unable to play " message in
             Lwt.return_unit
         | Ok _ ->
-            check_state_w_delay Mpd.Status.Play "Play command "
+            check_state Mpd.Status.Play "Play command "
       >>= fun () ->
         Mpd.Playback_lwt.pause client true
           >>= function
@@ -105,7 +105,7 @@ let test_play_pause_stop test_ctxt =
               let _ = assert_equal ~printer "Unable to pause " message in
               Lwt.return_unit
           | Ok _ ->
-              check_state_w_delay Mpd.Status.Pause "Pause command true "
+              check_state Mpd.Status.Pause "Pause command true "
       >>= fun () ->
         Mpd.Playback_lwt.pause client false
           >>= function
@@ -113,7 +113,7 @@ let test_play_pause_stop test_ctxt =
               let _ = assert_equal ~printer "Unable to pause " message in
               Lwt.return_unit
           | Ok _ ->
-              check_state_w_delay Mpd.Status.Pause "Pause command false "
+              check_state Mpd.Status.Pause "Pause command false "
       >>= fun () ->
         Mpd.Playback_lwt.stop client
         >>= function
@@ -127,5 +127,5 @@ let test_play_pause_stop test_ctxt =
 let tests =
   "Playback and Playback_options tests" >:::
     [
-(*      "Test play pause stop" >:: test_play_pause_stop *)
+      "Test play pause stop" >:: test_play_pause_stop
     ]

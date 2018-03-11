@@ -70,34 +70,34 @@ let test_play_pause_stop test_ctxt =
       | Error (_, _ , _, message) ->
           assert_equal ~printer "Unable to disable pause " message
       | Ok _ ->
-          check_state_w_delay Mpd.Status.Stop "Pause command false before play"
+          check_state Mpd.Status.Stop "Pause command false before play"
     ) in
     let _ = (
       match Mpd.Playback.play client 1 with
       | Error (_, _ , _, message) ->
           assert_equal ~printer "Unable to play " message
       | Ok _ ->
-          check_state_w_delay Mpd.Status.Play "Play command "
+          check_state Mpd.Status.Play "Play command "
     ) in
     let _ = (
       match Mpd.Playback.pause client true with
       | Error (_, _ , _, message) ->
           assert_equal ~printer "Unable to pause " message
       | Ok _ ->
-          check_state_w_delay Mpd.Status.Pause "Pause command true "
+          check_state Mpd.Status.Pause "Pause command true "
     ) in
     let _ = (
       match Mpd.Playback.pause client false with
       | Error (_, _ , _, message) ->
           assert_equal ~printer "Unable to replay " message
       | Ok _ ->
-          check_state_w_delay Mpd.Status.Play "Pause command false "
+          check_state Mpd.Status.Play "Pause command false "
     ) in
     match Mpd.Playback.stop client with
     | Error (_, _ , _, message) ->
         assert_equal ~printer "Unable to stop " message
     | Ok _ ->
-        check_state_w_delay Mpd.Status.Stop "Stop command at end"
+        check_state Mpd.Status.Stop "Stop command at end"
   )
 
 let tests =
