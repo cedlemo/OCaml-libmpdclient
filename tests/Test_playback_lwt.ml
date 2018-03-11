@@ -23,6 +23,8 @@ open Lwt
 let host = "127.0.0.1"
 let port = 6600
 
+let printer = (fun s -> s)
+
 let init_client () =
   Connection_lwt.initialize host port
   >>= fun connection ->
@@ -69,7 +71,7 @@ let test_play_pause_stop test_ctxt =
         >>= function
           | Error (_, _, _, message) ->
               let information = "Error when loading playlist" in
-              let _ = assert_equal ~printer:(fun s -> s) information message in
+              let _ = assert_equal ~printer information message in
               Lwt.return_unit
           | Ok _ ->
               Lwt.return_unit
@@ -81,7 +83,7 @@ let test_play_pause_stop test_ctxt =
         Mpd.Playback_lwt.pause client false
         >>= function
         | Error (_, _ , _, message) ->
-            let _ = assert_equal ~printer:(fun s -> s)
+            let _ = assert_equal ~printer
                                  "Unable to disable pause "
                                  message in
             Lwt.return_unit
@@ -92,7 +94,7 @@ let test_play_pause_stop test_ctxt =
         Mpd.Playback_lwt.play client 1
         >>= function
         | Error (_, _ , _, message) ->
-            let _ = assert_equal ~printer:(fun s -> s) "Unable to play " message in
+            let _ = assert_equal ~printer "Unable to play " message in
             Lwt.return_unit
         | Ok _ ->
             check_state_w_delay Mpd.Status.Play "Play command "
@@ -100,7 +102,7 @@ let test_play_pause_stop test_ctxt =
         Mpd.Playback_lwt.pause client true
           >>= function
           | Error (_, _ , _, message) ->
-              let _ = assert_equal ~printer:(fun s -> s) "Unable to pause " message in
+              let _ = assert_equal ~printer "Unable to pause " message in
               Lwt.return_unit
           | Ok _ ->
               check_state_w_delay Mpd.Status.Pause "Pause command true "
@@ -108,7 +110,7 @@ let test_play_pause_stop test_ctxt =
         Mpd.Playback_lwt.pause client false
           >>= function
           | Error (_, _ , _, message) ->
-              let _ = assert_equal ~printer:(fun s -> s) "Unable to pause " message in
+              let _ = assert_equal ~printer "Unable to pause " message in
               Lwt.return_unit
           | Ok _ ->
               check_state_w_delay Mpd.Status.Pause "Pause command false "
@@ -116,7 +118,7 @@ let test_play_pause_stop test_ctxt =
         Mpd.Playback_lwt.stop client
         >>= function
         | Error (_, _ , _, message) ->
-            let _ = assert_equal ~printer:(fun s -> s) "Unable to stop " message in
+            let _ = assert_equal ~printer "Unable to stop " message in
             Lwt.return_unit
         | Ok _ ->
             check_state_w_delay Mpd.Status.Stop "Stop command at end"

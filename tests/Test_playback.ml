@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -22,6 +22,8 @@ open Mpd
 let host = "127.0.0.1"
 let port = 6600
 
+let printer = (fun s -> s)
+
 let init_client () =
   let connection = Mpd.Connection.initialize host port in
   Mpd.Client.initialize connection
@@ -40,7 +42,7 @@ let ensure_playlist_is_loaded client =
     match Mpd.Stored_playlists.load client "bach" () with
     | Error (_, _, _, message) ->
         let information = "Error when loading playlist" in
-        assert_equal ~printer:(fun s -> s)  information message
+        assert_equal ~printer information message
     | Ok _ ->
         ()
   )
@@ -66,34 +68,34 @@ let test_play_pause_stop test_ctxt =
     let _ = (
       match Mpd.Playback.pause client false with
       | Error (_, _ , _, message) ->
-          assert_equal ~printer:(fun s -> s) "Unable to disable pause " message
+          assert_equal ~printer "Unable to disable pause " message
       | Ok _ ->
           check_state_w_delay Mpd.Status.Stop "Pause command false before play"
     ) in
     let _ = (
       match Mpd.Playback.play client 1 with
       | Error (_, _ , _, message) ->
-          assert_equal ~printer:(fun s -> s) "Unable to play " message
+          assert_equal ~printer "Unable to play " message
       | Ok _ ->
           check_state_w_delay Mpd.Status.Play "Play command "
     ) in
     let _ = (
       match Mpd.Playback.pause client true with
       | Error (_, _ , _, message) ->
-          assert_equal ~printer:(fun s -> s) "Unable to pause " message
+          assert_equal ~printer "Unable to pause " message
       | Ok _ ->
           check_state_w_delay Mpd.Status.Pause "Pause command true "
     ) in
     let _ = (
       match Mpd.Playback.pause client false with
       | Error (_, _ , _, message) ->
-          assert_equal ~printer:(fun s -> s) "Unable to replay " message
+          assert_equal ~printer "Unable to replay " message
       | Ok _ ->
           check_state_w_delay Mpd.Status.Play "Pause command false "
     ) in
     match Mpd.Playback.stop client with
     | Error (_, _ , _, message) ->
-        assert_equal ~printer:(fun s -> s) "Unable to stop " message
+        assert_equal ~printer "Unable to stop " message
     | Ok _ ->
         check_state_w_delay Mpd.Status.Stop "Stop command at end"
   )
