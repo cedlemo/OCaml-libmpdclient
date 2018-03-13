@@ -47,23 +47,43 @@ let ensure_playlist_is_loaded client =
         ()
   )
 
-let test_play_pause_stop test_ctxt =
+let assert_state client s test_name =
+  match Mpd.Client.status client with
+  | Error message ->
+      assert_equal ~printer:(fun s -> test_name ^ s)
+                   "Unable to get status" message
+  | Ok status ->
+      assert_equal ~printer:(fun s ->
+        test_name ^ (Mpd.Status.string_of_state s)
+      ) s (Mpd.Status.state status)
+
+let assert_state_w_delay client s test_name =
+  let _ = Unix.sleep 2 in
+  assert_state s test_name
+
+let check_state client s =
+  match Mpd.Client.status client with
+  | Error message ->
+      false
+  | Ok status ->
+       s == Mpd.Status.state status
+
+let test_play test_ctxt =
+run_test begin fun client ->
+    ensure_playlist_is_loaded client in
+    let _ = if !(check_state client Mpd.Status.Stop) then
+      Mpd.Playback.stop client
+    in
+    let _ = match Mpd.Playback.play client 1 with
+      | Error (_, _ , _, message) ->
+          assert_equal ~printer "Unable to play " message
+      | Ok _ ->
+          check_state Mpd.Status.Play "Play command "
+end
+
+(* let test_play_pause_stop test_ctxt =
   run_test (fun client ->
-    let check_state s test_name =
-      match Mpd.Client.status client with
-      | Error message ->
-          assert_equal ~printer:(fun s -> test_name ^ s)
-                       "Unable to get status" message
-      | Ok status ->
-          assert_equal ~printer:(fun s ->
-            test_name ^ (Mpd.Status.string_of_state s)
-          ) s (Mpd.Status.state status)
-    in
-    let check_state_w_delay s test_name =
-      let _ = Unix.sleep 2 in
-      check_state s test_name
-    in
-    let _ = ensure_playlist_is_loaded client in
+    ensure_playlist_is_loaded client in
     let _ = check_state Mpd.Status.Stop "Initial state " in
     let _ = (
       match Mpd.Playback.pause client false with
@@ -99,9 +119,9 @@ let test_play_pause_stop test_ctxt =
     | Ok _ ->
         check_state Mpd.Status.Stop "Stop command at end"
   )
-
+*)
 let tests =
   "Playback and Playback_options tests" >:::
     [
-      "test play pause stop command" >:: test_play_pause_stop
+      "test play command" >:: test_play
     ]
