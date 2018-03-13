@@ -79,7 +79,9 @@ run_test begin fun client ->
           assert_equal ~printer "Unable to play " message
       | Ok _ ->
           check_state Mpd.Status.Play "Play command "
+    in Mpd.Playback.stop client
 end
+
 
 (* let test_play_pause_stop test_ctxt =
   run_test (fun client ->
