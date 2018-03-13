@@ -70,9 +70,9 @@ let check_state client s =
 
 let test_play test_ctxt =
   run_test begin fun client ->
-    ensure_playlist_is_loaded client in
-    let _ = if !(check_state client Mpd.Status.Stop) then
-      Mpd.Playback.stop client
+    let _ = ensure_playlist_is_loaded client in
+    let _ = if not (check_state client Mpd.Status.Stop) then
+      ignore(Mpd.Playback.stop client)
     in
     let _ = match Mpd.Playback.play client 1 with
       | Error (_, _ , _, message) ->
@@ -84,9 +84,9 @@ let test_play test_ctxt =
 
 let test_pause test_ctxt =
   run_test begin fun client ->
-    ensure_playlist_is_loaded client in
-    let _ = if !(check_state client Mpd.Status.Stop) then
-      Mpd.Playback.stop client
+    let _ = ensure_playlist_is_loaded client in
+    let _ = if not (check_state client Mpd.Status.Stop) then
+      ignore(Mpd.Playback.stop client)
     in
     let _ = match Mpd.Playback.pause client false with
       | Error (_, _ , _, message) ->
@@ -95,19 +95,19 @@ let test_pause test_ctxt =
           assert_state client Mpd.Status.Stop "Pause command false before play"
     in
     let _ = if (check_state client Mpd.Status.Stop) then
-      Mpd.Playback.play client 1
+      ignore(Mpd.Playback.play client 1)
     in
     let _ = match Mpd.Playback.pause client true with
       | Error (_, _ , _, message) ->
           assert_equal ~printer "Unable to pause " message
       | Ok _ ->
-          assert_state Mpd.Status.Pause "Pause command true "
+          assert_state client Mpd.Status.Pause "Pause command true "
     in
     let _ = match Mpd.Playback.pause client false with
       | Error (_, _ , _, message) ->
           assert_equal ~printer "Unable to replay " message
       | Ok _ ->
-          assert_state Mpd.Status.Play "Pause command false "
+          assert_state client Mpd.Status.Play "Pause command false "
     in
       Mpd.Playback.stop client
 end
