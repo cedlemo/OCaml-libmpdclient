@@ -39,30 +39,30 @@ let run_test f =
         Mpd.Client_lwt.close client
   end)
 
-let test_play_pause_stop test_ctxt =
-  run_test begin fun client ->
-    let queue_length () =
+let assert_state client s test_name =
+  Mpd.Client_lwt.status client
+  >|= fun status ->
+    match status with
+    | Error message ->
+        assert_equal ~printer:(fun s -> test_name ^ s)
+                     "Unable to get status" message
+    | Ok status ->
+        assert_equal ~printer:(fun s ->
+          test_name ^ (Mpd.Status.string_of_state s)
+        ) s (Mpd.Status.state status)
+
+let assert_state_w_delay client s test_name =
+  Lwt_unix.sleep 2.0
+  >>= fun () ->
+    assert_state client s test_name
+
+
+let ensure_playlist_is_loaded client =
+  let queue_length () =
       Mpd.Queue_lwt.playlist client
       >|= function
         | Mpd.Queue_lwt.PlaylistError _ -> -1
         | Mpd.Queue_lwt.Playlist p -> List.length p
-    in
-    let check_state s test_name =
-      Mpd.Client_lwt.status client
-      >|= fun status ->
-        match status with
-        | Error message ->
-            assert_equal ~printer:(fun s -> test_name ^ s)
-                         "Unable to get status" message
-        | Ok status ->
-            assert_equal ~printer:(fun s ->
-              test_name ^ (Mpd.Status.string_of_state s)
-            ) s (Mpd.Status.state status)
-    in
-    let check_state_w_delay s test_name =
-      Lwt_unix.sleep 2.0
-      >>= fun () ->
-        check_state s test_name
     in
     queue_length ()
     >>= fun l ->
@@ -77,6 +77,41 @@ let test_play_pause_stop test_ctxt =
               Lwt.return_unit
       end
       else Lwt.return_unit
+
+let check_state client s =
+  Mpd.Client_lwt.status client
+  >|= fun status ->
+    match status with
+    | Error message ->
+        false
+    | Ok status ->
+        s == (Mpd.Status.state status)
+
+let test_play test_ctxt =
+  run_test begin fun client ->
+    ensure_playlist_is_loaded client
+    >>= fun () ->
+      check_state client Mpd.Status.Stop
+      >>= fun is_stopped ->
+        if not is_stopped then
+          Mpd.Playback_lwt.stop client
+          >>= fun _ -> Lwt.return_unit
+        else Lwt.return_unit
+        >>= fun () ->
+        Mpd.Playback_lwt.play client 1
+          >>= function
+            | Error (_, _ , _, message) ->
+                let _ = assert_equal ~printer "Unable to play " message in
+                Lwt.return_unit
+            | Ok _ ->
+                assert_state client Mpd.Status.Play "Play command "
+            >>= fun () ->
+              Mpd.Playback_lwt.stop client >>= fun _ -> Lwt.return_unit
+  end
+
+(*
+let test_play_pause_stop test_ctxt =
+  run_test begin fun client ->
       >>= fun () ->
         check_state Mpd.Status.Stop "Initial state "
       >>= fun () ->
@@ -123,9 +158,10 @@ let test_play_pause_stop test_ctxt =
         | Ok _ ->
             check_state_w_delay Mpd.Status.Stop "Stop command at end"
   end
+*)
 
 let tests =
   "Playback and Playback_options tests" >:::
     [
-      "Test play pause stop" >:: test_play_pause_stop
+      "Test play" >:: test_play
     ]
