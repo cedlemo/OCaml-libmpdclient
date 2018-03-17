@@ -15,7 +15,7 @@ jobs:
           command: opam switch 4.05.0
                    && opam update -y
                    && opam upgrade -y
-                   && opam install -y lwt cmdliner jbuilder odoc ounit
+                   && opam install -y lwt cmdliner jbuilder odoc ounit bisect_ppx
       - run:
           name: Create user to run mpd
           command: sudo addgroup -S ocaml-libmpdclient
