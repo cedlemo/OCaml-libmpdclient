@@ -33,7 +33,6 @@ jobs:
       - run:
           name: Run Mpd server in background.
           command: sudo mpd .travis/mpd.conf
-                   && cat /tmp/mpd/mpd.state
                    && cat /tmp/mpd/mpd.log
                    && cat /tmp/mpd.error
           background: true
