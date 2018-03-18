@@ -156,7 +156,7 @@ let test_playid test_ctxt =
     let _ = if not (check_state client Mpd.Status.Stop) then
       ignore(Mpd.Playback.stop client)
     in
-    let _ = match Mpd.Playback.playid client 1 with
+    let _ = match Mpd.Playback.play client 1 with
       | Error (_, _ , _, message) ->
           assert_equal ~printer "Unable to play " message
       | Ok _ ->
