@@ -156,7 +156,7 @@ let test_playid test_ctxt =
     let _ = if not (check_state client Mpd.Status.Stop) then
       ignore(Mpd.Playback.stop client)
     in
-    let _ = match Mpd.Playback.playid client 35 with
+    let _ = match Mpd.Playback.play client 1 with
       | Error (_, _ , _, message) ->
           assert_equal ~printer "Unable to play " message
       | Ok _ ->
@@ -164,8 +164,18 @@ let test_playid test_ctxt =
           | Error message ->
               assert_equal ~printer "Unable to get current status " message
           | Ok status ->
-              let current = Mpd.Status.songid status in
-              assert_equal ~printer:string_of_int current 35
+              let id = Mpd.Status.songid status in
+              let _ = Mpd.Playback.stop client in
+              match Mpd.Playback.play client 1 with
+              | Error (_, _ , _, message) ->
+                  assert_equal ~printer "Unable to play " message
+              | Ok _ ->
+                  match Mpd.Client.status client with
+                  | Error message ->
+                      assert_equal ~printer "Unable to get current status " message
+                  | Ok status ->
+                      let id' = Mpd.Status.songid status in
+                      assert_equal ~printer:string_of_int id id'
 
     in Mpd.Playback.stop client
   end
