@@ -150,6 +150,26 @@ let test_play_previous test_ctxt =
             assert_equal ~printer:string_of_int current 1
   end
 
+let test_playid test_ctxt =
+  run_test begin fun client ->
+    let _ = ensure_playlist_is_loaded client in
+    let _ = if not (check_state client Mpd.Status.Stop) then
+      ignore(Mpd.Playback.stop client)
+    in
+    let _ = match Mpd.Playback.playid client 1 with
+      | Error (_, _ , _, message) ->
+          assert_equal ~printer "Unable to play " message
+      | Ok _ ->
+          match Mpd.Client.status client with
+          | Error message ->
+              assert_equal ~printer "Unable to get current status " message
+          | Ok status ->
+              let current = Mpd.Status.songid status in
+              assert_equal ~printer:string_of_int current 1
+
+    in Mpd.Playback.stop client
+  end
+
 let tests =
   "Playback and Playback_options tests" >:::
     [
@@ -157,4 +177,5 @@ let tests =
       "test pause command" >:: test_pause;
       "test play next command" >:: test_play_next;
       "test play previous command" >:: test_play_previous;
+      "test playid command" >:: test_playid;
     ]
