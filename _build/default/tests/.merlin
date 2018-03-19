@@ -1,0 +1,19 @@
+B ../_build/default/lib/.Mpd.objs
+B ../_build/default/tests/.test.eobjs
+B /home/cedlemo/.opam/4.06.1/lib/bisect_ppx/runtime
+B /home/cedlemo/.opam/4.06.1/lib/bytes
+B /home/cedlemo/.opam/4.06.1/lib/lwt
+B /home/cedlemo/.opam/4.06.1/lib/oUnit
+B /home/cedlemo/.opam/4.06.1/lib/ocaml
+B /home/cedlemo/.opam/4.06.1/lib/ocaml/threads
+B /home/cedlemo/.opam/4.06.1/lib/result
+FLG -w -40
+S .
+S ../lib
+S /home/cedlemo/.opam/4.06.1/lib/bisect_ppx/runtime
+S /home/cedlemo/.opam/4.06.1/lib/bytes
+S /home/cedlemo/.opam/4.06.1/lib/lwt
+S /home/cedlemo/.opam/4.06.1/lib/oUnit
+S /home/cedlemo/.opam/4.06.1/lib/ocaml
+S /home/cedlemo/.opam/4.06.1/lib/ocaml/threads
+S /home/cedlemo/.opam/4.06.1/lib/result
