@@ -180,6 +180,25 @@ let test_playid test_ctxt =
     in Mpd.Playback.stop client
   end
 
+let test_seek test_ctxt =
+  run_test begin fun client ->
+    let _ = ensure_playlist_is_loaded client in
+    let _ = if not (check_state client Mpd.Status.Stop) then
+      ignore(Mpd.Playback.stop client)
+    in
+    let _ = match Mpd.Playback.seek client 1 120.0 with
+      | Error (_, _ , _, message) ->
+          assert_equal ~printer "Unable to play " message
+      | Ok _ ->
+          match Mpd.Client.status client with
+          | Error message ->
+              assert_equal ~printer "Unable to get current status " message
+          | Ok status ->
+              let elapsed = Mpd.Status.elapsed status in
+              assert_equal ~printer:string_of_bool true (elapsed > 120.0)
+    in Mpd.Playback.stop client
+  end
+
 let tests =
   "Playback and Playback_options tests" >:::
     [
@@ -188,4 +207,5 @@ let tests =
       "test play next command" >:: test_play_next;
       "test play previous command" >:: test_play_previous;
       "test playid command" >:: test_playid;
+      "test seek command" >:: test_seek;
     ]
