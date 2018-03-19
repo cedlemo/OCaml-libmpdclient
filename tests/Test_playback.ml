@@ -195,7 +195,7 @@ let test_seek test_ctxt =
               assert_equal ~printer "Unable to get current status " message
           | Ok status ->
               let elapsed = Mpd.Status.elapsed status in
-              assert_equal ~printer:string_of_bool true (elapsed > 120.0)
+              assert_equal ~printer:string_of_float elapsed 120.0
     in Mpd.Playback.stop client
   end
 
