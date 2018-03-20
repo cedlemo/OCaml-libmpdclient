@@ -78,14 +78,6 @@ let ensure_playlist_is_loaded client =
       end
       else Lwt.return_unit
 
-let ensure_stopped client =
-  check_state client Mpd.Status.Stop
-  >>= fun is_stopped ->
-    if not is_stopped then
-      Mpd.Playback_lwt.stop client
-      >>= fun _ -> Lwt.return_unit
-    else Lwt.return_unit
-
 let check_state client s =
   Mpd.Client_lwt.status client
   >|= fun status ->
@@ -94,6 +86,14 @@ let check_state client s =
         false
     | Ok status ->
         s == (Mpd.Status.state status)
+
+let ensure_stopped client =
+  check_state client Mpd.Status.Stop
+  >>= fun is_stopped ->
+    if not is_stopped then
+      Mpd.Playback_lwt.stop client
+      >>= fun _ -> Lwt.return_unit
+    else Lwt.return_unit
 
 let test_play test_ctxt =
   run_test begin fun client ->
