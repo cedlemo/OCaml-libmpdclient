@@ -78,6 +78,14 @@ let ensure_playlist_is_loaded client =
       end
       else Lwt.return_unit
 
+let ensure_stopped client =
+  check_state client Mpd.Status.Stop
+  >>= fun is_stopped ->
+    if not is_stopped then
+      Mpd.Playback_lwt.stop client
+      >>= fun _ -> Lwt.return_unit
+    else Lwt.return_unit
+
 let check_state client s =
   Mpd.Client_lwt.status client
   >|= fun status ->
@@ -113,13 +121,8 @@ let test_pause test_ctxt =
   run_test begin fun client ->
     ensure_playlist_is_loaded client
     >>= fun () ->
-      check_state client Mpd.Status.Stop
-      >>= fun is_stopped ->
-        if not is_stopped then
-          Mpd.Playback_lwt.stop client
-          >>= fun _ -> Lwt.return_unit
-        else Lwt.return_unit
-        >>= fun () ->
+      ensure_stopped client
+      >>= fun () ->
         Mpd.Playback_lwt.pause client false
           >>= function
           | Error (_, _ , _, message) ->
@@ -131,38 +134,33 @@ let test_pause test_ctxt =
               let message = "Pause command false before play" in
               assert_state client Mpd.Status.Stop message
           >>= fun () ->
-            check_state client Mpd.Status.Stop
-            >>= fun is_stopped ->
-              if not is_stopped then
-                Mpd.Playback_lwt.stop client
-                >>= fun _ -> Lwt.return_unit
-              else Lwt.return_unit
-              >>= fun () ->
-                Mpd.Playback_lwt.play client 1
-                >>= fun _ ->
-                  Mpd.Playback_lwt.pause client true
-                  >>= function
-                  | Error (_, _ , _, message) ->
-                      let _ = assert_equal ~printer "Unable to pause " message in
-                      Lwt.return_unit
-                  | Ok _ ->
-                      assert_state client Mpd.Status.Pause "Pause command true "
-                      >>= fun () ->
-                        Mpd.Playback_lwt.pause client false
-                        >>= function
-                        | Error (_, _ , _, message) ->
-                            let _ = assert_equal ~printer "Unable to pause " message in
-                            Lwt.return_unit
-                        | Ok _ ->
-                            assert_state client Mpd.Status.Pause "Pause command false "
-                            >>= fun () ->
-                              Mpd.Playback_lwt.stop client
-                              >>= function
-                              | Error (_, _ , _, message) ->
-                                  let _ = assert_equal ~printer "Unable to stop " message in
-                                  Lwt.return_unit
-                              | Ok _ ->
-                                  assert_state client Mpd.Status.Stop "Stop command at end"
+            ensure_stopped client
+            >>= fun () ->
+              Mpd.Playback_lwt.play client 1
+              >>= fun _ ->
+                Mpd.Playback_lwt.pause client true
+                >>= function
+                | Error (_, _ , _, message) ->
+                    let _ = assert_equal ~printer "Unable to pause " message in
+                    Lwt.return_unit
+                | Ok _ ->
+                    assert_state client Mpd.Status.Pause "Pause command true "
+                    >>= fun () ->
+                      Mpd.Playback_lwt.pause client false
+                      >>= function
+                      | Error (_, _ , _, message) ->
+                          let _ = assert_equal ~printer "Unable to pause " message in
+                          Lwt.return_unit
+                      | Ok _ ->
+                          assert_state client Mpd.Status.Pause "Pause command false "
+                          >>= fun () ->
+                            Mpd.Playback_lwt.stop client
+                            >>= function
+                            | Error (_, _ , _, message) ->
+                                let _ = assert_equal ~printer "Unable to stop " message in
+                                Lwt.return_unit
+                            | Ok _ ->
+                                assert_state client Mpd.Status.Stop "Stop command at end"
   end
 
 let tests =
