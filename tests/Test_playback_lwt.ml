@@ -166,5 +166,6 @@ let test_pause test_ctxt =
 let tests =
   "Playback and Playback_options tests" >:::
     [
-      "Test play" >:: test_play
+      "Test play" >:: test_play;
+      "Test pause" >:: test_pause;
     ]
