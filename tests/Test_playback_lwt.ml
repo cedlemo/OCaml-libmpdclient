@@ -190,6 +190,7 @@ let test_play_next test_ctxt =
                           let current = Mpd.Status.song status in
                           let _ = assert_equal ~printer:string_of_int current 2 in
                           Lwt.return_unit
+  end
 
 let test_play_previous test_ctxt =
   run_test begin fun client ->
@@ -218,8 +219,6 @@ let test_play_previous test_ctxt =
                           let current = Mpd.Status.song status in
                           let _ = assert_equal ~printer:string_of_int current 1 in
                           Lwt.return_unit
-
-
   end
 
 let tests =
