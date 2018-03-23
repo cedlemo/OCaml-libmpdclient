@@ -163,9 +163,34 @@ let test_pause test_ctxt =
                                 assert_state client Mpd.Status.Stop "Stop command at end"
   end
 
+let test_play_next test_ctxt =
+  run_test begin fun client ->
+    ensure_playlist_is_loaded client
+    >>= fun () ->
+      ensure_stopped client
+      >>= fun () ->
+        Mpd.Playback_lwt.play client 1
+        >>= function
+          | Error (_, _, _, message) ->
+              let _ = assert_equal ~printer "Unable to play " message in
+              Lwt.return_unit
+          | Ok _ ->
+              Mpd.Client_lwt.status client
+              >>= function
+                | Error message ->
+                    let _ = assert_equal ~printer "Unable to get status " message in
+                    Lwt.return_unit
+                | Ok status ->
+                    let current = Mpd.Status.song status in
+                    let _ = assert_equal ~printer:string_of_int current 2 in
+                    Lwt.return_unit
+
+  end
+
 let tests =
   "Playback_lwt and Playback_options_lwt tests" >:::
     [
       "Test play" >:: test_play;
       "Test pause" >:: test_pause;
+      "Test play next" >:: test_play_next;
     ]
