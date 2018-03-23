@@ -166,7 +166,7 @@ let test_playid test_ctxt =
           | Ok status ->
               let id = Mpd.Status.songid status in
               let _ = Mpd.Playback.stop client in
-              match Mpd.Playback.play client 1 with
+              match Mpd.Playback.playid client id with
               | Error (_, _ , _, message) ->
                   assert_equal ~printer "Unable to play " message
               | Ok _ ->
