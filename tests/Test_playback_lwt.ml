@@ -191,6 +191,35 @@ let test_play_next test_ctxt =
                           let _ = assert_equal ~printer:string_of_int current 2 in
                           Lwt.return_unit
 
+let test_play_previous test_ctxt =
+  run_test begin fun client ->
+    ensure_playlist_is_loaded client
+    >>= fun () ->
+      ensure_stopped client
+      >>= fun () ->
+        Mpd.Playback_lwt.play client 2
+        >>= function
+          | Error (_, _, _, message) ->
+              let _ = assert_equal ~printer "Unable to play " message in
+              Lwt.return_unit
+          | Ok _ ->
+              Mpd.Playback_lwt.previous client
+              >>= function
+                | Error (_, _, _, message) ->
+                    let _  = assert_equal ~printer "Unable to previous " message in
+                    Lwt.return_unit
+                | Ok _ ->
+                    Mpd.Client_lwt.status client
+                    >>= function
+                      | Error message ->
+                          let _ = assert_equal ~printer "Unable to get status " message in
+                          Lwt.return_unit
+                      | Ok status ->
+                          let current = Mpd.Status.song status in
+                          let _ = assert_equal ~printer:string_of_int current 1 in
+                          Lwt.return_unit
+
+
   end
 
 let tests =
@@ -199,4 +228,5 @@ let tests =
       "Test play" >:: test_play;
       "Test pause" >:: test_pause;
       "Test play next" >:: test_play_next;
+      "Test play previous" >:: test_play_previous;
     ]
