@@ -152,7 +152,7 @@ let test_pause test_ctxt =
                           let _ = assert_equal ~printer "Unable to pause " message in
                           Lwt.return_unit
                       | Ok _ ->
-                          assert_state client Mpd.Status.Pause "Pause command false "
+                          assert_state client Mpd.Status.Play "Pause command false "
                           >>= fun () ->
                             Mpd.Playback_lwt.stop client
                             >>= function
@@ -164,8 +164,8 @@ let test_pause test_ctxt =
   end
 
 let tests =
-  "Playback and Playback_options tests" >:::
+  "Playback_lwt and Playback_options_lwt tests" >:::
     [
       "Test play" >:: test_play;
-      (* "Test pause" >:: test_pause; *)
+      "Test pause" >:: test_pause;
     ]
