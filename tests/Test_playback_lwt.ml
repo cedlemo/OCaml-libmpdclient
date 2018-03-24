@@ -324,6 +324,39 @@ let test_seekid test_ctxt =
                                   Lwt.return_unit
   end
 
+let test_seekcur test_ctxt =
+  run_test begin fun client ->
+    ensure_playlist_is_loaded client
+    >>= fun () ->
+      ensure_stopped client
+      >>= fun () ->
+        Mpd.Playback_lwt.play client 1
+        >>= function
+          | Error (_, _, _, message) ->
+              let _ = assert_equal ~printer "Unable to play " message in
+              Lwt.return_unit
+          | Ok _ ->
+              ensure_stopped client
+              >>= fun () ->
+                Mpd.Playback_lwt.seekcur client 120.0
+                >>= function
+                  | Error (_, _, _, message) ->
+                      let _  = assert_equal ~printer "Unable to next " message in
+                      Lwt.return_unit
+                  | Ok _ ->
+                      Mpd.Client_lwt.status client
+                      >>= function
+                        | Error message ->
+                            let _ = assert_equal ~printer "Unable to get status " message in
+                            Lwt.return_unit
+                        | Ok status ->
+                            let current = Mpd.Status.song status in
+                            let _ = assert_equal ~printer:string_of_int current 1 in
+                            let elapsed = Mpd.Status.elapsed status in
+                            let _ = assert_equal ~printer:string_of_float elapsed 120.0 in
+                            Lwt.return_unit
+  end
+
 let tests =
   "Playback_lwt and Playback_options_lwt tests" >:::
     [
@@ -334,4 +367,5 @@ let tests =
       "Test playid" >:: test_playid;
       "Test seek" >:: test_seek;
       "Test seekid" >:: test_seekid;
+      "Test seekcur" >:: test_seekcur;
     ]
