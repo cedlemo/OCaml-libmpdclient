@@ -273,7 +273,7 @@ let test_consume test_ctxt =
                assert_equal ~printer "Unable to get status " message
            | Ok status ->
                let consume' = Mpd.Status.consume status in
-               assert_equal ~printer:string_of_bool consume consume'
+               assert_equal ~printer:string_of_bool (not consume) consume'
   end
 
 let tests =
