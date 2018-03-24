@@ -329,18 +329,21 @@ let test_seekcur test_ctxt =
     ensure_playlist_is_loaded client
     >>= fun () ->
       ensure_stopped client
-      >>= fun () ->
+              >>= fun () ->
+                Lwt_io.print "ensure stopped"
+     >>= fun () ->
         Mpd.Playback_lwt.play client 1
         >>= function
           | Error (_, _, _, message) ->
               let _ = assert_equal ~printer "Unable to play " message in
               Lwt.return_unit
           | Ok _ ->
-              ensure_stopped client
+                              Lwt_io.print "play ok"
+     >>= fun () ->
+ensure_stopped client
               >>= fun () ->
                 Lwt_io.print "stopped"
                 >>= fun () ->
-
                 Mpd.Playback_lwt.seekcur client 120.0
                 >>= function
                   | Error (_, _, _, message) ->
@@ -357,7 +360,7 @@ Mpd.Client_lwt.status client
                         | Ok status ->
                                                                   Lwt_io.print "analyse status"
                 >>= fun () ->
-let current = Mpd.Status.song status in
+                  let current = Mpd.Status.song status in
                             let _ = assert_equal ~printer:string_of_int current 1 in
                             let elapsed = Mpd.Status.elapsed status in
                             let _ = assert_equal ~printer:string_of_float elapsed 120.0 in
