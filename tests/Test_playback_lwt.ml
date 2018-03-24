@@ -259,6 +259,31 @@ let test_playid test_ctxt =
                                   Lwt.return_unit
   end
 
+let test_seek test_ctxt =
+  run_test begin fun client ->
+    ensure_playlist_is_loaded client
+    >>= fun () ->
+      ensure_stopped client
+      >>= fun () ->
+        Mpd.Playback_lwt.seek client 1 120.0
+        >>= function
+          | Error (_, _, _, message) ->
+              let _ = assert_equal ~printer "Unable to seek " message in
+              Lwt.return_unit
+          | Ok _ ->
+              Mpd.Client_lwt.status client
+              >>= function
+                | Error message ->
+                    let _ = assert_equal ~printer "Unable to get status " message in
+                    Lwt.return_unit
+                | Ok status ->
+                    ensure_stopped client
+                    >>= fun () ->
+                      let elapsed = Mpd.Status.elapsed status in
+                      let _ = assert_equal ~printer:string_of_float elapsed 120.0 in
+                      Lwt.return_unit
+  end
+
 let tests =
   "Playback_lwt and Playback_options_lwt tests" >:::
     [
@@ -267,4 +292,5 @@ let tests =
       "Test play next" >:: test_play_next;
       "Test play previous" >:: test_play_previous;
       "Test playid" >:: test_playid;
+      "Test seek" >:: test_seek;
     ]
