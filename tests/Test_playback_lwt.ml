@@ -338,7 +338,7 @@ let test_seekcur test_ctxt =
           | Ok _ ->
               ensure_stopped client
               >>= fun () ->
-                Lwt_io.print Lwt_io.stdout "stopped"
+                Lwt_io.print "stopped"
                 >>= fun () ->
 
                 Mpd.Playback_lwt.seekcur client 120.0
@@ -347,7 +347,7 @@ let test_seekcur test_ctxt =
                       let _  = assert_equal ~printer "Unable to next " message in
                       Lwt.return_unit
                   | Ok _ ->
-                                      Lwt_io.print Lwt_io.stdout "status after seek"
+                                      Lwt_io.print "status after seek"
                 >>= fun () ->
 Mpd.Client_lwt.status client
                       >>= function
@@ -355,7 +355,7 @@ Mpd.Client_lwt.status client
                             let _ = assert_equal ~printer "Unable to get status " message in
                             Lwt.return_unit
                         | Ok status ->
-                                                                  Lwt_io.print Lwt_io.stdout "analyse status"
+                                                                  Lwt_io.print "analyse status"
                 >>= fun () ->
 let current = Mpd.Status.song status in
                             let _ = assert_equal ~printer:string_of_int current 1 in
