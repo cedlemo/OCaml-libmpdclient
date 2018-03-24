@@ -253,6 +253,29 @@ let test_seekcur test_ctxt =
     in Mpd.Playback.stop client
   end
 
+let test_consume test_ctxt =
+  run_test begin fun client ->
+   let _ = ensure_playlist_is_loaded client in
+   let _ = if not (check_state client Mpd.Status.Stop) then
+      ignore(Mpd.Playback.stop client)
+   in
+   match Mpd.Client.status client with
+   | Error message ->
+       assert_equal ~printer "Unable to get status " message
+   | Ok status ->
+       let consume = Mpd.Status.consume status in
+       match Mpd.Playback_options.consume client (not consume) with
+       | Error (_, _, _, message) ->
+           assert_equal ~printer "Unable to set consume " message
+       | Ok _ ->
+           match Mpd.Client.status client with
+           | Error message ->
+               assert_equal ~printer "Unable to get status " message
+           | Ok status ->
+               let consume' = Mpd.Status.consume status in
+               assert_equal ~printer:string_of_bool (not consume) consume'
+  end
+
 let tests =
   "Playback and Playback_options tests" >:::
     [
@@ -263,4 +286,5 @@ let tests =
       "test playid command" >:: test_playid;
       "test seek command" >:: test_seek;
       "test seekid command" >:: test_seekid;
+      "test consume command" >:: test_consume;
     ]
