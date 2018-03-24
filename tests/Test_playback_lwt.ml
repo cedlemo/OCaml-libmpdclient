@@ -338,7 +338,7 @@ let test_seekcur test_ctxt =
               let _ = assert_equal ~printer "Unable to play " message in
               Lwt.return_unit
           | Ok _ ->
-                              Lwt_io.print "play ok"
+              Lwt_io.print "play ok"
      >>= fun () ->
        (* ensure_stopped client
               >>= fun () ->
