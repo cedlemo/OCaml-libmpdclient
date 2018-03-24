@@ -175,21 +175,23 @@ let test_play_next test_ctxt =
               let _ = assert_equal ~printer "Unable to play " message in
               Lwt.return_unit
           | Ok _ ->
-              Mpd.Playback_lwt.next client
-              >>= function
-                | Error (_, _, _, message) ->
-                    let _  = assert_equal ~printer "Unable to next " message in
-                    Lwt.return_unit
-                | Ok _ ->
-                    Mpd.Client_lwt.status client
-                    >>= function
-                      | Error message ->
-                          let _ = assert_equal ~printer "Unable to get status " message in
-                          Lwt.return_unit
-                      | Ok status ->
-                          let current = Mpd.Status.song status in
-                          let _ = assert_equal ~printer:string_of_int current 2 in
-                          Lwt.return_unit
+              begin
+                Mpd.Playback_lwt.next client
+                >>= function
+                  | Error (_, _, _, message) ->
+                      let _  = assert_equal ~printer "Unable to next " message in
+                      Lwt.return_unit
+                  | Ok _ ->
+                      Mpd.Client_lwt.status client
+                      >>= function
+                        | Error message ->
+                            let _ = assert_equal ~printer "Unable to get status " message in
+                            Lwt.return_unit
+                        | Ok status ->
+                            let current = Mpd.Status.song status in
+                            let _ = assert_equal ~printer:string_of_int current 2 in
+                            Lwt.return_unit
+              end
   end
 
 let test_play_previous test_ctxt =
