@@ -355,6 +355,34 @@ let test_seekcur test_ctxt =
                           Lwt.return_unit
   end
 
+let test_consume test_ctxt =
+  run_test begin fun client ->
+    ensure_playlist_is_loaded client
+    >>= fun () ->
+      Mpd.Client_lwt.status client
+      >>= function
+        | Error message ->
+            let _ = assert_equal ~printer "Unable to get status " message in
+            Lwt.return_unit
+        | Ok status ->
+            let consume = Mpd.Status.consume status in
+            Mpd.Playback_options_lwt.consume client (not consume)
+            >>= function
+              | Error (_, _, _, message) ->
+                  let _ = assert_equal "Unable to set consume " message in
+                  Lwt.return_unit
+              | Ok _ ->
+                  Mpd.Client_lwt.status client
+                  >>= function
+                    | Error message ->
+                        let _ = assert_equal ~printer "Unable to get status " message in
+                        Lwt.return_unit
+                    | Ok status ->
+                        let consume' = Mpd.Status.consume status in
+                        let _ = assert_equal ~printer:string_of_bool (not consume) consume' in
+                        Lwt.return_unit
+  end
+
 let tests =
   "Playback_lwt and Playback_options_lwt tests" >:::
     [
@@ -366,4 +394,5 @@ let tests =
       "Test seek" >:: test_seek;
       "Test seekid" >:: test_seekid;
       "Test seekcur" >:: test_seekcur;
+      "Test consume" >:: test_consume;
     ]
