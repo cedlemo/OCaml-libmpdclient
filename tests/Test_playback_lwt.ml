@@ -390,7 +390,7 @@ let tests =
     [
       "Test play" >:: test_play;
       "Test pause" >:: test_pause;
-      "Test play next" >:: test_play_next;
+      (*"Test play next" >:: test_play_next;*)
       "Test play previous" >:: test_play_previous;
       "Test playid" >:: test_playid;
       "Test seek" >:: test_seek;
