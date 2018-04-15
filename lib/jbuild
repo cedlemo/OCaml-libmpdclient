@@ -4,7 +4,6 @@
 (library
  ((name        Mpd)
   (public_name libmpdclient)
-  (preprocess (pps (bisect_ppx -conditional)))
   (libraries (unix lwt lwt.unix str))
  )
 )
