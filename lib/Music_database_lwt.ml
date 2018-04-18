@@ -77,7 +77,6 @@ let search_tag_to_string = function
   | Modified_since -> "modified-since"
   | Mpd_tag t -> tag_to_string t
 
-
 let search_find_wrapper cmd_name client what_list ?sort:sort_tag ?window:window () =
   let what =
     List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (search_tag_to_string tag) param) what_list
