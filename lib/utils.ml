@@ -119,7 +119,7 @@ let parse_count_response response group_tag =
       end songs
 
 let remove_trailing_new_line str =
-  if (Str.string_match (Str.regexp  "\\(\n\\|.\\)*\n") str 0 == true) then
+  if (Str.string_match (Str.regexp  "\\(\\(\n\\|.\\)*\\)\n") str 0 == true) then
     Str.matched_group 1 str
   else
     str
