@@ -146,8 +146,11 @@ let list client tag tag_list =
   let filter = tag_to_string tag |> String.capitalize_ascii in
   let tags = List.map (fun (t, p) ->
                        Printf.sprintf "%s \"%s\"" (tag_to_string t) p) tag_list
-            |> String.concat " " in
+            |> String.concat " "
+  in
   let cmd = Printf.sprintf "list %s %s" filter tags in
+  Lwt_io.write_line Lwt_io.stdout (("--" ^ cmd) ^ "--")
+  >>= fun () ->
   Client_lwt.request client cmd
   >>= function
   | Error (_, _, _, message) -> Lwt.return (Error message)
@@ -156,7 +159,9 @@ let list client tag tag_list =
       | Some r -> let split_pattern = Printf.sprintf "\\(\n\\)*%s: " filter in
       let l = match Str.split (Str.regexp split_pattern) r with
         | [] -> []
-        | h :: t -> if h = "" then t else (h :: t)
+        | h :: t ->
+            if h = "" then t
+            else let h' = Utils.remove_trailing_new_line h in (h' :: t)
       in Lwt.return (Ok l)
 
 
