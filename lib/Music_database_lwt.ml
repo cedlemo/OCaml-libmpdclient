@@ -149,8 +149,6 @@ let list client tag tag_list =
             |> String.concat " "
   in
   let cmd = Printf.sprintf "list %s %s" filter tags in
-  Lwt_io.write_line Lwt_io.stdout (("--" ^ cmd) ^ "--")
-  >>= fun () ->
   Client_lwt.request client cmd
   >>= function
   | Error (_, _, _, message) -> Lwt.return (Error message)
