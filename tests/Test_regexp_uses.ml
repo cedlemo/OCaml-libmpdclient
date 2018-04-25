@@ -220,8 +220,9 @@ let test_connection_lwt_full_mpd_idle_event test_ctxt =
 
 let test_remove_trailing_new_line test_ctxt =
   let str1 = "a string with \n" in
+  let str1' = "a string with " in
   let str2 = "a normal string" in
-  let _ = assert_equal ~printer:(fun s -> s) (str1 ^ "\n") (Utils.remove_trailing_new_line str1) in
+  let _ = assert_equal ~printer:(fun s -> s) str1' (Utils.remove_trailing_new_line str1) in
   assert_equal ~printer:(fun s -> s) str2 (Utils.remove_trailing_new_line str2)
 
 let tests =
