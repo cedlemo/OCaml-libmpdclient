@@ -18,9 +18,7 @@
 
 open OUnit2
 open Mpd
-
-let host = "127.0.0.1"
-let port = 6600
+open Test_configuration
 
 let init_client () =
   let connection = Mpd.Connection.initialize host port in

@@ -18,9 +18,7 @@
 
 open OUnit2
 open Mpd
-
-let host = "127.0.0.1"
-let port = 6600
+open Test_configuration
 
 let printer = (fun s -> s)
 
