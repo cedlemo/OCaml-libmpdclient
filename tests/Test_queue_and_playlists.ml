@@ -18,9 +18,7 @@
 
 open OUnit2
 open Mpd
-
-let host = "127.0.0.1"
-let port = 6600
+open Test_configuration
 
 let init_client () =
   let connection = Mpd.Connection.initialize host port in
@@ -33,8 +31,8 @@ let test_stored_playlists_listplaylists test_ctxt =
   let _ = match Mpd.Stored_playlists.listplaylists client with
     | None -> assert_equal ~printer:(fun s -> s) "This should not " "have been reached"
     | Some playlists -> let _ = assert_equal 2 (List.length playlists) in
-      let _ = assert_equal ~printer:(fun s -> s) "bach" (List.hd playlists) in
-      assert_equal ~printer:(fun s -> s) "bach1" (List.hd (List.tl playlists))
+      let _ = assert_equal ~printer:(fun s -> s) "bach1" (List.hd playlists) in
+      assert_equal ~printer:(fun s -> s) "bach" (List.hd (List.tl playlists))
   in Mpd.Client.close client
 
 let test_stored_playlists_load_playlist test_ctxt =
@@ -141,11 +139,11 @@ let tests =
     [
       "test stored playlists listplaylists" >:: test_stored_playlists_listplaylists;
       "test stored playlists load playlist" >:: test_stored_playlists_load_playlist;
-      "test music database find" >:: test_music_database_find;
+       "test music database find" >:: test_music_database_find;
       "test queue clear" >:: test_queue_clear;
-      "test music database findadd" >:: test_music_database_findadd;
+      (*"test music database findadd" >:: test_music_database_findadd;
       "test music database search" >:: test_music_database_search;
       "test music database searchadd" >:: test_music_database_searchadd;
       "test music database searchaddpl" >:: test_music_database_searchaddpl;
-      "test music database count" >:: test_music_database_count;
+      "test music database count" >:: test_music_database_count; *)
     ]

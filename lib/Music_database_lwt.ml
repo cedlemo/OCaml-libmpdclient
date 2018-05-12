@@ -77,7 +77,6 @@ let search_tag_to_string = function
   | Modified_since -> "modified-since"
   | Mpd_tag t -> tag_to_string t
 
-
 let search_find_wrapper cmd_name client what_list ?sort:sort_tag ?window:window () =
   let what =
     List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (search_tag_to_string tag) param) what_list
@@ -150,8 +149,6 @@ let list client tag tag_list =
             |> String.concat " "
   in
   let cmd = Printf.sprintf "list %s %s" filter tags in
-  Lwt_io.write_line Lwt_io.stdout (("--" ^ cmd) ^ "--")
-  >>= fun () ->
   Client_lwt.request client cmd
   >>= function
   | Error (_, _, _, message) -> Lwt.return (Error message)
