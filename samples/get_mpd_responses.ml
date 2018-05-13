@@ -38,9 +38,13 @@ let write_down question response =
 let queries = ["ping";
                "stop";
                "playlist";
+               "listplaylists";
+               "listplaylist zen";
                "list Artist";
                "list Album artist Nile";
-               "list Title artist Nile album Ithyphallic";]
+               "list Title artist Nile album Ithyphallic";
+               "list Title album Ithyphallic artist Nile";
+               "find artist Nile album Ithyphallic";]
 
 let () =
   let connection = Mpd.Connection.initialize host port in
