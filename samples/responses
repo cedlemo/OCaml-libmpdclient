@@ -1,0 +1,412 @@
+question -|ping
+|-
+response -|OK
+|-
+question -|stop
+|-
+response -|OK
+|-
+question -|playlist
+|-
+response -|0:file: 2005-Annihilation Of The Wicked/01-Dusk Falls Upon The Temple Of The Serpent On The Mount Of Sunrise.mp3
+1:file: 2005-Annihilation Of The Wicked/02-Cast Down The Heretic.mp3
+2:file: 2005-Annihilation Of The Wicked/03-Sacrifice Unto Sebek.mp3
+3:file: 2005-Annihilation Of The Wicked/04-User-Maat-Re.mp3
+4:file: 2005-Annihilation Of The Wicked/05-The Burning Pits Of The Duat.mp3
+5:file: 2005-Annihilation Of The Wicked/06-Chapter Of Obeisance Before Giving Breath To The Inert One In The Presence Of The Cresent Shaped Horns.mp3
+6:file: 2005-Annihilation Of The Wicked/07-Lashed To The Slave Stick.mp3
+7:file: 2005-Annihilation Of The Wicked/08-Spawn Of Uamenti.mp3
+8:file: 2005-Annihilation Of The Wicked/09-Annihilation Of The Wicked.mp3
+9:file: 2005-Annihilation Of The Wicked/10-Von Unaussprechlichen Kulten.mp3
+10:file: Nile_Ithyphallic/01-What Can Be Safely Written.mp3
+11:file: Nile_Ithyphallic/02-As He Creates So He Destroys.mp3
+12:file: Nile_Ithyphallic/03-Ithyphallic.mp3
+13:file: Nile_Ithyphallic/04-Papyrus Containing The Spell To Preserve Its Possessor Against Attacks From He Who Is In The Water.mp3
+14:file: Nile_Ithyphallic/05-Eat Of The Dead.mp3
+15:file: Nile_Ithyphallic/06-Laying Fire Upon Apep.mp3
+16:file: Nile_Ithyphallic/07-The Essential Salts.mp3
+17:file: Nile_Ithyphallic/08-The Infinity Of Stone.mp3
+18:file: Nile_Ithyphallic/09-Language Of The Shadows.mp3
+19:file: Nile_Ithyphallic/10-Even The Gods Must Die.mp3
+20:file: Nile_Ithyphallic/11-As He Creates So He Destroys (Instrumental).mp3
+21:file: Nile_Ithyphallic/12-Papyrus Containing The Spell To Preserve Its Possessor Against Attacks From He Who Is In The Water (Instrumental).mp3
+22:file: Nile-Those_Whom_The_Gods_Detest/01-Kafir.mp3
+23:file: Nile-Those_Whom_The_Gods_Detest/02-Hittite Dung Incantation.mp3
+24:file: Nile-Those_Whom_The_Gods_Detest/03-Utterances Of The Crawling Dead.mp3
+25:file: Nile-Those_Whom_The_Gods_Detest/04-Those Whom The Gods Detest.mp3
+26:file: Nile-Those_Whom_The_Gods_Detest/05-4th Arra Of Dagon.mp3
+27:file: Nile-Those_Whom_The_Gods_Detest/06-Permitting The Noble Dead To Descend To The Underworld.mp3
+28:file: Nile-Those_Whom_The_Gods_Detest/07-Yezd Desert Ghul Ritual In The Abandoned Towers Of Silence.mp3
+29:file: Nile-Those_Whom_The_Gods_Detest/08-Kem Khefa Khesef.mp3
+30:file: Nile-Those_Whom_The_Gods_Detest/09-The Eye Of Ra.mp3
+31:file: Nile-Those_Whom_The_Gods_Detest/10-Iskander Dhul Kharnon.mp3
+32:file: Nile 2012 at The Gate Of Sethu/01. Enduring The Eternal Molestation Of Flame.mp3
+33:file: Nile 2012 at The Gate Of Sethu/02. The Fiends Who Come To Steal The Magick Of The Deceased.mp3
+34:file: Nile 2012 at The Gate Of Sethu/03. The Inevitable Degradation Of Flesh.mp3
+35:file: Nile 2012 at The Gate Of Sethu/04. When My Wrath Is Done.mp3
+36:file: Nile 2012 at The Gate Of Sethu/05. Slaves Of Xul.mp3
+37:file: Nile 2012 at The Gate Of Sethu/06. The Gods Who Light Up The Sky At The Gate Of Sethu.mp3
+38:file: Nile 2012 at The Gate Of Sethu/07. Natural Liberation Of Fear Through The Ritual Deception Of Death.mp3
+39:file: Nile 2012 at The Gate Of Sethu/08. Ethno-Musicological Cannibalisms.mp3
+40:file: Nile 2012 at The Gate Of Sethu/09. Tribunal Of The Dead.mp3
+41:file: Nile 2012 at The Gate Of Sethu/10. Supreme Humanism Of Megalomania.mp3
+42:file: Nile 2012 at The Gate Of Sethu/11. The Chaining Of The Iniquitous.mp3
+43:file: Nile - What Should Not Be Unearthed (2015)/01 Call To Destruction.mp3.mp3
+44:file: Nile - What Should Not Be Unearthed (2015)/02 Negating The Abominable Coils Of Apep.mp3.mp3
+45:file: Nile - What Should Not Be Unearthed (2015)/04 In The Name Of Amun.mp3
+46:file: Nile - What Should Not Be Unearthed (2015)/05 What Should Not Be Unearthed.mp3
+47:file: Nile - What Should Not Be Unearthed (2015)/06 Evil To Cast Out Evil.mp3
+48:file: Nile - What Should Not Be Unearthed (2015)/07 Age Of Famine.mp3
+49:file: Nile - What Should Not Be Unearthed (2015)/08 Ushabti Reanimator.mp3
+50:file: Nile - What Should Not Be Unearthed (2015)/09 Rape Of The Black Earth.mp3
+51:file: Nile - What Should Not Be Unearthed (2015)/10 To Walk Forth From Flames Unscathed.mp3
+OK
+|-
+question -|listplaylists
+|-
+response -|playlist: zen
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: rtl
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: rtl2
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: bbc_radio_file_live
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: jazz-wr03-128.mp3
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: france_musique_mp3-32k
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: metal
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: europe1
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: rire
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: jazz-wr09-128.mp3
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: dodo
+Last-Modified: 2014-12-16T16:49:04Z
+playlist: france_culture_mp3-32k
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: jazz-wr01-128.mp3
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: france_bleu_armorique_mp3-32k
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: rock_heavy
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: jazzlounge-high.mp3
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: death_metal
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: jazz-wr04-128.mp3
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: jazz-wr02-128.mp3
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: bfm
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: france_inter_mp3-32k
+Last-Modified: 2014-12-02T10:15:57Z
+playlist: epic.m3u
+Last-Modified: 2014-12-23T13:45:46Z
+playlist: bbc_radio_one
+Last-Modified: 2014-12-02T10:15:57Z
+OK
+|-
+question -|listplaylist zen
+|-
+response -|file: Orange_Blossom_Everything_Must_Change/01 - Maldito.mp3
+file: Orange_Blossom_Everything_Must_Change/02 - Habibi.mp3
+file: Orange_Blossom_Everything_Must_Change/03 - Cheft El Khof.mp3
+file: Orange_Blossom_Everything_Must_Change/04 - Désert Dub.mp3
+file: Orange_Blossom_Everything_Must_Change/05 - Blama.mp3
+file: Orange_Blossom_Everything_Must_Change/06 - Yazaman.mp3
+file: Orange_Blossom_Everything_Must_Change/07 - Denya.mp3
+file: Orange_Blossom_Everything_Must_Change/08 - Nafsi.mp3
+file: Orange_Blossom_Everything_Must_Change/09 - Souffrance.mp3
+file: Orange_Blossom_Everything_Must_Change/10 - Bendimina.mp3
+file: Wardruna-Runaljod-Yggdrasil-2013/01. Rotlaust Tre Fell_[plixid.com].mp3
+file: Wardruna-Runaljod-Yggdrasil-2013/02. Fehu_[plixid.com].mp3
+file: Wardruna-Runaljod-Yggdrasil-2013/03. NaudiR_[plixid.com].mp3
+file: Wardruna-Runaljod-Yggdrasil-2013/04. EhwaR_[plixid.com].mp3
+file: Wardruna-Runaljod-Yggdrasil-2013/05. AnsuR_[plixid.com].mp3
+file: Wardruna-Runaljod-Yggdrasil-2013/06. IwaR_[plixid.com].mp3
+file: Wardruna-Runaljod-Yggdrasil-2013/07. IngwaR_[plixid.com].mp3
+file: Wardruna-Runaljod-Yggdrasil-2013/08. Gibu_[plixid.com].mp3
+file: Wardruna-Runaljod-Yggdrasil-2013/09. Solringen_[plixid.com].mp3
+file: Wardruna-Runaljod-Yggdrasil-2013/10. Sowelu_[plixid.com].mp3
+file: Fever Ray/01 If I Had A Heart.mp3
+file: Fever Ray/02 When I Grow Up.mp3
+file: Fever Ray/03 Dry And Dusty.mp3
+file: Fever Ray/04 Seven.mp3
+file: Fever Ray/05 Triangle Walks.mp3
+file: Fever Ray/06 Concrete Walls.mp3
+file: Fever Ray/07 Now's The Only Time I Know.mp3
+file: Fever Ray/08 I'm Not Done.mp3
+file: Fever Ray/09 Keep The Streets Empty For Me.mp3
+file: Fever Ray/10 Coconut.mp3
+OK
+|-
+question -|list Artist
+|-
+response -|Artist:
+Artist: Abbath
+Artist: Al'Tarba
+Artist: All India Radio
+Artist: Anamar (PREVIEW: buy it at www.magnatune.com)
+Artist: Azam Ali
+Artist: Azam Ali, Loga Ramin Torkian
+Artist: Beastie Boys
+Artist: Bedowyn
+Artist: Bernard Lavilliers
+Artist: Binärpilot
+Artist: Björk
+Artist: Blonde Redhead
+Artist: Boules de Feu
+Artist: Chinese Man
+Artist: David TMX
+Artist: Diablo Swing Orchestra
+Artist: Dubphonic
+Artist: Dying Humanity
+Artist: Emiliana Torrini
+Artist: Ensemble Sreteniye (PREVIEW: buy it at www.magnatune.com)
+Artist: Fever Ray
+Artist: Finntroll
+Artist: Firespawn
+Artist: Firespawn, Firespawn
+Artist: Fleshgod Apocalypse
+Artist: GWAR
+Artist: Gamma Ray
+Artist: Ghost
+Artist: Ghost B.C.
+Artist: Gilgamesh
+Artist: Glen Hansard
+Artist: Gloryhammer
+Artist: Gogol Bordello
+Artist: Gojira
+Artist: Gorillaz
+Artist: Gwar
+Artist: HammerFall
+Artist: Hatebreed
+Artist: Helloween
+Artist: Holy Pain
+Artist: Hot Chip
+Artist: Hungry Lucy
+Artist: IAM
+Artist: Immortal
+Artist: Jace Everett
+Artist: Jedi Mind Tricks
+Artist: Jedi Mind Tricks Presents Army
+Artist: Jedi_Mind_Tricks
+Artist: Jesse_Manno
+Artist: Kid Cudi
+Artist: Kitka (PREVIEW: buy it at www.magnatune.com)
+Artist: Krisiun
+Artist: Kronos
+Artist: Kyzer Soze
+Artist: Loikaemie
+Artist: Melechesh
+Artist: Moonspell
+Artist: Morcheeba
+Artist: Moriarty
+Artist: Motörhead
+Artist: Mountain Witch
+Artist: NanowaR
+Artist: Napalm Death
+Artist: Nick Cave & The Bad Seeds
+Artist: Nick Cave And The Bad Seeds
+Artist: Nile
+Artist: Niyaz
+Artist: No Más - La Banda
+Artist: No one is innocent
+Artist: Noctiferia
+Artist: Non Phixion
+Artist: OM
+Artist: Opeth
+Artist: Orange Blossom
+Artist: Origin
+Artist: Paradise Lost
+Artist: Portishead
+Artist: Samael
+Artist: Scarab
+Artist: Septic Flesh
+Artist: Septicflesh
+Artist: Serge Gainsbourg
+Artist: Shiva In Exile
+Artist: Six Feet Under
+Artist: Slagsmaalsklubben
+Artist: Slagsmalsklubben
+Artist: Slagsmålsklubben
+Artist: Wovenhand
+Artist: Year Of The Goat
+Artist: Yngwie Malmsteen's Rising Force
+Artist: Zephyrus (PREVIEW: buy it at www.magnatune.com)
+Artist: hot_bitch_arsenal
+Artist: jedi mind tricks
+Artist: woven hand
+OK
+|-
+question -|list Album artist Nile
+|-
+response -|Album: Annihilation Of The Wicked
+Album: At The Gates Of Sethu
+Album: Ithyphallic
+Album: Those Whom The Gods Detest
+Album: What Should Not Be Unearthed
+OK
+|-
+question -|list Title artist Nile album Ithyphallic
+|-
+response -|Title: As He Creates So He Destroys
+Title: As He Creates So He Destroys (Instrumental)
+Title: Eat Of The Dead
+Title: Even The Gods Must Die
+Title: Ithyphallic
+Title: Language Of The Shadows
+Title: Laying Fire Upon Apep
+Title: Papyrus Containing The Spell To Preserve Its Possessor Against Attacks From He Who Is In The Water
+Title: Papyrus Containing The Spell To Preserve Its Possessor Against Attacks From He Who Is In The Water (Instrumental)
+Title: The Essential Salts
+Title: The Infinity Of Stone
+Title: What Can Be Safely Written
+OK
+|-
+question -|list Title album Ithyphallic artist Nile
+|-
+response -|Title: As He Creates So He Destroys
+Title: As He Creates So He Destroys (Instrumental)
+Title: Eat Of The Dead
+Title: Even The Gods Must Die
+Title: Ithyphallic
+Title: Language Of The Shadows
+Title: Laying Fire Upon Apep
+Title: Papyrus Containing The Spell To Preserve Its Possessor Against Attacks From He Who Is In The Water
+Title: Papyrus Containing The Spell To Preserve Its Possessor Against Attacks From He Who Is In The Water (Instrumental)
+Title: The Essential Salts
+Title: The Infinity Of Stone
+Title: What Can Be Safely Written
+OK
+|-
+question -|find artist Nile album Ithyphallic
+|-
+response -|file: Nile_Ithyphallic/01-What Can Be Safely Written.mp3
+Last-Modified: 2012-05-03T17:57:29Z
+Time: 495
+duration: 495.046
+Artist: Nile
+Title: What Can Be Safely Written
+Album: Ithyphallic
+Track: 01/12
+Date: 2007
+Genre: Brutal Death Metal
+file: Nile_Ithyphallic/02-As He Creates So He Destroys.mp3
+Last-Modified: 2012-05-03T17:58:51Z
+Time: 276
+duration: 276.427
+Artist: Nile
+Title: As He Creates So He Destroys
+Album: Ithyphallic
+Track: 02/12
+Date: 2007
+Genre: Brutal Death Metal
+file: Nile_Ithyphallic/03-Ithyphallic.mp3
+Last-Modified: 2012-05-03T18:00:16Z
+Time: 280
+duration: 280.084
+Artist: Nile
+Title: Ithyphallic
+Album: Ithyphallic
+Track: 03/12
+Date: 2007
+Genre: Brutal Death Metal
+file: Nile_Ithyphallic/04-Papyrus Containing The Spell To Preserve Its Possessor Against Attacks From He Who Is In The Water.mp3
+Last-Modified: 2012-05-03T18:01:08Z
+Time: 177
+duration: 176.640
+Artist: Nile
+Title: Papyrus Containing The Spell To Preserve Its Possessor Against Attacks From He Who Is In The Water
+Album: Ithyphallic
+Track: 04/12
+Date: 2007
+Genre: Brutal Death Metal
+file: Nile_Ithyphallic/05-Eat Of The Dead.mp3
+Last-Modified: 2012-05-03T18:02:56Z
+Time: 389
+duration: 389.198
+Artist: Nile
+Title: Eat Of The Dead
+Album: Ithyphallic
+Track: 05/12
+Date: 2007
+Genre: Brutal Death Metal
+file: Nile_Ithyphallic/06-Laying Fire Upon Apep.mp3
+Last-Modified: 2012-05-03T18:03:44Z
+Time: 206
+duration: 205.714
+Artist: Nile
+Title: Laying Fire Upon Apep
+Album: Ithyphallic
+Track: 06/12
+Date: 2007
+Genre: Brutal Death Metal
+file: Nile_Ithyphallic/07-The Essential Salts.mp3
+Last-Modified: 2012-05-03T18:04:42Z
+Time: 232
+duration: 231.915
+Artist: Nile
+Title: The Essential Salts
+Album: Ithyphallic
+Track: 07/12
+Date: 2007
+Genre: Brutal Death Metal
+file: Nile_Ithyphallic/08-The Infinity Of Stone.mp3
+Last-Modified: 2012-05-03T18:05:13Z
+Time: 124
+duration: 124.447
+Artist: Nile
+Title: The Infinity Of Stone
+Album: Ithyphallic
+Track: 08/12
+Date: 2007
+Genre: Brutal Death Metal
+file: Nile_Ithyphallic/09-Language Of The Shadows.mp3
+Last-Modified: 2012-05-03T18:06:08Z
+Time: 211
+duration: 210.938
+Artist: Nile
+Title: Language Of The Shadows
+Album: Ithyphallic
+Track: 09/12
+Date: 2007
+Genre: Brutal Death Metal
+file: Nile_Ithyphallic/10-Even The Gods Must Die.mp3
+Last-Modified: 2012-05-03T18:08:28Z
+Time: 602
+duration: 601.730
+Artist: Nile
+Title: Even The Gods Must Die
+Album: Ithyphallic
+Track: 10/12
+Date: 2007
+Genre: Brutal Death Metal
+file: Nile_Ithyphallic/11-As He Creates So He Destroys (Instrumental).mp3
+Last-Modified: 2012-05-03T18:09:25Z
+Time: 291
+duration: 290.586
+Artist: Nile
+Title: As He Creates So He Destroys (Instrumental)
+Album: Ithyphallic
+Track: 11/12
+Date: 2007
+Genre: Brutal Death Metal
+file: Nile_Ithyphallic/12-Papyrus Containing The Spell To Preserve Its Possessor Against Attacks From He Who Is In The Water (Instrumental).mp3
+Last-Modified: 2012-05-03T18:10:00Z
+Time: 176
+duration: 176.352
+Artist: Nile
+Title: Papyrus Containing The Spell To Preserve Its Possessor Against Attacks From He Who Is In The Water (Instrumental)
+Album: Ithyphallic
+Track: 12/12
+Date: 2007
+Genre: Brutal Death Metal
+OK
+|-

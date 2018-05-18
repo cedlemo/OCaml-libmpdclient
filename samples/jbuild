@@ -15,6 +15,7 @@
 	  mpd_lwt_send_ping
 	  mpd_lwt_ping
 	  mpd_lwt_send_cmd
-	  mpd_lwt_status))
+	  mpd_lwt_status
+	  get_mpd_responses))
   (libraries (libmpdclient lwt lwt.unix)))
 )
