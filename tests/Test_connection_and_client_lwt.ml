@@ -23,72 +23,75 @@ open Lwt
 let host = "127.0.0.1"
 let port = 6600
 
+module Cnx_lwt = Connection_lwt
+module Clt_lwt = Client_lwt
+
 let init_client () =
-  Connection_lwt.initialize host port
+  Cnx_lwt.initialize host port
   >>= fun connection ->
-    Client_lwt.initialize connection
+  Clt_lwt.initialize connection
 
 let test_connection_initialize test_ctxt =
   ignore(Lwt_main.run begin
-  Connection_lwt.initialize host port
-  >>= fun connection ->
-    Connection_lwt.hostname connection
-    >>= fun h ->
+      Cnx_lwt.initialize host port
+      >>= fun connection ->
+      Cnx_lwt.hostname connection
+      >>= fun h ->
       let _ = assert_equal ~printer:(fun s -> s) host h  in
-      Connection_lwt.port connection
+      Cnx_lwt.port connection
       >>= fun p ->
       let _ = assert_equal ~printer:string_of_int port p in
-      Connection_lwt.close connection
-  end)
+      Cnx_lwt.close connection
+    end)
 
 let test_client_send test_ctxt =
   ignore(Lwt_main.run begin
-  init_client ()
-  >>= fun client ->
-    Mpd.Client_lwt.send client "ping"
-    >>= fun response ->
+      init_client ()
+      >>= fun client ->
+      Clt_lwt.send client "ping"
+      >>= fun response ->
       let _ = match response with
         | Error _ -> assert_equal ~msg:"This should not has been reached" false true
         | Ok response_opt -> match response_opt with
           | None -> assert_equal true true
           | Some response -> let msg = Printf.sprintf "response: -%s-" response in
-              assert_equal ~msg false true
+            assert_equal ~msg false true
       in
-      Mpd.Client_lwt.close client
-  end)
+      Clt_lwt.close client
+    end)
 
 let test_client_banner test_ctxt =
   ignore(Lwt_main.run begin
-    init_client ()
-    >>= fun client ->
+      init_client ()
+      >>= fun client ->
       let pattern = "MPD [0-9].[0-9][0-9].[0-9]" in
-      let banner = Mpd.Client_lwt.mpd_banner client in
+      let banner = Clt_lwt.mpd_banner client in
       let msg = Printf.sprintf "Banner : %s" banner in
       let _ = assert_equal true ~msg Str.(string_match (regexp pattern) banner 0) in
-      Mpd.Client_lwt.close client
-  end)
+      Clt_lwt.close client
+    end)
 
 let test_client_status test_ctxt =
   ignore(Lwt_main.run begin
-    init_client ()
-    >>= fun client ->
-      Client_lwt.status client
+      init_client ()
+      >>= fun client ->
+      Clt_lwt.status client
       >>= function
-        | Error message ->
-            assert_equal ~printer:(fun _ -> "This should not have been reached") true false;
-            Lwt.return_unit
-        | Ok status -> let state = Mpd.(Status.string_of_state (Status.state status)) in
-            assert_equal ~printer:(fun s -> s) "stop" state;
-            Lwt.return_unit
+      | Error message ->
+        assert_equal ~printer:(fun _ -> "This should not have been reached") true false;
+        Lwt.return_unit
+      | Ok status -> let state = Mpd.(Status.string_of_state (Status.state status)) in
+        assert_equal ~printer:(fun s -> s) "stop" state;
+        Lwt.return_unit
         >>= fun () ->
-          Mpd.Client_lwt.close client
-  end)
+        Clt_lwt.close client
+    end)
 
 let tests =
   "Connection and client lwt tests" >:::
-    [
-      "Connection lwt initialize test" >:: test_connection_initialize;
-      "Client lwt send test" >:: test_client_send;
-      "Client lwt bander" >:: test_client_banner;
-      "Client lwt status" >:: test_client_status;
-    ]
+  [
+    "Connection lwt initialize test" >:: test_connection_initialize;
+    "Client lwt send test" >:: test_client_send;
+    "Client lwt bander" >:: test_client_banner;
+    "Client lwt status" >:: test_client_status;
+  ]
