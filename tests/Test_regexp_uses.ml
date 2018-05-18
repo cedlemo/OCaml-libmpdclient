@@ -176,7 +176,7 @@ let test_music_database_count_parse_artist_woven_hand test_ctxt =
 
 let test_connection_lwt_mpd_banner_regex test_ctxt =
   let data = "OK MPD 1.23.4\n" in
-  let pattern = "OK \\(\\(\n\\|.\\)*\\)\n" in
+  let pattern = "OK \\(.*\\)\n" in
   match Str.string_match (Str.regexp pattern) data 0 with
   | false -> assert_equal ~msg:"No banner found" true false
   | true -> let result = Str.matched_group 1 data in
