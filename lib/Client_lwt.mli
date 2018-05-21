@@ -33,7 +33,7 @@ val initialize: Connection_lwt.t -> t Lwt.t
 val close: t -> unit Lwt.t
 (** Close the client *)
 
-val mpd_banner: t -> string
+val mpd_banner: t -> string Lwt.t
 (** Return the mpd banner that the server send at the first connection of the
     client. *)
 

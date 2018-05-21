@@ -30,7 +30,7 @@ let {connection = connection; _} = client in
 Connection_lwt.close connection
 
 let mpd_banner {mpd_banner = banner; _ } =
-  banner
+  Lwt.return banner
 
 let idle client =
   let {connection = connection; _} = client in
