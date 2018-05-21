@@ -34,16 +34,16 @@ let fail_with_message m =
 let gethostbyname name =
   Lwt.catch
     (fun () ->
-      Lwt_unix.gethostbyname name
-      >>= fun entry ->
-        let addrs = Array.to_list entry.Unix.h_addr_list in
-        Lwt.return addrs
+       Lwt_unix.gethostbyname name
+       >>= fun entry ->
+       let addrs = Array.to_list entry.Unix.h_addr_list in
+       Lwt.return addrs
     )
     (function
       | Not_found -> let m = Printf.sprintf "Host not found, \
-                                            Lwt_unix.gethostname: no host found\
-                                            for %s. Exiting..." name in
-          fail_with_message m
+                                             Lwt_unix.gethostname: no host found\
+                                             for %s. Exiting..." name in
+        fail_with_message m
 
       | e -> Lwt.fail e
     )
@@ -51,36 +51,36 @@ let gethostbyname name =
 let open_socket addr port =
   Lwt.catch
     (fun () ->
-      let sock = Lwt_unix.socket Lwt_unix.PF_INET Lwt_unix.SOCK_STREAM 0 in
-      let sockaddr = Lwt_unix.ADDR_INET (addr, port) in
-      Lwt_unix.connect sock sockaddr
-      >>= fun () ->
-        Lwt.return sock
+       let sock = Lwt_unix.socket Lwt_unix.PF_INET Lwt_unix.SOCK_STREAM 0 in
+       let sockaddr = Lwt_unix.ADDR_INET (addr, port) in
+       Lwt_unix.connect sock sockaddr
+       >>= fun () ->
+       Lwt.return sock
     )
     (function
       | Unix.Unix_error (error, fn_name, param_name) ->
-          let m = Printf.sprintf "%s, Unix.%s (%s): unable to open socket.
+        let m = Printf.sprintf "%s, Unix.%s (%s): unable to open socket.
                                   Exiting..."
-                                  (Unix.error_message error)
-                                  fn_name
-                                  param_name in
-          fail_with_message m
+            (Unix.error_message error)
+            fn_name
+            param_name in
+        fail_with_message m
       | e -> Lwt.fail e
     )
 
 let initialize hostname port =
   gethostbyname hostname
   >>= fun addrs ->
-    let addr = List.hd addrs in
-    open_socket addr port
-    >>= fun socket ->
-      let conn = { hostname = hostname;
-                   port = port;
-                   ip = addr;
-                   socket = socket;
-                   buffer = Bytes.empty;
-                 }
-     in Lwt.return conn
+  let addr = List.hd addrs in
+  open_socket addr port
+  >>= fun socket ->
+  let conn = { hostname = hostname;
+               port = port;
+               ip = addr;
+               socket = socket;
+               buffer = Bytes.empty;
+             }
+  in Lwt.return conn
 
 let hostname connection =
   Lwt.return connection.hostname
@@ -93,47 +93,47 @@ let buffer connection =
 
 let write conn str =
   Lwt.catch
-  (fun () ->
-    let {socket = socket; _} = conn in
-    let b = Bytes.of_string str in
-    let len = Bytes.length b in
-    Lwt_unix.send socket b 0 len []
-  )
-  (function
+    (fun () ->
+       let {socket = socket; _} = conn in
+       let b = Bytes.of_string str in
+       let len = Bytes.length b in
+       Lwt_unix.send socket b 0 len []
+    )
+    (function
       | Unix.Unix_error (error, fn_name, param_name) ->
-          let m = Printf.sprintf "%s, Unix.%s (%s): unable to write to socket \
-                                  connected to %s:%s. Exiting..."
-                                  (Unix.error_message error)
-                                  fn_name
-                                  param_name
-                                  conn.hostname
-                                  (string_of_int conn.port) in
-          fail_with_message m
+        let m = Printf.sprintf "%s, Unix.%s (%s): unable to write to socket \
+                                connected to %s:%s. Exiting..."
+            (Unix.error_message error)
+            fn_name
+            param_name
+            conn.hostname
+            (string_of_int conn.port) in
+        fail_with_message m
       | e -> Lwt.fail e
-  )
+    )
 
 let recvbytes conn =
   Lwt.catch
-  (fun () ->
-    let {socket = socket; _} = conn in
-    let maxlen = 1024 in
-    let buf = Bytes.create maxlen in
-    Lwt_unix.recv socket buf 0 maxlen []
-    >>= fun recvlen ->
-      Lwt.return Bytes.(sub buf 0 recvlen)
-  )
-  (function
+    (fun () ->
+       let {socket = socket; _} = conn in
+       let maxlen = 1024 in
+       let buf = Bytes.create maxlen in
+       Lwt_unix.recv socket buf 0 maxlen []
+       >>= fun recvlen ->
+       Lwt.return Bytes.(sub buf 0 recvlen)
+    )
+    (function
       | Unix.Unix_error (error, fn_name, param_name) ->
-          let m = Printf.sprintf "%s, Unix.%s (%s): unable to read from socket \
-                                  connected to %s:%s. Exiting..."
-                                  (Unix.error_message error)
-                                  fn_name
-                                  param_name
-                                  conn.hostname
-                                  (string_of_int conn.port) in
-          fail_with_message m
+        let m = Printf.sprintf "%s, Unix.%s (%s): unable to read from socket \
+                                connected to %s:%s. Exiting..."
+            (Unix.error_message error)
+            fn_name
+            param_name
+            conn.hostname
+            (string_of_int conn.port) in
+        fail_with_message m
       | e -> Lwt.fail e
-  )
+    )
 
 type mpd_response =
   | Incomplete
@@ -165,24 +165,29 @@ let full_mpd_idle_event mpd_data =
 
 let read connection check_full_data =
   let rec _read connection =
-    let response = Bytes.to_string connection.buffer in
-    match check_full_data response with
-    | Complete (s, u) -> let s_length = (String.length s) + u in
-        let buff_len = String.length response in
-        if s_length = buff_len then
-          let _ = connection.buffer <- Bytes.empty in
-          Lwt.return s
-        else
-          let start = s_length - 1 in
-          let length = buff_len - s_length in
-          let _ = connection.buffer <- Bytes.sub connection.buffer start length in
-          Lwt.return s
+    let buffer = Bytes.to_string connection.buffer in
+    match check_full_data buffer with
+    | Complete (response, u) ->
+      (* Lwt_io.printf "buffer -|%s|- response -|%s|-\n" buffer response
+      >>= fun () -> *)
+      let resp_len = (String.length response) + u in
+      let buff_len = String.length buffer in
+      (* check if the matched part is the same lenght than the Connection
+         buffer. If yes, the buffer can be emptied. *)
+      if resp_len = buff_len then
+        let _ = connection.buffer <- Bytes.empty in
+        Lwt.return response
+      else
+        let start = resp_len - 1 in
+        let length = buff_len - resp_len in
+        let _ = connection.buffer <- Bytes.sub connection.buffer start length in
+        Lwt.return response
     | Incomplete -> recvbytes connection
-        >>= fun b -> let buf = Bytes.cat connection.buffer b in
-        let _ = connection.buffer <- buf in
-        _read connection
-    in
-    _read connection
+      >>= fun b -> let buf = Bytes.cat connection.buffer b in
+      let _ = connection.buffer <- buf in
+      _read connection
+  in
+  _read connection
 
 let read_idle_events connection =
   read connection full_mpd_idle_event
@@ -198,19 +203,19 @@ let read_command_response connection =
 
 let close conn =
   Lwt.catch
-  (fun () ->
-    let {socket = socket; _} = conn in
-    Lwt_unix.close socket
-  )
-  (function
+    (fun () ->
+       let {socket = socket; _} = conn in
+       Lwt_unix.close socket
+    )
+    (function
       | Unix.Unix_error (error, fn_name, param_name) ->
-          let m = Printf.sprintf "%s, Unix.%s (%s): unable to read from socket \
-                                  connected to %s:%s. Exiting..."
-                                  (Unix.error_message error)
-                                  fn_name
-                                  param_name
-                                  conn.hostname
-                                  (string_of_int conn.port) in
-          fail_with_message m
+        let m = Printf.sprintf "%s, Unix.%s (%s): unable to read from socket \
+                                connected to %s:%s. Exiting..."
+            (Unix.error_message error)
+            fn_name
+            param_name
+            conn.hostname
+            (string_of_int conn.port) in
+        fail_with_message m
       | e -> Lwt.fail e
-  )
+    )
