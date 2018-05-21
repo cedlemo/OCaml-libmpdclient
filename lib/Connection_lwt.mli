@@ -17,7 +17,7 @@
  *)
 
 (** Offer functions and type in order to handle connections to the mpd server at
-   the socket level in Lwt thread. *)
+    the socket level in Lwt thread. *)
 
 open Lwt
 
