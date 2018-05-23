@@ -21,7 +21,7 @@ open Mpd
 open Test_configuration
 
 let init_client () =
-  let connection = Mpd.Connection.initialize host port in
+  let connection = Mpd.Connexion.initialize host port in
   let client = Mpd.Client.initialize connection in
   let _ = Mpd.Music_database.update client in
   client

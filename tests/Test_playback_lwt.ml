@@ -26,7 +26,7 @@ let port = 6600
 let printer = (fun s -> s)
 
 let init_client () =
-  Connection_lwt.initialize host port
+  Connexion_lwt.initialize host port
   >>= fun connection ->
     Client_lwt.initialize connection
 

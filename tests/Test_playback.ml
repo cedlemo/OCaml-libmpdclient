@@ -23,7 +23,7 @@ open Test_configuration
 let printer = (fun s -> s)
 
 let init_client () =
-  let connection = Mpd.Connection.initialize host port in
+  let connection = Mpd.Connexion.initialize host port in
   Mpd.Client.initialize connection
 
 let run_test f =

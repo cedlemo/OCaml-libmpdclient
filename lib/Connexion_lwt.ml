@@ -82,14 +82,14 @@ let initialize hostname port =
              }
   in Lwt.return conn
 
-let hostname connection =
-  Lwt.return connection.hostname
+let hostname connexion =
+  Lwt.return connexion.hostname
 
-let port connection =
-  Lwt.return connection.port
+let port connexion =
+  Lwt.return connexion.port
 
-let buffer connection =
-  Lwt.return (Bytes.to_string connection.buffer)
+let buffer connexion =
+  Lwt.return (Bytes.to_string connexion.buffer)
 
 let write conn str =
   Lwt.catch
@@ -163,43 +163,43 @@ let full_mpd_idle_event mpd_data =
   | Incomplete -> command_response mpd_data (* Check if there is an empty response that follow an noidle command *)
   | Complete response -> Complete response
 
-let read connection check_full_data =
-  let rec _read connection =
-    let buffer = Bytes.to_string connection.buffer in
+let read connexion check_full_data =
+  let rec _read connexion =
+    let buffer = Bytes.to_string connexion.buffer in
     match check_full_data buffer with
     | Complete (response, u) ->
       (* Lwt_io.printf "buffer -|%s|- response -|%s|-\n" buffer response
       >>= fun () -> *)
       let resp_len = (String.length response) + u in
       let buff_len = String.length buffer in
-      (* check if the matched part is the same lenght than the Connection
+      (* check if the matched part is the same lenght than the Connexion
          buffer. If yes, the buffer can be emptied. *)
       if resp_len = buff_len then
-        let _ = connection.buffer <- Bytes.empty in
+        let _ = connexion.buffer <- Bytes.empty in
         Lwt.return response
       else
         let start = resp_len - 1 in
         let length = buff_len - resp_len in
-        let _ = connection.buffer <- Bytes.sub connection.buffer start length in
+        let _ = connexion.buffer <- Bytes.sub connexion.buffer start length in
         Lwt.return response
-    | Incomplete -> recvbytes connection
-      >>= fun b -> let buf = Bytes.cat connection.buffer b in
-      let _ = connection.buffer <- buf in
-      _read connection
+    | Incomplete -> recvbytes connexion
+      >>= fun b -> let buf = Bytes.cat connexion.buffer b in
+      let _ = connexion.buffer <- buf in
+      _read connexion
   in
-  _read connection
+  _read connexion
 
-let read_idle_events connection =
-  read connection full_mpd_idle_event
+let read_idle_events connexion =
+  read connexion full_mpd_idle_event
 
-let read_mpd_banner connection =
-  read connection full_mpd_banner
+let read_mpd_banner connexion =
+  read connexion full_mpd_banner
 
-let read_request_response connection =
-  read connection request_response
+let read_request_response connexion =
+  read connexion request_response
 
-let read_command_response connection =
-  read connection command_response
+let read_command_response connexion =
+  read connexion command_response
 
 let close conn =
   Lwt.catch

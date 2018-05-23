@@ -22,15 +22,15 @@
 type t
 (** Client type *)
 
-val initialize: Connection.t -> t
-(** Initialize the client with a connection. *)
+val initialize: Connexion.t -> t
+(** Initialize the client with a connexion. *)
 
 val send: t -> string -> Protocol.response
 (** Send to the mpd server a command or a request. The response of the server
     is returned under the form of a Protocol.response type. *)
 
 val mpd_banner: t -> string
-(** Return the mpd banner that the server send at the first connection of the
+(** Return the mpd banner that the server send at the first connexion of the
     client. *)
 
 val status: t -> (Status.t, string) result
@@ -45,8 +45,8 @@ val password: t -> string -> Protocol.response
     plaintext password. *)
 
 val close: t -> unit
-(** Close the connection to MPD. MPD will try to send the remaining output
-    buffer before it actually closes the connection, but that cannot be
+(** Close the connexion to MPD. MPD will try to send the remaining output
+    buffer before it actually closes the connexion, but that cannot be
     guaranteed. This command will not generate a response. *)
 
 val tagtypes: t -> string list

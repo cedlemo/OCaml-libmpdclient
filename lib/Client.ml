@@ -16,20 +16,20 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-type t = {connection : Connection.t; mpd_banner : string }
+type t = {connexion : Connexion.t; mpd_banner : string }
 
-let initialize connection =
-  let message = Connection.read connection in
+let initialize connexion =
+  let message = Connexion.read connexion in
   let pattern = "OK \\(.*\\)\n" in
   let mpd_banner = match Str.string_match (Str.regexp pattern) message 0 with
   | true -> Str.matched_group 1 message
   | false -> message
-  in { connection; mpd_banner }
+  in { connexion; mpd_banner }
 
 let send client mpd_cmd =
-  let {connection = c; _} = client in
-  Connection.write c (mpd_cmd ^ "\n");
-  let response = Connection.read c in
+  let {connexion = c; _} = client in
+  Connexion.write c (mpd_cmd ^ "\n");
+  let response = Connexion.read c in
   Protocol.parse_response response
 
 let mpd_banner {mpd_banner = banner; _ } =
@@ -91,6 +91,6 @@ let tagtypes_all client =
  *)
 
 let close client =
-  let {connection = c; _} = client in
-  Connection.write c ("close\n");
-  Connection.close c;
+  let {connexion = c; _} = client in
+  Connexion.write c ("close\n");
+  Connexion.close c;

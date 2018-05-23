@@ -21,7 +21,7 @@ open Mpd
 open Test_configuration
 
 module Clt = Mpd.Client
-module Cnx = Mpd.Connection
+module Cnx = Mpd.Connexion
 
 let msg = "This should not has been reached"
 
@@ -86,9 +86,9 @@ let test_client_tagtypes test_ctxt =
   assert_equal ~printer:string_of_bool true (List.mem "Artist" tagtypes)
 
 let tests =
-  "Connection and client tests" >:::
+  "Connexion and client tests" >:::
   [
-    "Connection initialize test" >:: test_connection_initialize;
+    "Connexion initialize test" >:: test_connection_initialize;
     "Client send test" >:: test_client_send;
     "Client banner test" >:: test_client_banner;
     "Client status test" >:: test_client_status;
