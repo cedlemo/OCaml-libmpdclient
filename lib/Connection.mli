@@ -16,26 +16,26 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-(** Offer functions and type in order to handle connexions to the mpd server at
+(** Offer functions and type in order to handle connections to the mpd server at
     the socket level. *)
 
 type t
-(** connexion type *)
+(** connection type *)
 
 val initialize: string -> int -> t
-(** Create the connexion, exit if the connexion can not be initialized. *)
+(** Create the connection, exit if the connection can not be initialized. *)
 
 val hostname: t -> string
-(** Retrieve the host's string of the initialized connexion. *)
+(** Retrieve the host's string of the initialized connection. *)
 
 val port: t -> int
-(** Retrieve the port of the connexion of the initialized connexion. *)
+(** Retrieve the port of the connection of the initialized connection. *)
 
 val close: t -> unit
-(** Close the connexion *)
+(** Close the connection *)
 
 val write: t -> string -> unit
-(** Write to an Mpd connexion *)
+(** Write to an Mpd connection *)
 
 val read: t -> string
-(** Read in an Mpd connexion *)
+(** Read in an Mpd connection *)

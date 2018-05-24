@@ -20,26 +20,26 @@
  with commands and requests in Lwt threads. *)
 
 open Lwt
-open Connexion_lwt
+open Connection_lwt
 open Status
 open Protocol
 
 type t
 (** Type for a Mpd Client to be used with Lwt promises. *)
 
-val initialize: Connexion_lwt.t -> t Lwt.t
-(** Initialize the client with a connexion. *)
+val initialize: Connection_lwt.t -> t Lwt.t
+(** Initialize the client with a connection. *)
 
 val close: t -> unit Lwt.t
 (** Close the client *)
 
 val mpd_banner: t -> string Lwt.t
-(** Return the mpd banner that the server send at the first connexion of the
+(** Return the mpd banner that the server send at the first connection of the
     client. *)
 
 val idle: t -> (string, string) Pervasives.result Lwt.t
 (** Wait for an event to occur in order to return. When a Client send this
- *  command to the Mpd server throught its connexion, the Mpd server do
+ *  command to the Mpd server throught its connection, the Mpd server do
  *  not answer to any other command except the noidle command. The idea is
  *  to first cancel the promise that has send the "idle" command with
  *  Lwt.cancel and then send the noidle command to the Mpd server. An

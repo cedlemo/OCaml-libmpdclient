@@ -16,35 +16,35 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-(** Offer functions and type in order to handle connexions to the mpd server at
+(** Offer functions and type in order to handle connections to the mpd server at
     the socket level in Lwt thread. *)
 
 open Lwt
 
 type t
-(** Lwt connexion type for thread usage *)
+(** Lwt connection type for thread usage *)
 
 exception Lwt_unix_exn of string
 (** Custom exception. *)
 
 val initialize: string -> int -> t Lwt.t
-(** Create the connexion in a Lwt thread, throws an exception Mpd_Lwt_unix_exn
+(** Create the connection in a Lwt thread, throws an exception Mpd_Lwt_unix_exn
     of string when an error occurs. *)
 
 val hostname: t -> string Lwt.t
-(** Get the hostname of the current connexion. *)
+(** Get the hostname of the current connection. *)
 
 val port: t -> int Lwt.t
-(** Get the port of the current connexion. *)
+(** Get the port of the current connection. *)
 
 val buffer: t -> string Lwt.t
-(** Get the buffer used by the connexion. *)
+(** Get the buffer used by the connection. *)
 
 val recvbytes: t -> Bytes.t Lwt.t
-(** Read from the connexion. *)
+(** Read from the connection. *)
 
 val write: t -> string -> int Lwt.t
-(** Write in a Mpd connexion throught a Lwt thread. It fails
+(** Write in a Mpd connection throught a Lwt thread. It fails
     with an exception Mpd_Lwt_unix_exn of string. *)
 
 (**/**)
@@ -58,4 +58,4 @@ val read_command_response: t -> string Lwt.t
 (**/**)
 
 val close: t -> unit Lwt.t
-(** Close the connexion. *)
+(** Close the connection. *)
