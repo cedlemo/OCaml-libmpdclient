@@ -23,7 +23,7 @@ open Lwt
 let host = "127.0.0.1"
 let port = 6600
 
-module Cnx_lwt = Connexion_lwt
+module Cnx_lwt = Connection_lwt
 module Clt_lwt = Client_lwt
 
 let init_client () =
@@ -88,9 +88,9 @@ let test_client_status test_ctxt =
     end)
 
 let tests =
-  "Connexion and client lwt tests" >:::
+  "Connection and client lwt tests" >:::
   [
-    "Connexion lwt initialize test" >:: test_connection_initialize;
+    "Connection lwt initialize test" >:: test_connection_initialize;
     "Client lwt send test" >:: test_client_send;
     "Client lwt bander" >:: test_client_banner;
     "Client lwt status" >:: test_client_status;

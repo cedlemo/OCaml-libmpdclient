@@ -18,36 +18,36 @@
 
 open Lwt.Infix
 
-type t = {connexion : Connexion_lwt.t; mpd_banner : string }
+type t = {connection : Connection_lwt.t; mpd_banner : string }
 
-let initialize connexion =
-  Connexion_lwt.read_mpd_banner connexion
+let initialize connection =
+  Connection_lwt.read_mpd_banner connection
   >>= fun message ->
-  Lwt.return {connexion = connexion; mpd_banner = message}
+  Lwt.return {connection = connection; mpd_banner = message}
 
 let close client =
-let {connexion = connexion; _} = client in
-Connexion_lwt.close connexion
+let {connection = connection; _} = client in
+Connection_lwt.close connection
 
 let mpd_banner {mpd_banner = banner; _ } =
   Lwt.return banner
 
 let idle client =
-  let {connexion = connexion; _} = client in
+  let {connection = connection; _} = client in
   let cmd = "idle\n" in
-  Connexion_lwt.write connexion cmd
+  Connection_lwt.write connection cmd
   >>= function
-    | (-1) -> Lwt.return (Error "Connexion error: unable to write \"idle\" command.")
-    | _ -> Connexion_lwt.read_idle_events connexion
+    | (-1) -> Lwt.return (Error "Connection error: unable to write \"idle\" command.")
+    | _ -> Connection_lwt.read_idle_events connection
            >|= fun event_name -> Ok event_name
 
 let rec idle_loop client on_event =
-  let {connexion = connexion; _} = client in
+  let {connection = connection; _} = client in
   let cmd = "idle\n" in
-  Connexion_lwt.write connexion cmd
+  Connection_lwt.write connection cmd
   >>= function
     | (-1) -> Lwt.return () (* TODO: Should return a meaningfull value so that the user can exit on this value. *)
-    | _ -> Connexion_lwt.read_idle_events connexion
+    | _ -> Connection_lwt.read_idle_events connection
       >>= fun response ->
         on_event response
         >>= function
@@ -55,19 +55,19 @@ let rec idle_loop client on_event =
           | false -> idle_loop client on_event
 
 let send client cmd =
-  let {connexion = c; _} = client in
-  Connexion_lwt.write c (cmd ^ "\n")
+  let {connection = c; _} = client in
+  Connection_lwt.write c (cmd ^ "\n")
   >>= fun _ ->
-    Connexion_lwt.read_command_response c
+    Connection_lwt.read_command_response c
     >>= fun response ->
       let parsed_response = Protocol.parse_response response in
       Lwt.return parsed_response
 
 let request client cmd =
-  let {connexion = c; _} = client in
-  Connexion_lwt.write c (cmd ^ "\n")
+  let {connection = c; _} = client in
+  Connection_lwt.write c (cmd ^ "\n")
   >>= fun _ ->
-    Connexion_lwt.read_request_response c
+    Connection_lwt.read_request_response c
     >>= fun response ->
       let parsed_response = Protocol.parse_response response in
       Lwt.return parsed_response
@@ -92,10 +92,10 @@ let password client mdp =
 
 let noidle client =
   send client "noidle"
-  (* let {connexion = connexion; _} = client in
-  Connexion_lwt.write connexion "noidle\n"
+  (* let {connection = connection; _} = client in
+  Connection_lwt.write connection "noidle\n"
   >>= fun _ ->
-    Connexion_lwt.read_no_idle_response c
+    Connection_lwt.read_no_idle_response c
     >>= fun response ->
       let parsed_response = Protocol.parse_response response in
       Lwt.return parsed_response *)
