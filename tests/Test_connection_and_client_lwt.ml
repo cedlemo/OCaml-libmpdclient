@@ -19,9 +19,8 @@
 open OUnit2
 open Mpd
 open Lwt
+open Test_configuration
 
-let host = "127.0.0.1"
-let port = 6600
 
 module Cnx_lwt = Connection_lwt
 module Clt_lwt = Client_lwt
