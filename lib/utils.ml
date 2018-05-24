@@ -18,6 +18,14 @@
 
 (** Set of helpers for the mpdlibclient library. *)
 
+(** Remove new line char at the end of a string.*)
+let remove_trailing_new_line str =
+  let len = String.length str in
+  if len > 0 && str.[len-1] = '\n' then
+    String.sub str 0 (len-1)
+  else
+    str
+
 (** Split multiline string into a list of strings *)
 let split_lines strings =
   Str.split (Str.regexp "\n") strings
@@ -118,8 +126,4 @@ let parse_count_response response group_tag =
         else raise (EMusic_database (Printf.sprintf "Count response parsing: empty for %s" match_pattern))
       end songs
 
-let remove_trailing_new_line str =
-  if (Str.string_match (Str.regexp  "\\(\\(\n\\|.\\)*\\)\n") str 0 == true) then
-    Str.matched_group 1 str
-  else
-    str
+
