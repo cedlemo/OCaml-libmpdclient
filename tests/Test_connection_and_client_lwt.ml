@@ -65,7 +65,8 @@ let test_client_banner test_ctxt =
       init_client ()
       >>= fun client ->
       let pattern = "MPD [0-9].[0-9][0-9].[0-9]" in
-      let banner = Clt_lwt.mpd_banner client in
+      Clt_lwt.mpd_banner client
+      >>= fun banner ->
       let msg = Printf.sprintf "Banner : %s" banner in
       let _ = assert_equal true ~msg Str.(string_match (regexp pattern) banner 0) in
       Clt_lwt.close client
