@@ -166,6 +166,8 @@ let full_mpd_idle_event mpd_data =
 let read connection check_full_data =
   let rec _read connection =
     let buffer = Bytes.to_string connection.buffer in
+    (*Lwt_io.printf "buffer -|%s|-\n" buffer
+    >>= fun () ->*)
     match check_full_data buffer with
     | Complete (response, u) ->
       (* Lwt_io.printf "buffer -|%s|- response -|%s|-\n" buffer response
@@ -175,16 +177,18 @@ let read connection check_full_data =
       (* check if the matched part is the same lenght than the Connection
          buffer. If yes, the buffer can be emptied. *)
       if resp_len = buff_len then
-        let _ = connection.buffer <- Bytes.empty in
+        let () = connection.buffer <- Bytes.empty in
         Lwt.return response
       else
         let start = resp_len - 1 in
         let length = buff_len - resp_len in
-        let _ = connection.buffer <- Bytes.sub connection.buffer start length in
+        let () = connection.buffer <- Bytes.sub connection.buffer start length in
         Lwt.return response
-    | Incomplete -> recvbytes connection
-      >>= fun b -> let buf = Bytes.cat connection.buffer b in
-      let _ = connection.buffer <- buf in
+    | Incomplete ->
+      recvbytes connection
+      >>= fun b ->
+      let buf = Bytes.cat connection.buffer b in
+      let () = connection.buffer <- buf in
       _read connection
   in
   _read connection
