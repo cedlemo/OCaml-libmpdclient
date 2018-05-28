@@ -36,10 +36,10 @@ let test_connection_initialize test_ctxt =
       >>= fun connection ->
       Cnx_lwt.hostname connection
       >>= fun h ->
-      let _ = assert_equal ~printer:(fun s -> s) host h  in
+      let () = assert_equal ~printer:(fun s -> s) host h  in
       Cnx_lwt.port connection
       >>= fun p ->
-      let _ = assert_equal ~printer:string_of_int port p in
+      let () = assert_equal ~printer:string_of_int port p in
       Cnx_lwt.close connection
     end)
 
@@ -49,11 +49,13 @@ let test_client_send test_ctxt =
       >>= fun client ->
       Clt_lwt.send client "ping"
       >>= fun response ->
-      let _ = match response with
-        | Error _ -> assert_equal ~msg:"This should not has been reached" false true
+      let () = match response with
+        | Error _ ->
+          assert_equal ~msg:"This should not has been reached" false true
         | Ok response_opt -> match response_opt with
           | None -> assert_equal true true
-          | Some response -> let msg = Printf.sprintf "response: -%s-" response in
+          | Some response ->
+            let msg = Printf.sprintf "response: -%s-" response in
             assert_equal ~msg false true
       in
       Clt_lwt.close client
@@ -67,7 +69,8 @@ let test_client_banner test_ctxt =
       Clt_lwt.mpd_banner client
       >>= fun banner ->
       let msg = Printf.sprintf "Banner : %s" banner in
-      let _ = assert_equal true ~msg Str.(string_match (regexp pattern) banner 0) in
+      let () =
+        assert_equal true ~msg Str.(string_match (regexp pattern) banner 0) in
       Clt_lwt.close client
     end)
 
@@ -78,9 +81,11 @@ let test_client_status test_ctxt =
       Clt_lwt.status client
       >>= function
       | Error message ->
-        assert_equal ~printer:(fun _ -> "This should not have been reached") true false;
+        let printer = fun _ -> "This should not have been reached" in
+        assert_equal ~printer true false;
         Lwt.return_unit
-      | Ok status -> let state = Mpd.(Status.string_of_state (Status.state status)) in
+      | Ok status ->
+        let state = Mpd.(Status.string_of_state (Status.state status)) in
         assert_equal ~printer:(fun s -> s) "stop" state;
         Lwt.return_unit
         >>= fun () ->
@@ -90,8 +95,8 @@ let test_client_status test_ctxt =
 let tests =
   "Connection and client lwt tests" >:::
   [
-    "Connection lwt initialize test" >:: test_connection_initialize;
-    "Client lwt send test" >:: test_client_send;
-    "Client lwt bander" >:: test_client_banner;
+    (*"Connection lwt initialize test" >:: test_connection_initialize;
+    "Client lwt status" >:: test_client_status;*)
+    "Client lwt banner" >:: test_client_banner;
     "Client lwt status" >:: test_client_status;
   ]
