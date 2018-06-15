@@ -1,6 +1,6 @@
 (executables
  ((names (test))
-  (libraries (libmpdclient lwt lwt.unix unix oUnit))
+  (libraries (libmpdclient lwt lwt.unix unix oUnit logs logs.lwt logs.fmt))
 ))
 
 (alias
