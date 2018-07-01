@@ -23,7 +23,7 @@ type t =
     port : int;
     ip : Unix.inet_addr;
     socket : Lwt_unix.file_descr;
-    mutable buffer : Bytes.t;
+    mutable buffer : string;
   }
 
 exception Lwt_unix_exn of string
@@ -78,7 +78,7 @@ let initialize hostname port =
                port = port;
                ip = addr;
                socket = socket;
-               buffer = Bytes.empty;
+               buffer = "";
              }
   in Lwt.return conn
 
@@ -89,7 +89,7 @@ let port connection =
   Lwt.return connection.port
 
 let buffer connection =
-  Lwt.return (Bytes.to_string connection.buffer)
+  Lwt.return connection.buffer
 
 let write conn str =
   Lwt.catch
@@ -160,36 +160,28 @@ let command_response mpd_data =
 let full_mpd_idle_event mpd_data =
   let pattern = "changed: \\(\\(\n\\|.\\)*\\)OK\n" in
   match check_full_response mpd_data pattern 1 12 with
-  | Incomplete -> command_response mpd_data (* Check if there is an empty response that follow an noidle command *)
+  (* Check if there is an empty response that follow an noidle command *)
+  | Incomplete -> command_response mpd_data
   | Complete response -> Complete response
 
-let read connection check_full_data =
-  let rec _read connection =
-    let buffer = Bytes.to_string connection.buffer in
-    (*Lwt_io.printf "buffer -|%s|-\n" buffer
-    >>= fun () ->*)
-    match check_full_data buffer with
-    | Complete (response, u) ->
-      (* Lwt_io.printf "buffer -|%s|- response -|%s|-\n" buffer response
-      >>= fun () -> *)
+let read connection fn_to_check_for_pattern =
+    let rec _read connection =
+    match fn_to_check_for_pattern connection.buffer with
+    | Complete (response, u) -> (
       let resp_len = (String.length response) + u in
-      let buff_len = String.length buffer in
-      (* check if the matched part is the same lenght than the Connection
-         buffer. If yes, the buffer can be emptied. *)
-      if resp_len = buff_len then
-        let () = connection.buffer <- Bytes.empty in
-        Lwt.return response
-      else
-        let start = resp_len - 1 in
-        let length = buff_len - resp_len in
-        let () = connection.buffer <- Bytes.sub connection.buffer start length in
-        Lwt.return response
-    | Incomplete ->
+      let buff_len = String.length connection.buffer in
+      let start = resp_len in
+      let length = buff_len - resp_len in
+      let () = connection.buffer <- String.sub connection.buffer start length in
+      Lwt.return response
+    )
+    | Incomplete ->(
       recvbytes connection
       >>= fun b ->
-      let buf = Bytes.cat connection.buffer b in
+      let buf = connection.buffer ^ (Bytes.to_string b) in
       let () = connection.buffer <- buf in
       _read connection
+    )
   in
   _read connection
 
@@ -208,6 +200,8 @@ let read_command_response connection =
 let close conn =
   Lwt.catch
     (fun () ->
+       Loggin.debuf "close"
+       >>= fun () ->
        let {socket = socket; _} = conn in
        Lwt_unix.close socket
     )
