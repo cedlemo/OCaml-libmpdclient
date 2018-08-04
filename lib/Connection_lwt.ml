@@ -165,23 +165,23 @@ let full_mpd_idle_event mpd_data =
   | Complete response -> Complete response
 
 let read connection fn_to_check_for_pattern =
-    let rec _read connection =
+  let rec _read connection =
     match fn_to_check_for_pattern connection.buffer with
     | Complete (response, u) -> (
-      let resp_len = (String.length response) + u in
-      let buff_len = String.length connection.buffer in
-      let start = resp_len in
-      let length = buff_len - resp_len in
-      let () = connection.buffer <- String.sub connection.buffer start length in
-      Lwt.return response
-    )
+        let resp_len = (String.length response) + u in
+        let buff_len = String.length connection.buffer in
+        let start = resp_len in
+        let length = buff_len - resp_len in
+        let () = connection.buffer <- String.sub connection.buffer start length in
+        Lwt.return response
+      )
     | Incomplete ->(
-      recvbytes connection
-      >>= fun b ->
-      let buf = connection.buffer ^ (Bytes.to_string b) in
-      let () = connection.buffer <- buf in
-      _read connection
-    )
+        recvbytes connection
+        >>= fun b ->
+        let buf = connection.buffer ^ (Bytes.to_string b) in
+        let () = connection.buffer <- buf in
+        _read connection
+      )
   in
   _read connection
 
