@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ let status client =
         | Some lines' -> let status_pairs = Utils.split_lines lines' in
             let status = Status.parse status_pairs in Lwt.return (Ok status)
     )
-    | Error (ack, ack_cmd_num, cmd, error_message) ->
+    | Error (_ack, _ack_cmd_num, _cmd, error_message) ->
         Lwt.return (Error error_message)
 
 let ping client =
