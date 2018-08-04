@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -18,106 +18,82 @@
 
 (** Status : get informations on the current status of the Mpd server. *)
 
-(** Main status type that contains all the status information of the server. *)
 type t
+(** Main status type that contains all the status information of the server. *)
 
-(** Current state (playing, pause or stopped) of the mpd server. *)
 type state = Play | Pause | Stop | ErrState
+(** Current state (playing, pause or stopped) of the mpd server. *)
 
+val string_of_state: state -> string
 (** Get the string representation of a state. *)
-val string_of_state:
-  state -> string
 
+val parse: string list -> t
 (** Parse list of strings into a Mpd Status type *)
-val parse:
-  string list -> t
 
+val volume: t -> int
 (** Get the volume level from a Mpd Status *)
-val volume:
-  t -> int
 
+val repeat: t -> bool
 (** Find out if the player is in repeat mode *)
-val repeat:
-  t -> bool
 
+val random: t -> bool
 (** Find out if the player is in random mode *)
-val random:
-  t -> bool
 
+val single: t -> bool
 (** Find out if the player is in single mode *)
-val single:
-  t -> bool
 
+val consume: t -> bool
 (** Find out if the player is in consume mode *)
-val consume:
-  t -> bool
 
+val playlist: t -> int
 (** Get the current playlist id *)
-val playlist:
-  t -> int
 
+val playlistlength: t -> int
 (** Get the current playlist length *)
-val playlistlength:
-  t -> int
 
+val state: t -> state
 (** Get the state of the player : Play / Pause / Stop *)
-val state:
-  t -> state
 
+val song: t -> int
 (** Get the song number of the current song stopped on or playing *)
-val song:
-  t -> int
 
+val songid: t -> int
 (** Get the song id of the current song stopped on or playing *)
-val songid:
-  t -> int
 
+val nextsong: t -> int
 (** Get the next song number based on the current song stopped on or playing *)
-val nextsong:
-  t -> int
 
+val nextsongid: t -> int
 (** Get the next song id based on the current song stopped on or playing *)
-val nextsongid:
-  t -> int
 
+val time: t -> string
 (** Get the total time elapsed (of current playing/paused song) *)
-val time:
-  t -> string
 
+val elapsed: t -> float
 (** Get the total time elapsed within the current song, but with higher
     resolution *)
-val elapsed:
-  t -> float
 
+val duration: t -> float
 (** Returns the totatl duration of the current song in seconds *)
-val duration:
-  t -> float
 
+val bitrate: t -> int
 (** Get the instantaneous bitrate in kbps *)
-val bitrate:
-  t -> int
 
+val xfade: t -> int
 (** Get the crossfade in seconds of the current song *)
-val xfade:
-  t -> int
 
+val mixrampdb: t -> float
 (** Get the mixramp threshold in dB *)
-val mixrampdb:
-  t -> float
 
+val mixrampdelay: t -> float
 (** Get the mixrampdelay in seconds *)
-val mixrampdelay:
-  t -> float
 
+val audio: t -> string
 (** Get information of the audio file of the current song
     (sampleRate:bits:channels) *)
-val audio:
-  t -> string
 
+val updating_db: t -> int
 (** Get the job id *)
-val updating_db:
-  t -> int
 
+val error: t -> string
 (** Get the error message if there is one *)
-val error:
-  t -> string
