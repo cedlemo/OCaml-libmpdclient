@@ -1,6 +1,3 @@
-
-(jbuild_version 1)
-
 (library
  ((name        Mpd)
   (public_name libmpdclient)
