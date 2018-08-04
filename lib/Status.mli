@@ -20,79 +20,104 @@
 
 (** Main status type that contains all the status information of the server. *)
 type t
+
 (** Current state (playing, pause or stopped) of the mpd server. *)
 type state = Play | Pause | Stop | ErrState
+
 (** Get the string representation of a state. *)
 val string_of_state:
   state -> string
+
 (** Parse list of strings into a Mpd Status type *)
 val parse:
   string list -> t
+
 (** Get the volume level from a Mpd Status *)
 val volume:
   t -> int
+
 (** Find out if the player is in repeat mode *)
 val repeat:
   t -> bool
+
 (** Find out if the player is in random mode *)
 val random:
   t -> bool
+
 (** Find out if the player is in single mode *)
 val single:
   t -> bool
+
 (** Find out if the player is in consume mode *)
 val consume:
   t -> bool
+
 (** Get the current playlist id *)
 val playlist:
   t -> int
+
 (** Get the current playlist length *)
 val playlistlength:
   t -> int
+
 (** Get the state of the player : Play / Pause / Stop *)
 val state:
   t -> state
+
 (** Get the song number of the current song stopped on or playing *)
 val song:
   t -> int
+
 (** Get the song id of the current song stopped on or playing *)
 val songid:
   t -> int
+
 (** Get the next song number based on the current song stopped on or playing *)
 val nextsong:
   t -> int
+
 (** Get the next song id based on the current song stopped on or playing *)
 val nextsongid:
   t -> int
+
 (** Get the total time elapsed (of current playing/paused song) *)
 val time:
   t -> string
+
 (** Get the total time elapsed within the current song, but with higher
     resolution *)
 val elapsed:
   t -> float
+
 (** Returns the totatl duration of the current song in seconds *)
 val duration:
   t -> float
+
 (** Get the instantaneous bitrate in kbps *)
 val bitrate:
   t -> int
+
 (** Get the crossfade in seconds of the current song *)
 val xfade:
   t -> int
+
 (** Get the mixramp threshold in dB *)
 val mixrampdb:
   t -> float
+
 (** Get the mixrampdelay in seconds *)
 val mixrampdelay:
   t -> float
+
 (** Get information of the audio file of the current song
     (sampleRate:bits:channels) *)
 val audio:
   t -> string
+
 (** Get the job id *)
 val updating_db:
   t -> int
+
 (** Get the error message if there is one *)
 val error:
   t -> string
