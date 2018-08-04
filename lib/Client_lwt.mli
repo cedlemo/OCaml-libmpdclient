@@ -19,11 +19,6 @@
 (** Provides functions and type in order to communicate to the mpd server
  with commands and requests in Lwt threads. *)
 
-open Lwt
-open Connection_lwt
-open Status
-open Protocol
-
 type t
 (** Type for a Mpd Client to be used with Lwt promises. *)
 
