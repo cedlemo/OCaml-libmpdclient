@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -86,7 +86,8 @@ let rec _build_songs_list client songs l =
   | [] -> Playlist (List.rev l)
   | h :: q -> let song_infos_request = "playlistinfo " ^ (get_song_id h) in
   match Client.send client song_infos_request with
-  | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> PlaylistError (ack_message)
+  | Protocol.Error (_ack_val, _ack_cmd_num, _ack_cmd, ack_message) ->
+    PlaylistError (ack_message)
   | Protocol.Ok (song_infos_opt) -> (
     match song_infos_opt with
     | None -> PlaylistError ("No song infos for " ^ (get_song_id h))
@@ -94,18 +95,23 @@ let rec _build_songs_list client songs l =
       _build_songs_list client q (song :: l)
   )
 
-let playlist client =
-  match Client.send client "playlist" with
-  | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> PlaylistError (ack_message)
+let _playlist_ client request =
+  match Client.send client request with
+  | Protocol.Error (_ack_val, _ack_cmd_num, _ack_cmd, ack_message) ->
+    PlaylistError (ack_message)
   | Protocol.Ok (response_opt) -> match response_opt with
     | None -> Playlist []
     | Some response -> let songs = Utils.split_lines response in
       _build_songs_list client songs []
 
+let playlist client =
+  _playlist_ client "playlist"
+
 let playlistid client id =
   let request = "playlistid " ^ (string_of_int id) in
   match Client.send client request with
-  | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> PlaylistError (ack_message)
+  | Protocol.Error (_ack_val, _ack_cmd_num, _ack_cmd, ack_message) ->
+    PlaylistError (ack_message)
   | Protocol.Ok (response_opt) -> match response_opt with
     | None -> Playlist []
     | Some response ->let song = Song.parse (Utils.split_lines response) in
@@ -113,21 +119,11 @@ let playlistid client id =
 
 let playlistfind client tag needle =
   let request = String.concat " " ["playlistfind"; tag; needle] in
-  match Client.send client request with
-  | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> PlaylistError (ack_message)
-  | Protocol.Ok (response_opt) -> match response_opt with
-    | None -> Playlist []
-    | Some response -> let songs = Utils.split_lines response in
-      _build_songs_list client songs []
+  _playlist_ client request
 
 let playlistsearch client tag needle =
   let request = String.concat " " ["playlistsearch"; tag; needle] in
-  match Client.send client request with
-  | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> PlaylistError (ack_message)
-  | Protocol.Ok (response_opt) -> match response_opt with
-    | None -> Playlist []
-    | Some response -> let songs = Utils.split_lines response in
-      _build_songs_list client songs []
+  _playlist_ client request
 
 let swap client pos1 pos2 =
   let request = String.concat " " ["swap";
