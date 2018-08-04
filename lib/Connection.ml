@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -15,9 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
-
-open Protocol
-open Utils
 
 type t =
   { hostname : string; port : int; ip : Unix.inet_addr; socket : Unix.file_descr }
