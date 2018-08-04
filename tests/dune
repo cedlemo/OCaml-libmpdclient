@@ -1,11 +1,9 @@
 (executables
- ((names (test))
-  (libraries (libmpdclient lwt lwt.unix unix oUnit logs logs.lwt logs.fmt))
-))
+  (names test)
+  (libraries libmpdclient lwt lwt.unix unix oUnit logs logs.lwt logs.fmt)
+)
 
 (alias
- ((name    runtest)
-  (deps    (test.exe))
-  (action  (run ${<}))
- )
+  (name runtest)
+  (action (run ./test.exe))
 )

@@ -1,7 +1,5 @@
-(jbuild_version 1)
-
 (executable
- ((name ompdc)
+  (name ompdc)
   (public_name ompdc)
-  (libraries (libmpdclient lwt lwt.unix cmdliner notty notty.lwt unix)))
+  (libraries libmpdclient lwt lwt.unix cmdliner notty notty.lwt unix)
 )
