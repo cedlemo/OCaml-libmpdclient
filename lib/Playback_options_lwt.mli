@@ -34,7 +34,7 @@ val mixrampdb: Client_lwt.t -> int -> Protocol.response Lwt.t
     See http://sourceforge.net/projects/mixramp *)
 
 type mixrampd_t
-(** Type for the command mixrampdelay, it can be integers for seconds or nan. *)
+(** Type for the command mixrampdelay, it can be float for seconds or nan. *)
 
 val mixrampdelay: Client_lwt.t -> mixrampd_t -> Protocol.response Lwt.t
 (** Additional time subtracted from the overlap calculated by mixrampdb. A
