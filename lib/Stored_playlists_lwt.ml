@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ open Lwt.Infix
 let listplaylists client =
   Client_lwt.request client "listplaylists"
   >>= function
-      | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> Lwt.return None
+      | Protocol.Error _ -> Lwt.return None
       | Protocol.Ok (response_opt) -> match response_opt with
         | None -> Lwt.return None
         | Some response -> let playlists = Utils.read_list_playlists response in

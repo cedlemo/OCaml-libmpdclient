@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 let listplaylists client =
   match Client.send client "listplaylists" with
-  | Protocol.Error (ack_val, ack_cmd_num, ack_cmd, ack_message)-> None
+  | Protocol.Error _ -> None
   | Protocol.Ok (response_opt) -> match response_opt with
       | None -> None
       | Some response -> Some (Utils.read_list_playlists response)
