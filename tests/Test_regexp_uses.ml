@@ -22,12 +22,12 @@ open Mpd
 let bad_branch () =
   assert_equal ~printer:(fun s -> s) "This should not " "have been reached"
 
-let test_protocol_parse_response_simple_ok test_ctxt =
+let test_protocol_parse_response_simple_ok _test_ctxt =
   match Protocol.parse_response "OK\n" with
   | Ok _ -> assert true
   | Error _ -> bad_branch ()
 
-let test_protocol_parse_response_request_ok test_ctxt =
+let test_protocol_parse_response_request_ok _test_ctxt =
   let complex_response = "test: this is a complex\nresponse: request\nOK\n" in
       match Protocol.parse_response  complex_response with
       | Error _ -> bad_branch ()
@@ -37,7 +37,7 @@ let test_protocol_parse_response_request_ok test_ctxt =
           let expected = "test: this is a complex\nresponse: request\n" in
           assert_equal ~printer:(fun s -> s) expected s
 
-let test_protocol_parse_response_error_50 test_ctxt =
+let test_protocol_parse_response_error_50 _test_ctxt =
   match Protocol.parse_response "ACK [50@1] {play} error while playing\n" with
   | Ok _ -> bad_branch ()
   | Error (er_val, cmd_num, cmd, message) ->
@@ -46,7 +46,7 @@ let test_protocol_parse_response_error_50 test_ctxt =
       cmd = "play" && message = "error while playing"
     )
 
-let test_protocol_parse_response_error_1 test_ctxt =
+let test_protocol_parse_response_error_1 _test_ctxt =
   match Protocol.parse_response "ACK [1@12] {play} error while playing\n" with
   | Ok _ -> bad_branch ()
   | Error (er_val, cmd_num, cmd, message) ->
@@ -57,7 +57,7 @@ let test_protocol_parse_response_error_1 test_ctxt =
 
 open Utils
 
-let test_num_on_num_parse_simple_int test_ctxt =
+let test_num_on_num_parse_simple_int _test_ctxt =
   let simple_int = "3" in
   match Utils.num_on_num_parse simple_int with
   | Utils.Simple n -> assert_equal  3 n
@@ -65,7 +65,7 @@ let test_num_on_num_parse_simple_int test_ctxt =
                         ~printer:string_of_int
   | _ -> assert_equal false true
 
-let test_num_on_num_parse_num_on_num test_ctxt =
+let test_num_on_num_parse_num_on_num _test_ctxt =
   let simple_int = "3/10" in
   match Utils.num_on_num_parse simple_int with
   | Utils.Num_on_num (a, b) -> assert_equal 3 a
@@ -77,7 +77,7 @@ let test_num_on_num_parse_num_on_num test_ctxt =
 
   | _ -> assert_equal false true
 
-let test_read_key_val test_ctxt =
+let test_read_key_val _test_ctxt =
   let key_val = "mykey: myvalue" in
   let {key = k; value = v} = Utils.read_key_val key_val in
   assert_equal "mykey" k;
@@ -99,7 +99,7 @@ duration: 266.472
 Pos: 10
 Id: 11"
 
-let test_song_parse test_ctxt =
+let test_song_parse _test_ctxt =
   let song = Song.parse (Utils.split_lines song) in
   assert_equal "Björk" (Song.artist song);
   assert_equal "Volta" (Song.album song);
@@ -123,7 +123,7 @@ file: jod/05. A.mp3
 file: jod/06. I.mp3
 file: jod/07. I.mp3"
 
-let test_list_playlist_response_parse test_ctxt =
+let test_list_playlist_response_parse _test_ctxt =
   let paths = Utils.read_file_paths playlist_info_list_data in
   let second = List.nth paths 1 in
   assert_equal  ~printer:(fun s ->
@@ -137,7 +137,7 @@ playlist: rtl
 Last-Modified: 2014-12-02T10:15:57Z
 "
 
-let test_listplaylists_response_parse test_ctxt =
+let test_listplaylists_response_parse _test_ctxt =
   let playlist_names = Utils.read_list_playlists listplaylists_data in
   assert_equal ~printer:(fun s -> s) "zen rtl" (String.concat " " playlist_names)
 
@@ -154,7 +154,7 @@ let count_artist_woven_hand =
   "songs: 11
 playtime: 2491
 "
-let test_music_database_count_parse_group_artist test_ctxt =
+let test_music_database_count_parse_group_artist _test_ctxt =
   try
     let count = Utils.parse_count_response count_group_artist (Some "artist") in
     let _ = assert_equal 2 (List.length count) in
@@ -171,7 +171,7 @@ let test_music_database_count_parse_group_artist test_ctxt =
 
   with Utils.EMusic_database message -> assert_equal ~printer:(fun s -> s) "" message
 
-let test_music_database_count_parse_artist_woven_hand test_ctxt =
+let test_music_database_count_parse_artist_woven_hand _test_ctxt =
   try
     let count = Utils.parse_count_response count_artist_woven_hand None in
     let _ = assert_equal 1 (List.length count) in
@@ -183,7 +183,7 @@ let test_music_database_count_parse_artist_woven_hand test_ctxt =
 
   with Utils.EMusic_database message -> assert_equal ~printer:(fun s -> s) "" message
 
-let test_connection_lwt_mpd_banner_regex test_ctxt =
+let test_connection_lwt_mpd_banner_regex _test_ctxt =
   let data = "OK MPD 1.23.4\n" in
   let pattern = "OK \\(.*\\)\n" in
   match Str.string_match (Str.regexp pattern) data 0 with
@@ -194,7 +194,7 @@ let test_connection_lwt_mpd_banner_regex test_ctxt =
       ~printer:string_of_int
       4 String.((length data) - (length result))
 
-let test_connection_lwt_request_response_regex test_ctxt =
+let test_connection_lwt_request_response_regex _test_ctxt =
   let data = "this is a test\nOK\n" in
   let pattern = "\\(\\(\n\\|.\\)*OK\n\\)" in
   match Str.string_match (Str.regexp pattern) data 0 with
@@ -205,7 +205,7 @@ let test_connection_lwt_request_response_regex test_ctxt =
       ~printer:string_of_int
       0 String.((length data) - (length result))
 
-let test_connection_lwt_command_response_regex test_ctxt =
+let test_connection_lwt_command_response_regex _test_ctxt =
   let data = "OK\ntototata\n" in
   let pattern = "^\\(OK\n\\)\\(\n\\|.\\)*" in
   match Str.string_match (Str.regexp pattern) data 0 with
@@ -216,7 +216,7 @@ let test_connection_lwt_command_response_regex test_ctxt =
       ~printer:string_of_int
       9 String.((length data) - (length result))
 
-let test_connection_lwt_command_response_regex_1 test_ctxt =
+let test_connection_lwt_command_response_regex_1 _test_ctxt =
   let data = "OK\n" in
   let pattern = "^\\(OK\n\\)\\(\n\\|.\\)*" in
   match Str.string_match (Str.regexp pattern) data 0 with
@@ -227,7 +227,7 @@ let test_connection_lwt_command_response_regex_1 test_ctxt =
       ~printer:string_of_int
       0 String.((length data) - (length result))
 
-let test_connection_lwt_full_mpd_idle_event test_ctxt =
+let test_connection_lwt_full_mpd_idle_event _test_ctxt =
   let data = "changed: mixerOK\n" in
   let pattern = "changed: \\(\\(\n\\|.\\)*\\)OK\n" in
   match Str.string_match (Str.regexp pattern) data 0 with
@@ -238,7 +238,7 @@ let test_connection_lwt_full_mpd_idle_event test_ctxt =
       ~printer:string_of_int
       12 String.((length data) - (length result))
 
-let test_remove_trailing_new_line test_ctxt =
+let test_remove_trailing_new_line _test_ctxt =
   let str1 = "a string with \n" in
   let str1' = "a string with " in
   let str2 = "a normal string" in

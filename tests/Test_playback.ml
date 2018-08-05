@@ -66,7 +66,7 @@ let check_state client s =
   | Ok status ->
        s == Mpd.Status.state status
 
-let test_play test_ctxt =
+let test_play _test_ctxt =
   run_test begin fun client ->
     let _ = ensure_playlist_is_loaded client in
     let _ = if not (check_state client Mpd.Status.Stop) then
@@ -80,7 +80,7 @@ let test_play test_ctxt =
     in Mpd.Playback.stop client
   end
 
-let test_pause test_ctxt =
+let test_pause _test_ctxt =
   run_test begin fun client ->
     let _ = ensure_playlist_is_loaded client in
     let _ = if not (check_state client Mpd.Status.Stop) then
@@ -110,7 +110,7 @@ let test_pause test_ctxt =
       Mpd.Playback.stop client
 end
 
-let test_play_next test_ctxt =
+let test_play_next _test_ctxt =
   run_test begin fun client ->
     let _ = ensure_playlist_is_loaded client in
     let _ = if not (check_state client Mpd.Status.Stop) then
@@ -129,7 +129,7 @@ let test_play_next test_ctxt =
             assert_equal ~printer:string_of_int current 2
   end
 
-let test_play_previous test_ctxt =
+let test_play_previous _test_ctxt =
   run_test begin fun client ->
     let _ = ensure_playlist_is_loaded client in
     let _ = if not (check_state client Mpd.Status.Stop) then
@@ -148,7 +148,7 @@ let test_play_previous test_ctxt =
             assert_equal ~printer:string_of_int current 1
   end
 
-let test_playid test_ctxt =
+let test_playid _test_ctxt =
   run_test begin fun client ->
     let _ = ensure_playlist_is_loaded client in
     let _ = if not (check_state client Mpd.Status.Stop) then
@@ -178,7 +178,7 @@ let test_playid test_ctxt =
     in Mpd.Playback.stop client
   end
 
-let test_seek test_ctxt =
+let test_seek _test_ctxt =
   run_test begin fun client ->
     let _ = ensure_playlist_is_loaded client in
     let _ = if not (check_state client Mpd.Status.Stop) then
@@ -197,7 +197,7 @@ let test_seek test_ctxt =
     in Mpd.Playback.stop client
   end
 
-let test_seekid test_ctxt =
+let test_seekid _test_ctxt =
   run_test begin fun client ->
     let _ = ensure_playlist_is_loaded client in
     let _ = if not (check_state client Mpd.Status.Stop) then
@@ -227,7 +227,7 @@ let test_seekid test_ctxt =
     in Mpd.Playback.stop client
   end
 
-let test_seekcur test_ctxt =
+let test_seekcur _test_ctxt =
   run_test begin fun client ->
     let _ = ensure_playlist_is_loaded client in
     let _ = if not (check_state client Mpd.Status.Stop) then
@@ -251,7 +251,7 @@ let test_seekcur test_ctxt =
     in Mpd.Playback.stop client
   end
 
-let test_consume test_ctxt =
+let test_consume _test_ctxt =
   run_test begin fun client ->
    let _ = ensure_playlist_is_loaded client in
    let _ = if not (check_state client Mpd.Status.Stop) then

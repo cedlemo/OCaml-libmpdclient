@@ -30,7 +30,7 @@ let init_client () =
   >>= fun connection ->
   Clt_lwt.initialize connection
 
-let test_connection_initialize test_ctxt =
+let test_connection_initialize _test_ctxt =
   ignore(Lwt_main.run begin
       Cnx_lwt.initialize host port
       >>= fun connection ->
@@ -43,7 +43,7 @@ let test_connection_initialize test_ctxt =
       Cnx_lwt.close connection
     end)
 
-let test_client_send test_ctxt =
+let test_client_send _test_ctxt =
   ignore(Lwt_main.run begin
       init_client ()
       >>= fun client ->
@@ -61,7 +61,7 @@ let test_client_send test_ctxt =
       Clt_lwt.close client
     end)
 
-let test_client_banner test_ctxt =
+let test_client_banner _test_ctxt =
   ignore(Lwt_main.run begin
       init_client ()
       >>= fun client ->
@@ -74,13 +74,13 @@ let test_client_banner test_ctxt =
       Clt_lwt.close client
     end)
 
-let test_client_status test_ctxt =
+let test_client_status _test_ctxt =
   ignore(Lwt_main.run begin
       init_client ()
       >>= fun client ->
       Clt_lwt.status client
       >>= function
-      | Error message ->
+      | Error _message ->
         let printer = fun _ -> "This should not have been reached" in
         assert_equal ~printer true false;
         Lwt.return_unit

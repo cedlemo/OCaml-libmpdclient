@@ -29,25 +29,25 @@ let init_client () =
   let connection = Cnx.initialize host port in
   Clt.initialize connection
 
-let test_connection_initialize test_ctxt =
+let test_connection_initialize _test_ctxt =
   let connection = Cnx.initialize host port in
   let _ = assert_equal ~printer:(fun s -> s) host (Cnx.hostname connection) in
   let _ = assert_equal ~printer:string_of_int port (Cnx.port connection) in
   Cnx.close connection
 
-let test_client_send test_ctxt =
+let test_client_send _test_ctxt =
   let client = init_client () in
   let _ = (
     match Clt.send client "ping" with
     | Error _ -> assert_equal ~msg false true
     | Ok response_opt -> match response_opt with
       | None -> assert_equal true true
-      | Some response -> assert_equal ~msg false true
+      | Some _response -> assert_equal ~msg false true
   )
   in
   Clt.close client
 
-let test_client_banner test_ctxt =
+let test_client_banner _test_ctxt =
   let client = init_client () in
   let pattern = "MPD [0-9].[0-9][0-9].[0-9]" in
   let banner = Clt.mpd_banner client in
@@ -56,32 +56,32 @@ let test_client_banner test_ctxt =
     assert_equal true ~msg Str.(string_match (regexp pattern) banner 0) in
   Clt.close client
 
-let test_client_status test_ctxt =
+let test_client_status _test_ctxt =
   let client = init_client () in
   let _ = match Client.status client with
     | Error message ->
-      assert_equal ~printer:(fun _ -> msg) true false
+      assert_equal ~printer:(fun _ -> message) true false
     | Ok status ->
       let state = Mpd.(Status.string_of_state (Status.state status)) in
       assert_equal ~printer:(fun s -> s) "stop" state
   in
   Clt.close client
 
-let test_client_ping test_ctxt =
+let test_client_ping _test_ctxt =
   let client = init_client () in
   let _ = match Clt.ping client with
     | Error _ -> assert_equal ~msg false true
     | Ok response_opt ->
       match response_opt with
       | None -> assert_equal true true
-      | Some response -> assert_equal ~msg false true
+      | Some _response -> assert_equal ~msg false true
   in
   Clt.close client
 
-let test_client_tagtypes test_ctxt =
+let test_client_tagtypes _test_ctxt =
   let client = init_client () in
   let tagtypes = Clt.tagtypes client in
-  let _ =
+  let () =
     assert_equal ~printer:string_of_bool true (List.length tagtypes > 0) in
   assert_equal ~printer:string_of_bool true (List.mem "Artist" tagtypes)
 

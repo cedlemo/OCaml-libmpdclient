@@ -95,7 +95,7 @@ let ensure_stopped client =
       >>= fun _ -> Lwt.return_unit
     else Lwt.return_unit
 
-let test_play test_ctxt =
+let test_play _test_ctxt =
   run_test begin fun client ->
     ensure_playlist_is_loaded client
     >>= fun () ->
@@ -117,7 +117,7 @@ let test_play test_ctxt =
               Mpd.Playback_lwt.stop client >>= fun _ -> Lwt.return_unit
   end
 
-let test_pause test_ctxt =
+let test_pause _test_ctxt =
   run_test begin fun client ->
     ensure_playlist_is_loaded client
     >>= fun () ->
@@ -163,7 +163,7 @@ let test_pause test_ctxt =
                                 assert_state client Mpd.Status.Stop "Stop command at end"
   end
 
-let test_play_next test_ctxt =
+let test_play_next _test_ctxt =
   run_test begin fun client ->
     ensure_playlist_is_loaded client
     >>= fun () ->
@@ -194,7 +194,7 @@ let test_play_next test_ctxt =
               end
   end
 
-let test_play_previous test_ctxt =
+let test_play_previous _test_ctxt =
   run_test begin fun client ->
     ensure_playlist_is_loaded client
     >>= fun () ->
@@ -223,7 +223,7 @@ let test_play_previous test_ctxt =
                           Lwt.return_unit
   end
 
-let test_playid test_ctxt =
+let test_playid _test_ctxt =
   run_test begin fun client ->
     ensure_playlist_is_loaded client
     >>= fun () ->
@@ -261,7 +261,7 @@ let test_playid test_ctxt =
                                   Lwt.return_unit
   end
 
-let test_seek test_ctxt =
+let test_seek _test_ctxt =
   run_test begin fun client ->
     ensure_playlist_is_loaded client
     >>= fun () ->
@@ -286,7 +286,7 @@ let test_seek test_ctxt =
                       Lwt.return_unit
   end
 
-let test_seekid test_ctxt =
+let test_seekid _test_ctxt =
   run_test begin fun client ->
     ensure_playlist_is_loaded client
     >>= fun () ->
@@ -326,7 +326,7 @@ let test_seekid test_ctxt =
                                   Lwt.return_unit
   end
 
-let test_seekcur test_ctxt =
+let test_seekcur _test_ctxt =
   run_test begin fun client ->
     ensure_playlist_is_loaded client
     >>= fun () ->
@@ -357,7 +357,7 @@ let test_seekcur test_ctxt =
                           Lwt.return_unit
   end
 
-let test_consume test_ctxt =
+let test_consume _test_ctxt =
   run_test begin fun client ->
     ensure_playlist_is_loaded client
     >>= fun () ->

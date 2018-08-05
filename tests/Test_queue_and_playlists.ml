@@ -26,7 +26,7 @@ let init_client () =
   let _ = Mpd.Music_database.update client in
   client
 
-let test_stored_playlists_listplaylists test_ctxt =
+let test_stored_playlists_listplaylists _test_ctxt =
   let client = init_client () in
   let _ = match Mpd.Stored_playlists.listplaylists client with
     | None -> assert_equal ~printer:(fun s -> s) "This should not " "have been reached"
@@ -35,7 +35,7 @@ let test_stored_playlists_listplaylists test_ctxt =
       assert_equal ~printer:(fun s -> s) "bach" (List.hd (List.tl playlists))
   in Mpd.Client.close client
 
-let test_stored_playlists_load_playlist test_ctxt =
+let test_stored_playlists_load_playlist _test_ctxt =
   let client = init_client () in
   let _ = match Mpd.Stored_playlists.load client "bach" () with
     | Error (_, _, _, message) -> assert_equal ~printer:(fun s -> s) "This should not have been reached " message
@@ -47,7 +47,7 @@ let test_stored_playlists_load_playlist test_ctxt =
       assert_equal ~printer:(fun i -> string_of_int i) 11 queue_length
   in Mpd.Client.close client
 
-let test_queue_clear test_ctxt =
+let test_queue_clear _test_ctxt =
   let client = init_client () in
   let queue = Mpd.Queue.playlist client in
   let queue_length = match queue with
@@ -65,7 +65,7 @@ let test_queue_clear test_ctxt =
         assert_equal ~printer:(fun i -> string_of_int i) 0 queue_length
   in Mpd.Client.close client
 
-let test_music_database_find test_ctxt =
+let test_music_database_find _test_ctxt =
   let open Music_database in
   let client = init_client () in
   let _ = match find client [(Mpd_tag Artist, "Bach JS")] () with
@@ -73,7 +73,7 @@ let test_music_database_find test_ctxt =
     | Ok songs -> assert_equal 11 (List.length songs)
   in Mpd.Client.close client
 
-let test_music_database_findadd test_ctxt =
+let test_music_database_findadd _test_ctxt =
   let open Music_database in
   let client = init_client () in
   let _ = match findadd client [(Mpd_tag Artist, "Bach JS")] with
@@ -89,7 +89,7 @@ let test_music_database_findadd test_ctxt =
   let _ = Mpd.Queue.clear client in
   Mpd.Client.close client
 
-let test_music_database_search test_ctxt =
+let test_music_database_search _test_ctxt =
   let open Music_database in
   let client = init_client () in
   let _ = match search client [(Mpd_tag Artist, "bACH js")] () with
@@ -99,7 +99,7 @@ let test_music_database_search test_ctxt =
   let _ = Mpd.Queue.clear client in
   Mpd.Client.close client
 
-let test_music_database_searchadd test_ctxt =
+let test_music_database_searchadd _test_ctxt =
   let open Music_database in
   let client = init_client () in
   let _ = match searchadd client [(Mpd_tag Artist, "bACH js")] with
@@ -115,7 +115,7 @@ let test_music_database_searchadd test_ctxt =
   let _ = Mpd.Queue.clear client in
   Mpd.Client.close client
 
-let test_music_database_searchaddpl test_ctxt =
+let test_music_database_searchaddpl _test_ctxt =
   let open Music_database in
   let client = init_client () in
   let new_playlist = "searchaddpl_new_playlist" in
@@ -127,7 +127,7 @@ let test_music_database_searchaddpl test_ctxt =
           assert_bool "searchaddpl test: new playlistname not found" (List.mem new_playlist playlists)
   in Mpd.Client.close client
 
-let test_music_database_count test_ctxt =
+let test_music_database_count _test_ctxt =
   let open Music_database in
   let client = init_client () in
   match count client [] ?group:(Some Artist) () with
