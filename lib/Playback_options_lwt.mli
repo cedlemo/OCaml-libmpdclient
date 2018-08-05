@@ -33,7 +33,9 @@ val mixrampdb: Client_lwt.t -> int -> Protocol.response Lwt.t
     In the absence of mixramp tags crossfading will be used.
     See http://sourceforge.net/projects/mixramp *)
 
-type mixrampd_t
+type mixrampd_t =
+  | Nan
+  | Seconds of float
 (** Type for the command mixrampdelay, it can be float for seconds or nan. *)
 
 val mixrampdelay: Client_lwt.t -> mixrampd_t -> Protocol.response Lwt.t
@@ -54,7 +56,11 @@ val single: Client_lwt.t -> bool -> Protocol.response Lwt.t
     activated, playback is stopped after current song, or song is repeated if
     the 'repeat' mode is enabled. *)
 
-type gain_mode_t
+type gain_mode_t =
+  | Off
+  | Track
+  | Album
+  | Auto
 (** gain_mode type for the command replay_gain_mode. *)
 
 val replay_gain_mode: Client_lwt.t -> gain_mode_t -> Protocol.response Lwt.t
