@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 
 open Lwt.Infix
 open Notty
-open Notty_lwt
 open Ompdc_common
 
 module Terminal = Notty_lwt.Term
@@ -66,7 +65,7 @@ let gen_state_img status =
 let gen_volume_img status =
   I.(strf ~attr:A.(fg white)   "[volume] : %d" status.volume)
 
-let gen_playlist_img status (w, h) =
+let gen_playlist_img status (w, _h) =
   match status.queue with
   | PlaylistError message -> Lwt.return I.(strf ~attr:A.(fg red) "Error: %s" message)
   | Playlist songs ->
@@ -107,7 +106,7 @@ let rec loop term (e, t) dim client status =
   (e <?> t) >>= function
   | `End | `Key (`Escape, []) | `Key (`ASCII 'C', [`Ctrl]) ->
       Mpd.Client_lwt.close client
-  | `Mpd_event event_name ->
+  | `Mpd_event _event_name ->
       fetch_status client
       >>= fun status' ->
         render status' dim
@@ -147,9 +146,9 @@ let idle common_opts =
   let open Mpd in
   let {host; port} = common_opts in
   let main_thread =
-    Mpd.Connection_lwt.initialize host port
+    Connection_lwt.initialize host port
     >>= fun connection ->
-      Mpd.Client_lwt.initialize connection
+      Client_lwt.initialize connection
       >>= fun client ->
         interface client
   in

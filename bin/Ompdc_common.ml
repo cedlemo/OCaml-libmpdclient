@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ let sdocs = Manpage.s_common_options
 let docs = Manpage.s_common_options
 let exits = Term.default_exits
 
-let help copts man_format cmds topic = match topic with
+let help _copts man_format cmds topic = match topic with
 | None -> `Help (`Pager, None) (* help about the program. *)
 | Some topic ->
     let topics = "topics" :: "patterns" :: "environment" :: cmds in
@@ -33,7 +33,7 @@ let help copts man_format cmds topic = match topic with
     | `Error e -> `Error (false, e)
     | `Ok t when t = "topics" -> List.iter print_endline topics; `Ok ()
     | `Ok t when List.mem t cmds -> `Help (man_format, Some t)
-    | `Ok t ->
+    | `Ok _ ->
         let page = (topic, 7, "", "", ""), [`S topic; `P "Say something";] in
         `Ok (Cmdliner.Manpage.print man_format Format.std_formatter page)
 
@@ -93,7 +93,7 @@ let check_for_mpd_error mpd_response =
       | None -> ""
       | Some str -> "Mpd response: " ^ str
     )
-    | Error (ack_error, ack_cmd_num, ack_cmd, ack_message) ->
+    | Error (ack_error, _ack_cmd_num, _ack_cmd, ack_message) ->
         String.concat " " ["Error type:";
                            Mpd.Protocol.error_name ack_error;
                            "-- error message:";
