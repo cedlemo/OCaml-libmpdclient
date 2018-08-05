@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ type mixrampd_t =
 
 let mixrampdelay client = function
   | Nan -> Client_lwt.send client "mixrampdelay nan"
-  | Seconds (s) -> Client_lwt.send client (String.concat " " ["mixrampdb";
+  | Seconds (s) -> Client_lwt.send client (String.concat " " ["mixrampdelay";
                                                               string_of_int s])
 let random client = function
   | true  -> Client_lwt.send client "random 1"
