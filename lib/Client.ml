@@ -44,7 +44,7 @@ let status client =
       | Some lines' -> let status_pairs = Utils.split_lines lines' in
            Ok (Status.parse status_pairs)
   )
-  | Error (ack, ack_cmd_num, cmd, ack_message) ->
+  | Error (ack, _ack_cmd_num, _cmd, ack_message) ->
       let message = String.concat " " ["Error type:";
                                        Protocol.error_name ack;
                                        "-- error message:";
@@ -66,7 +66,7 @@ let tagtypes client =
     | Some lines' -> let tagid_keys_vals = Utils.split_lines lines' in
        List.rev (Utils.values_of_pairs tagid_keys_vals)
   )
-  | Error (ack, ack_cmd_num, cmd, error) -> []
+  | Error (_ack, _ack_cmd_num, _cmd, _error) -> []
 (*
 (** Remove one or more tags from the list of tag types the client is
  * interested in. These will be omitted from responses to this client. *)

@@ -1,7 +1,6 @@
 open Lwt.Infix
 
 let reporter path =
-  let open Logs in
   let buf_fmt ~like =
     let b = Buffer.create 512 in
     Fmt.with_buffer ~like b,
