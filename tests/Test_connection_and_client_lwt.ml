@@ -95,8 +95,7 @@ let test_client_status _test_ctxt =
 let tests =
   "Connection and client lwt tests" >:::
   [
-    (*"Connection lwt initialize test" >:: test_connection_initialize;
-    "Client lwt status" >:: test_client_status;*)
+    "Connection lwt initialize test" >:: test_connection_initialize;
     "Client lwt banner" >:: test_client_banner;
     "Client lwt status" >:: test_client_status;
   ]
