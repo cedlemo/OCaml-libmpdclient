@@ -17,7 +17,6 @@
  *)
 
 open OUnit2
-open Mpd
 open Test_configuration
 
 let printer = (fun s -> s)
@@ -55,13 +54,13 @@ let assert_state client s test_name =
         test_name ^ (Mpd.Status.string_of_state s)
       ) s (Mpd.Status.state status)
 
-let assert_state_w_delay client s test_name =
-  let _ = Unix.sleep 2 in
+let assert_state_w_delay _client s test_name =
+  let () = Unix.sleep 2 in
   assert_state s test_name
 
 let check_state client s =
   match Mpd.Client.status client with
-  | Error message ->
+  | Error _message ->
       false
   | Ok status ->
        s == Mpd.Status.state status
