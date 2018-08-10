@@ -34,7 +34,7 @@ ENV HOME=/home/ocaml-libmpdclient
 COPY . /home/ocaml-libmpdclient/ocaml-libmpdclient
 RUN sudo chown -R $U:$U $WDIR
 WORKDIR /home/ocaml-libmpdclient/ocaml-libmpdclient
-RUN opam init --comp 4.06.0 \
+RUN opam init --comp 4.07.0 \
   && opam install lwt cmdliner jbuilder odoc ounit bisect_ppx dune
 RUN mkdir -p $TMP/mpd/music && mkdir $TMP/mpd/playlists \
   && cp $WDIR/.travis/mpd.conf $TMP/mpd/mpd.conf \
