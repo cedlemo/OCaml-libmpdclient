@@ -277,9 +277,9 @@ let tests =
   "Playback and Playback_options tests" >:::
     [
       "test play command" >:: test_play;
-      (* "test pause command" >:: test_pause;
+      "test pause command" >:: test_pause;
       "test play next command" >:: test_play_next;
-      "test play previous command" >:: test_play_previous;
+      (*"test play previous command" >:: test_play_previous;
       "test playid command" >:: test_playid;
       "test seek command" >:: test_seek;
       "test seekid command" >:: test_seekid;
