@@ -25,10 +25,9 @@ let previous client =
 let stop client =
   Client.send client "stop"
 
-let pause client arg =
-  match arg with
-  | true -> Client.send client "pause 1"
-  | _    -> Client.send client "pause 0"
+let pause client = function
+  | true  -> Client.send client "pause 1"
+  | false -> Client.send client "pause 0"
 
 let play client songpos =
   Client.send client (String.concat " " ["play"; string_of_int songpos])
