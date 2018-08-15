@@ -102,15 +102,21 @@
 
   let test_play_next _test_ctxt =
     run_test begin fun client ->
-      let () = ignore(Mpd.Playback.play client 1) in
-      match Mpd.Playback.next client with
+      match Mpd.Playback.play client 1 with
       | Error (_, _ , _, message) ->
           assert_equal ~printer "Unable to play next song " message
       | Ok _ -> match Mpd.Client.status client with
           | Error message ->
-              assert_equal ~printer "Unable to get current status " message
-          | Ok status -> let current = Mpd.Status.song status in
-              assert_equal ~printer:string_of_int current 2
+            assert_equal ~printer "Unable to get current status " message
+          | Ok status -> let first = Mpd.Status.song status in
+            match Mpd.Playback.next client with
+            | Error (_, _ , _, message) ->
+              assert_equal ~printer "Unable to play next song " message
+            | Ok _ -> match Mpd.Client.status client with
+              | Error message ->
+                  assert_equal ~printer "Unable to get current status " message
+              | Ok status -> let current = Mpd.Status.song status in
+                  assert_equal ~printer:string_of_int (first + 1) current
     end
 
   let test_play_previous _test_ctxt =
@@ -123,7 +129,7 @@
           | Error message ->
               assert_equal ~printer "Unable to get current status " message
           | Ok status -> let current = Mpd.Status.song status in
-              assert_equal ~printer:string_of_int current 1
+              assert_equal ~printer:string_of_int 1 current
     end
 
   let test_playid _test_ctxt =
@@ -223,7 +229,10 @@
                 assert_equal ~printer "Unable to get status " message
             | Ok status ->
                 let consume' = Mpd.Status.consume status in
-                assert_equal ~printer:string_of_bool (not consume) consume'
+                let () =
+                  assert_equal ~printer:string_of_bool (not consume) consume'
+                in if consume' then (* disable consume mode if on *)
+                  ignore(Mpd.Playback_options.consume client (not consume'))
     end
 
   let tests =
@@ -232,10 +241,10 @@
         "test play command" >:: test_play;
         "test pause true when status play" >:: test_pause_true_when_status_play;
         "test pause false when status pause" >:: test_pause_false_when_status_pause;
-        (* "test play next command" >:: test_play_next;
+        "test play next command" >:: test_play_next;
         "test play previous command" >:: test_play_previous;
         "test playid command" >:: test_playid;
         "test seek command" >:: test_seek;
         "test seekid command" >:: test_seekid;
-        "test consume command" >:: test_consume; *)
+        "test consume command" >:: test_consume;
       ]
