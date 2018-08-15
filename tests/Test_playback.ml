@@ -81,30 +81,34 @@
 
   let test_pause_true_when_status_play _test_ctxt =
     run_test begin fun client ->
-      let () = ignore(Mpd.Playback.play client 1) in
-      match Mpd.Playback.pause client true with
+      match Mpd.Playback.play client 1 with
       | Error (_, _ , _, message) ->
-          assert_equal ~printer "Unable to pause " message
-      | Ok _ ->
-          assert_state client Mpd.Status.Pause "Pause command true "
+          assert_equal ~printer "Unable to play " message
+      | Ok _ ->  match Mpd.Playback.pause client true with
+          | Error (_, _ , _, message) ->
+              assert_equal ~printer "Unable to pause " message
+          | Ok _ ->
+              assert_state client Mpd.Status.Pause "Pause command true "
     end
 
   let test_pause_false_when_status_pause _test_ctxt =
     run_test begin fun client ->
-      let () = ignore(Mpd.Playback.play client 1) in
-      let () = ignore(Mpd.Playback.pause client true) in
-      match Mpd.Playback.pause client false with
+      match Mpd.Playback.play client 1 with
       | Error (_, _ , _, message) ->
-          assert_equal ~printer "Unable to replay " message
-      | Ok _ ->
-          assert_state client Mpd.Status.Play "Pause command false "
+          assert_equal ~printer "Unable to play " message
+      | Ok _ ->let () = ignore(Mpd.Playback.pause client true) in
+          match Mpd.Playback.pause client false with
+          | Error (_, _ , _, message) ->
+              assert_equal ~printer "Unable to replay " message
+          | Ok _ ->
+              assert_state client Mpd.Status.Play "Pause command false "
     end
 
   let test_play_next _test_ctxt =
     run_test begin fun client ->
       match Mpd.Playback.play client 1 with
       | Error (_, _ , _, message) ->
-          assert_equal ~printer "Unable to play next song " message
+          assert_equal ~printer "Unable to play " message
       | Ok _ -> match Mpd.Client.status client with
           | Error message ->
             assert_equal ~printer "Unable to get current status " message
@@ -121,15 +125,18 @@
 
   let test_play_previous _test_ctxt =
     run_test begin fun client ->
-      let () = ignore(Mpd.Playback.play client 2) in
-      match Mpd.Playback.previous client with
+      match Mpd.Playback.play client 2 with
       | Error (_, _ , _, message) ->
-          assert_equal ~printer "Unable to play previous song " message
-      | Ok _ -> match Mpd.Client.status client with
-          | Error message ->
-              assert_equal ~printer "Unable to get current status " message
-          | Ok status -> let current = Mpd.Status.song status in
-              assert_equal ~printer:string_of_int 1 current
+          assert_equal ~printer "Unable to play " message
+      | Ok _ ->
+          match Mpd.Playback.previous client with
+          | Error (_, _ , _, message) ->
+              assert_equal ~printer "Unable to play previous song " message
+          | Ok _ -> match Mpd.Client.status client with
+              | Error message ->
+                  assert_equal ~printer "Unable to get current status " message
+              | Ok status -> let current = Mpd.Status.song status in
+                  assert_equal ~printer:string_of_int 1 current
     end
 
   let test_playid _test_ctxt =
