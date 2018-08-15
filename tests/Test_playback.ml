@@ -79,16 +79,7 @@
           assert_state client Mpd.Status.Play "Play command "
     end
 
-  let test_pause_false_when_status_stop _test_ctxt =
-    run_test begin fun client ->
-      match Mpd.Playback.pause client false with
-      | Error (_, _ , _, message) ->
-          assert_equal ~printer "Unable to disable pause " message
-      | Ok _ ->
-          assert_state client Mpd.Status.Stop "Pause command false when status stop"
-    end
-
-  let test_pause_false_when_status_play _test_ctxt =
+  let test_pause_true_when_status_play _test_ctxt =
     run_test begin fun client ->
       let () = ignore(Mpd.Playback.play client 1) in
       match Mpd.Playback.pause client true with
@@ -239,8 +230,7 @@
     "Playback and Playback_options tests" >:::
       [
         "test play command" >:: test_play;
-        "test pause false when status stop" >:: test_pause_false_when_status_stop;
-        "test pause false when status play" >:: test_pause_false_when_status_play;
+        "test pause true when status play" >:: test_pause_true_when_status_play;
         "test pause false when status pause" >:: test_pause_false_when_status_pause;
         (* "test play next command" >:: test_play_next;
         "test play previous command" >:: test_play_previous;
