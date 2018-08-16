@@ -1,5 +1,5 @@
 (*
- * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -19,18 +19,26 @@
 open Cmdliner
 open Ompdc_common
 
-let default_cmd =
-  let doc = "a Mpd client written in OCaml." in
-  let man = help_section in
-  Term.(ret (const (fun _ -> `Help (`Pager, None)) $ common_opts_t)),
-  Term.info "ompdc" ~version ~doc ~sdocs ~exits ~man
+let listplaylists common_opts =
+  let {host; port} = common_opts in
+  let client = initialize_client {host; port} in
+  let () = match Mpd.Stored_playlists.listplaylists client with
+    | Error message -> print_endline message
+    | Ok playlists -> List.iter print_endline playlists
+  in
+  Mpd.Client.close client
 
-let cmds = List.concat [Ompdc_playback.cmds;
-                        Ompdc_stored_playlists.cmds;
-                         [Ompdc_status.cmd;
-                          Ompdc_idle.cmd;
-                          Ompdc_playback_options.cmd;
-                          help_cmd]
-                       ]
+let listplaylists_t =
+    let doc = "List all the playlists"
+    in
+    let man = [
+               `S Manpage.s_description;
+               `P doc;
+               `Blocks help_section; ]
+    in
+    Term.(const listplaylists $ common_opts_t),
+    Term.info "listplaylists" ~doc ~sdocs ~exits ~man
 
-let () = Term.(exit @@ eval_choice default_cmd cmds)
+let cmds = [listplaylists_t]
+
+
