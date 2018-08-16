@@ -18,10 +18,10 @@
 
 let listplaylists client =
   match Client.send client "listplaylists" with
-  | Protocol.Error _ -> None
-  | Protocol.Ok (response_opt) -> match response_opt with
-      | None -> None
-      | Some response -> Some (Utils.read_list_playlists response)
+  | Protocol.Error (_, _ ,_ , message) -> Error message
+  | Protocol.Ok response_opt -> match response_opt with
+    | None -> Ok []
+      | Some response -> Ok (Utils.read_list_playlists response)
 
 let load client playlist ?range () =
   let request = match range with
