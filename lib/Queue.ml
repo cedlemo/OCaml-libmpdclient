@@ -87,7 +87,8 @@ let rec _build_songs_list client songs l =
   | h :: q -> let song_infos_request = "playlistinfo " ^ (get_song_id h) in
   match Client.send client song_infos_request with
   | Protocol.Error (_ack_val, _ack_cmd_num, _ack_cmd, ack_message) ->
-    PlaylistError (ack_message)
+    let message = Printf.sprintf "Song %s : %s " (get_song_id h) ack_message in
+    PlaylistError message
   | Protocol.Ok (song_infos_opt) -> (
     match song_infos_opt with
     | None -> PlaylistError ("No song infos for " ^ (get_song_id h))
