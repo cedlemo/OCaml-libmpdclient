@@ -3,7 +3,7 @@ FROM ocaml/opam:alpine_ocaml-4.06.0
 RUN \
   sudo addgroup -S ocaml-libmpdclient && sudo adduser -S -G ocaml-libmpdclient ocaml-libmpdclient
 
-RUN sudo apk update && sudo apk add git m4 mpd
+RUN sudo apk update && sudo apk add git m4 mpd mpc ncmpc
 
 RUN \
   echo "ocaml-libmpdclient ALL=(ALL:ALL) NOPASSWD:ALL" | \
