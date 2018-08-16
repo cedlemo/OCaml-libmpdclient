@@ -21,7 +21,7 @@
     and without the .m3u suffix). *)
 
 val listplaylists:
-  Client.t -> string list option
+  Client.t -> (string list, string) result
 (** Print a list of the playlist names. *)
 
 val load:
