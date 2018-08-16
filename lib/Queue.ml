@@ -34,12 +34,12 @@ let addid client uri position =
       | Some song_id -> let lines = Utils.split_lines song_id in
         let rec parse lines =
           match lines with
-            | [] -> -1
-            | line :: remain -> let { key = k; value = v} = Utils.read_key_val line in
+          | [] -> -1
+          | line :: remain -> let { key = k; value = v} = Utils.read_key_val line in
             if (k = "Id") then int_of_string v
-                                else parse remain
+            else parse remain
         in parse lines
-  )
+    )
   |Protocol.Error (_) -> -1
 
 let clear client =
@@ -47,35 +47,35 @@ let clear client =
 
 let delete client position ?position_end () =
   let cmd = match position_end with
-  |None -> String.concat " " ["delete"; string_of_int position]
-  |Some pos_end -> String.concat "" ["delete ";
-                                     string_of_int position;
-                                     ":";
-                                     string_of_int pos_end]
-in Client.send client cmd
+    |None -> String.concat " " ["delete"; string_of_int position]
+    |Some pos_end -> String.concat "" ["delete ";
+                                       string_of_int position;
+                                       ":";
+                                       string_of_int pos_end]
+  in Client.send client cmd
 
 let deleteid client id =
   Client.send client (String.concat " " ["deleteid"; string_of_int id])
 
 let move client position_from ?position_end position_to () =
   let cmd = match position_end with
-  |None -> String.concat " " ["move";
-                              string_of_int position_from;
-                              string_of_int position_to]
-  |Some pos_end -> String.concat "" ["move ";
-                                     string_of_int position_from;
-                                     ":";
-                                     string_of_int pos_end;
-                                     " ";
-                                     string_of_int position_to]
-in Client.send client cmd
+    |None -> String.concat " " ["move";
+                                string_of_int position_from;
+                                string_of_int position_to]
+    |Some pos_end -> String.concat "" ["move ";
+                                       string_of_int position_from;
+                                       ":";
+                                       string_of_int pos_end;
+                                       " ";
+                                       string_of_int position_to]
+  in Client.send client cmd
 
 let moveid client id position_to =
   Client.send client (String.concat " " ["moveid";
-                                            string_of_int id;
-                                            string_of_int position_to])
+                                         string_of_int id;
+                                         string_of_int position_to])
 
-let get_song_id song =
+let get_song_pos song =
   let pattern = "\\([0-9]+\\):file:.*" in
   let found = Str.string_match (Str.regexp pattern) song 0 in
   if found then Str.matched_group 1 song
@@ -84,17 +84,21 @@ let get_song_id song =
 let rec _build_songs_list client songs l =
   match songs with
   | [] -> Playlist (List.rev l)
-  | h :: q -> let song_infos_request = "playlistinfo " ^ (get_song_id h) in
-  match Client.send client song_infos_request with
-  | Protocol.Error (_ack_val, _ack_cmd_num, _ack_cmd, ack_message) ->
-    let message = Printf.sprintf "Song %s : %s " (get_song_id h) ack_message in
-    PlaylistError message
-  | Protocol.Ok (song_infos_opt) -> (
-    match song_infos_opt with
-    | None -> PlaylistError ("No song infos for " ^ (get_song_id h))
-    | Some song_infos -> let song = Song.parse (Utils.split_lines song_infos) in
-      _build_songs_list client q (song :: l)
-  )
+  | h :: q -> let song_infos_request = "playlistinfo " ^ (get_song_pos h) in
+    match Client.send client song_infos_request with
+    | Protocol.Error (_ack_val, _ack_cmd_num, _ack_cmd, ack_message) ->
+      let message =
+        Printf.sprintf "Song %s : %s " (get_song_pos h) ack_message in
+      PlaylistError message
+    | Protocol.Ok (song_infos_opt) -> begin
+        match song_infos_opt with
+        | None ->
+          let message = "No song infos for " ^ (get_song_pos h) in
+          PlaylistError message
+        | Some song_infos ->
+          let song = Song.parse (Utils.split_lines song_infos) in
+          _build_songs_list client q (song :: l)
+      end
 
 let _playlist_ client request =
   match Client.send client request with
