@@ -23,7 +23,14 @@
 
   let init_client () =
     let connection = Mpd.Connection.initialize host port in
-    Mpd.Client.initialize connection
+    let client = Mpd.Client.initialize connection in
+    let () = match Mpd.Music_database.update client None with
+      | Error (_, _, _, message) ->
+          let information = "Error when updating database " in
+          assert_equal ~printer information message
+      | Ok _ -> ()
+    in
+    client
 
   let ensure_playlist_is_loaded client =
     let queue_length () = match Mpd.Queue.playlist client with
