@@ -17,81 +17,21 @@
    *)
 
   open OUnit2
-  open Test_configuration
+  module TU = Test_utils
 
-  let printer = (fun s -> s)
-
-  let init_client () =
-    let connection = Mpd.Connection.initialize host port in
-    let client = Mpd.Client.initialize connection in
-    let () = match Mpd.Music_database.update client None with
-      | Error (_, _, _, message) ->
-          let information = "Error when updating database " in
-          assert_equal ~printer information message
-      | Ok _ -> ()
-    in
-    client
-
-  let ensure_playlist_is_loaded client =
-    let queue_length () = match Mpd.Queue.playlist client with
-                          | Mpd.Queue.PlaylistError _ -> -1
-                          | Mpd.Queue.Playlist p -> List.length p
-    in
-    if queue_length () <= 0 then begin
-      match Mpd.Stored_playlists.load client "bach" () with
-      | Error (_, _, _, message) ->
-          let information = "Error when loading playlist" in
-          assert_equal ~printer information message
-      | Ok _ -> ()
-    end
-
-  let ensure_playback_is_stopped client =
-     ignore(Mpd.Playback.stop client)
-
-  let ensure_playlist_is_cleared client =
-    ignore(Mpd.Queue.clear client)
-
-  let run_test f =
-    let client = init_client () in
-    let () = ensure_playlist_is_loaded client in
-    let () = ensure_playback_is_stopped client in
-    let () = f client in
-    let () = ensure_playback_is_stopped client in
-    let () = ensure_playlist_is_cleared client in
-    Mpd.Client.close client
-
-  let assert_state client s test_name =
-    match Mpd.Client.status client with
-    | Error message ->
-        assert_equal ~printer:(fun s -> test_name ^ s)
-                     "Unable to get status" message
-    | Ok status ->
-        assert_equal ~printer:(fun s ->
-          test_name ^ (Mpd.Status.string_of_state s)
-        ) s (Mpd.Status.state status)
-
-  let assert_state_w_delay _client s test_name =
-    let () = Unix.sleep 2 in
-    assert_state s test_name
-
-  let check_state client s =
-    match Mpd.Client.status client with
-    | Error _message ->
-        false
-    | Ok status ->
-         s == Mpd.Status.state status
+  let printer = TU.printer
 
   let test_play _test_ctxt =
-    run_test begin fun client ->
+    TU.run_test begin fun client ->
       match Mpd.Playback.play client 1 with
       | Error (_, _ , _, message) ->
           assert_equal ~printer "Unable to play " message
       | Ok _ ->
-          assert_state client Mpd.Status.Play "Play command "
+          TU.assert_state client Mpd.Status.Play "Play command "
     end
 
   let test_pause_true_when_status_play _test_ctxt =
-    run_test begin fun client ->
+    TU.run_test begin fun client ->
       match Mpd.Playback.play client 1 with
       | Error (_, _ , _, message) ->
           assert_equal ~printer "Unable to play " message
@@ -99,11 +39,11 @@
           | Error (_, _ , _, message) ->
               assert_equal ~printer "Unable to pause " message
           | Ok _ ->
-              assert_state client Mpd.Status.Pause "Pause command true "
+              TU.assert_state client Mpd.Status.Pause "Pause command true "
     end
 
   let test_pause_false_when_status_pause _test_ctxt =
-    run_test begin fun client ->
+    TU.run_test begin fun client ->
       match Mpd.Playback.play client 1 with
       | Error (_, _ , _, message) ->
           assert_equal ~printer "Unable to play " message
@@ -112,11 +52,11 @@
           | Error (_, _ , _, message) ->
               assert_equal ~printer "Unable to replay " message
           | Ok _ ->
-              assert_state client Mpd.Status.Play "Pause command false "
+              TU.assert_state client Mpd.Status.Play "Pause command false "
     end
 
   let test_play_next _test_ctxt =
-    run_test begin fun client ->
+    TU.run_test begin fun client ->
       match Mpd.Playback.play client 1 with
       | Error (_, _ , _, message) ->
           assert_equal ~printer "Unable to play " message
@@ -135,7 +75,7 @@
     end
 
   let test_play_previous _test_ctxt =
-    run_test begin fun client ->
+    TU.run_test begin fun client ->
       match Mpd.Playback.play client 2 with
       | Error (_, _ , _, message) ->
           assert_equal ~printer "Unable to play " message
@@ -151,7 +91,7 @@
     end
 
   let test_playid _test_ctxt =
-    run_test begin fun client ->
+    TU.run_test begin fun client ->
       match Mpd.Playback.play client 1 with
       | Error (_, _ , _, message) ->
           assert_equal ~printer "Unable to play " message
@@ -175,7 +115,7 @@
     end
 
   let test_seek _test_ctxt =
-    run_test begin fun client ->
+    TU.run_test begin fun client ->
     match Mpd.Playback.seek client 1 120.0 with
       | Error (_, _ , _, message) ->
           assert_equal ~printer "Unable to play " message
@@ -189,7 +129,7 @@
     end
 
   let test_seekid _test_ctxt =
-    run_test begin fun client ->
+    TU.run_test begin fun client ->
       match Mpd.Playback.play client 1 with
       | Error (_, _ , _, message) ->
           assert_equal ~printer "Unable to play " message
@@ -213,7 +153,7 @@
     end
 
   let test_seekcur _test_ctxt =
-    run_test begin fun client ->
+    TU.run_test begin fun client ->
       match Mpd.Playback.play client 1 with
       | Error (_, _ , _, message) ->
           assert_equal ~printer "Unable to play " message
@@ -232,7 +172,7 @@
     end
 
   let test_consume _test_ctxt =
-    run_test begin fun client ->
+    TU.run_test begin fun client ->
     match Mpd.Client.status client with
     | Error message ->
         assert_equal ~printer "Unable to get status " message
