@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -17,61 +17,43 @@
  *)
 
 open OUnit2
-open Mpd
-open Test_configuration
+module TU = Test_utils
 
-let printer = fun s -> s
-
-let init_client () =
-  let connection = Mpd.Connection.initialize host port in
-  let client = Mpd.Client.initialize connection in
-  let _ = Mpd.Music_database.update client in
-  client
+let printer = TU.printer
+let queue_length = TU.queue_length
 
 let test_stored_playlists_listplaylists _test_ctxt =
-  let client = init_client () in
-  let _ = match Mpd.Stored_playlists.listplaylists client with
-    | None -> assert_equal ~printer "This should not " "have been reached"
-    | Some playlists -> let _ = assert_equal 2 (List.length playlists) in
-      let _ = assert_equal ~printer "bach1" (List.hd playlists) in
+  let client = TU.init_client () in
+  let () = match Mpd.Stored_playlists.listplaylists client with
+    | Error message ->
+      assert_equal ~printer "This should not have been reached" message
+    | Ok playlists ->
+      let () = assert_equal ~printer:string_of_int 2 (List.length playlists) in
+      let () = assert_equal ~printer "bach1" (List.hd playlists) in
       assert_equal ~printer "bach" (List.hd (List.tl playlists))
   in Mpd.Client.close client
 
-let test_stored_playlists_load_playlist _test_ctxt =
-  let client = init_client () in
-  let _ = match Mpd.Stored_playlists.load client "bach" () with
+let test_stored_playlists_load_playlist_and_clear _test_ctxt =
+  let client = TU.init_client () in
+  let () = begin match Mpd.Stored_playlists.load client "bach" () with
     | Error (_, _, _, message) ->
       assert_equal ~printer "This should not have been reached " message
-    | Ok _ -> let queue = Mpd.Queue.playlist client in
-      let queue_length = match queue with
-                         | Mpd.Queue.PlaylistError _ -> -1
-                         | Mpd.Queue.Playlist p -> List.length p
-      in
-      assert_equal ~printer:(fun i -> string_of_int i) 11 queue_length
+    | Ok _ ->
+      let len = queue_length client in
+      let () =  assert_equal ~printer:string_of_int 11 len in
+      match Mpd.Queue.clear client with
+      | Error (_, _, _, message) ->
+          assert_equal ~printer "This should not have been reached " message
+      | Ok _ -> begin
+          let len = queue_length client in
+          assert_equal ~printer:string_of_int 0 len
+        end
+  end
   in Mpd.Client.close client
 
-let test_queue_clear _test_ctxt =
-  let client = init_client () in
-(*  let queue = Mpd.Queue.playlist client in
-  let queue_length = match queue with
-                     | Mpd.Queue.PlaylistError _ -> -1
-                     | Mpd.Queue.Playlist p -> List.length p
-  in
-  let _ = assert_equal ~printer:(fun i -> string_of_int i) 11 queue_length in*)
-  let _ = match Mpd.Queue.clear client with
-    | Error (_, _, _, message) ->
-      assert_equal ~printer "This should not have been reached " message
-    | Ok _ -> let queue = Mpd.Queue.playlist client in
-        let queue_length = match queue with
-                           | Mpd.Queue.PlaylistError _ -> -1
-                           | Mpd.Queue.Playlist p -> List.length p
-        in
-        assert_equal ~printer:(fun i -> string_of_int i) 0 queue_length
-  in Mpd.Client.close client
-
-let test_music_database_find _test_ctxt =
-  let open Music_database in
-  let client = init_client () in
+(* let test_music_database_find _test_ctxt =
+  let open Mpd.Music_database in
+  let client = TU.init_client () in
   let _ = match find client [(Mpd_tag Artist, "Bach JS")] () with
     | Error (_, _, _, error) ->
       assert_equal ~printer "This should not have been reached " error
@@ -144,13 +126,13 @@ let test_music_database_count _test_ctxt =
   match count client [] ?group:(Some Artist) () with
   | Error message -> assert_equal ~printer:(fun s -> s) "This should not have been reached " message
   | Ok counts -> assert_equal ~printer:(fun s -> string_of_int s) 1 (List.length counts)
-
+*)
 let tests =
   "Queue and playlists tests" >:::
     [
-      "test queue clear" >:: test_queue_clear;
-      (* "test stored playlists load playlist" >:: test_stored_playlists_load_playlist;
       "test stored playlists listplaylists" >:: test_stored_playlists_listplaylists;
+      "test stored playlists load playlist and clear" >:: test_stored_playlists_load_playlist_and_clear;
+      (*
        "test music database find" >:: test_music_database_find;
       "test music database findadd" >:: test_music_database_findadd;
       "test music database search" >:: test_music_database_search;
