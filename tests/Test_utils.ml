@@ -14,12 +14,13 @@ let init_client () =
   in
   client
 
-let queue_length () = match Mpd.Queue.playlist client with
-                      | Mpd.Queue.PlaylistError _ -> -1
-                      | Mpd.Queue.Playlist p -> List.length p
+let queue_length client =
+  match Mpd.Queue.playlist client with
+  | Mpd.Queue.PlaylistError _ -> -1
+  | Mpd.Queue.Playlist p -> List.length p
 
 let ensure_playlist_is_loaded client =
-  if queue_length () <= 0 then begin
+  if queue_length client <= 0 then begin
     match Mpd.Stored_playlists.load client "bach" () with
     | Error (_, _, _, message) ->
         let information = "Error when loading playlist" in
