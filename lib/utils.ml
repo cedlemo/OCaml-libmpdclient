@@ -126,4 +126,10 @@ let parse_count_response response group_tag =
         else raise (EMusic_database (Printf.sprintf "Count response parsing: empty for %s" match_pattern))
       end songs
 
+let print_data data =
+  let message = Printf.sprintf "-|%s|-" data in
+  print_endline message
 
+let print_data_lwt data =
+  let message = Printf.sprintf "-|%s|-" data in
+  Lwt_io.print message
