@@ -167,7 +167,7 @@ let update client uri =
   let cmd = match uri with
   | None -> "update"
   | Some uri' -> "update " ^ uri'
-  in Client_lwt.send client cmd
+  in Client_lwt.request client cmd
 
 let rescan client uri =
   let cmd = match uri with
