@@ -135,36 +135,8 @@ let recvbytes conn =
       | e -> Lwt.fail e
     )
 
-type mpd_response =
-  | Incomplete
-  | Complete of (string * int)
-
-let check_full_response mpd_data pattern group useless_char =
-  let response = Str.regexp pattern in
-  match Str.string_match response mpd_data 0 with
-  | true -> Complete (Str.matched_group group mpd_data, useless_char)
-  | false -> Incomplete
-
-let full_mpd_banner mpd_data =
-  let pattern = "OK \\(.*\\)\n" in
-  check_full_response mpd_data pattern 1 4
-
-let request_response mpd_data =
-  let pattern = "\\(\\(\n\\|.\\)*OK\n\\)" in
-  check_full_response mpd_data pattern 1 0
-
-let command_response mpd_data =
-  let pattern = "^\\(OK\n\\)\\(\n\\|.\\)*" in
-  check_full_response mpd_data pattern 1 0
-
-let full_mpd_idle_event mpd_data =
-  let pattern = "changed: \\(\\(\n\\|.\\)*\\)OK\n" in
-  match check_full_response mpd_data pattern 1 12 with
-  (* Check if there is an empty response that follow an noidle command *)
-  | Incomplete -> command_response mpd_data
-  | Complete response -> Complete response
-
 let read connection fn_to_check_for_pattern =
+  let open Protocol in
   let rec _read connection =
     match fn_to_check_for_pattern connection.buffer with
     | Complete (response, u) -> (
@@ -186,16 +158,16 @@ let read connection fn_to_check_for_pattern =
   _read connection
 
 let read_idle_events connection =
-  read connection full_mpd_idle_event
+  read connection Protocol.full_mpd_idle_event
 
 let read_mpd_banner connection =
-  read connection full_mpd_banner
+  read connection Protocol.full_mpd_banner
 
 let read_request_response connection =
-  read connection request_response
+  read connection Protocol.request_response
 
 let read_command_response connection =
-  read connection command_response
+  read connection Protocol.command_response
 
 let close conn =
   Lwt.catch

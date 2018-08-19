@@ -85,3 +85,34 @@ let parse_response mpd_response =
     if str = "" then Ok (None) else Ok (Some str)
   else
     Error (parse_error_response mpd_response)
+
+(** Type and functions used to check if the current response is full based on
+    pattern defined by the mpd protocol.*)
+type mpd_response =
+  | Incomplete
+  | Complete of (string * int)
+
+let check_full_response mpd_data pattern group useless_char =
+  let response = Str.regexp pattern in
+  match Str.string_match response mpd_data 0 with
+  | true -> Complete (Str.matched_group group mpd_data, useless_char)
+  | false -> Incomplete
+
+let full_mpd_banner mpd_data =
+  let pattern = "OK \\(.*\\)\n" in
+  check_full_response mpd_data pattern 1 4
+
+let request_response mpd_data =
+  let pattern = "\\(\\(\n\\|.\\)*OK\n\\)" in
+  check_full_response mpd_data pattern 1 0
+
+let command_response mpd_data =
+  let pattern = "^\\(OK\n\\)\\(\n\\|.\\)*" in
+  check_full_response mpd_data pattern 1 0
+
+let full_mpd_idle_event mpd_data =
+  let pattern = "changed: \\(\\(\n\\|.\\)*\\)OK\n" in
+  match check_full_response mpd_data pattern 1 12 with
+  (* Check if there is an empty response that follow an noidle command *)
+  | Incomplete -> command_response mpd_data
+  | Complete response -> Complete response
