@@ -17,31 +17,31 @@
  *)
 
 let next client =
-  Client.send client "next"
+  Client.send_command client "next"
 
 let previous client =
-  Client.send client "previous"
+  Client.send_command client "previous"
 
 let stop client =
-  Client.send client "stop"
+  Client.send_command client "stop"
 
 let pause client = function
-  | true  -> Client.send client "pause 1"
-  | false -> Client.send client "pause 0"
+  | true  -> Client.send_command client "pause 1"
+  | false -> Client.send_command client "pause 0"
 
 let play client songpos =
-  Client.send client (String.concat " " ["play"; string_of_int songpos])
+  Client.send_command client (String.concat " " ["play"; string_of_int songpos])
 
 let playid client songid =
-  Client.send client (String.concat " " ["playid"; string_of_int songid])
+  Client.send_command client (String.concat " " ["playid"; string_of_int songid])
 
 let seek client songpos time =
   String.concat " " ["seek"; string_of_int songpos; string_of_float time]
-  |> Client.send client
+  |> Client.send_command client
 
 let seekid client songid time =
   String.concat " " ["seekid"; string_of_int songid; string_of_float time]
-  |> Client.send client
+  |> Client.send_command client
 
 let seekcur client time =
-  Client.send client (String.concat " " ["seekcur"; string_of_float time])
+  Client.send_command client (String.concat " " ["seekcur"; string_of_float time])

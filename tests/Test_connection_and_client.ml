@@ -38,7 +38,7 @@ let test_connection_initialize _test_ctxt =
 let test_client_send _test_ctxt =
   let client = init_client () in
   let _ = (
-    match Clt.send client "ping" with
+    match Clt.send_command client "ping" with
     | Error _ -> assert_equal ~msg false true
     | Ok response_opt -> match response_opt with
       | None -> assert_equal true true

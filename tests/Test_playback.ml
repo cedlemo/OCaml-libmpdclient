@@ -196,13 +196,13 @@
   let tests =
     "Playback and Playback_options tests" >:::
       [
-        "test play command" >:: test_play;
-        "test pause true when status play" >:: test_pause_true_when_status_play;
+        (* "test play command" >:: test_play; *)
+        (*"test pause true when status play" >:: test_pause_true_when_status_play;
         "test pause false when status pause" >:: test_pause_false_when_status_pause;
         "test play next command" >:: test_play_next;
         "test play previous command" >:: test_play_previous;
         "test playid command" >:: test_playid;
         "test seek command" >:: test_seek;
         "test seekid command" >:: test_seekid;
-        "test consume command" >:: test_consume;
+        "test consume command" >:: test_consume; *)
       ]

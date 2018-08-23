@@ -51,7 +51,7 @@ let test_stored_playlists_load_playlist_and_clear _test_ctxt =
   end
   in Mpd.Client.close client
 
-(* let test_music_database_find _test_ctxt =
+let test_music_database_find _test_ctxt =
   let open Mpd.Music_database in
   let client = TU.init_client () in
   let _ = match find client [(Mpd_tag Artist, "Bach JS")] () with
@@ -59,7 +59,7 @@ let test_stored_playlists_load_playlist_and_clear _test_ctxt =
       assert_equal ~printer "This should not have been reached " error
     | Ok songs -> assert_equal 11 (List.length songs)
   in Mpd.Client.close client
-
+(*
 let test_music_database_findadd _test_ctxt =
   let open Music_database in
   let client = init_client () in
@@ -130,10 +130,10 @@ let test_music_database_count _test_ctxt =
 let tests =
   "Queue and playlists tests" >:::
     [
-      "test stored playlists listplaylists" >:: test_stored_playlists_listplaylists;
-      "test stored playlists load playlist and clear" >:: test_stored_playlists_load_playlist_and_clear;
-      (*
+      (*"test stored playlists listplaylists" >:: test_stored_playlists_listplaylists;
+      "test stored playlists load playlist and clear" >:: test_stored_playlists_load_playlist_and_clear; *)
        "test music database find" >:: test_music_database_find;
+      (*
       "test music database findadd" >:: test_music_database_findadd;
       "test music database search" >:: test_music_database_search;
       "test music database searchadd" >:: test_music_database_searchadd;

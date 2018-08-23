@@ -37,5 +37,13 @@ val close: t -> unit
 val write: t -> string -> unit
 (** Write to an Mpd connection *)
 
-val read: t -> string
+(** val read: t -> string
+Read in an Mpd connection *)
+
+val read_mpd_banner: t -> string
 (** Read in an Mpd connection *)
+
+val read_request_response: t -> string
+
+val read_command_response: t -> string
+

@@ -22,11 +22,11 @@ type t =
   | PlaylistError of string | Playlist of Song.t list
 
 let add client uri =
-  Client.send client uri
+  Client.send_command client uri
 
 let addid client uri position =
   let cmd = String.concat " " ["addid"; uri; string_of_int position] in
-  let response = Client.send client cmd in
+  let response = Client.send_command client cmd in
   match response with
   |Protocol.Ok (song_id_opt) -> (
       match song_id_opt with
@@ -43,7 +43,7 @@ let addid client uri position =
   |Protocol.Error (_) -> -1
 
 let clear client =
-  Client.send client "clear"
+  Client.send_command client "clear"
 
 let delete client position ?position_end () =
   let cmd = match position_end with
@@ -52,10 +52,10 @@ let delete client position ?position_end () =
                                        string_of_int position;
                                        ":";
                                        string_of_int pos_end]
-  in Client.send client cmd
+  in Client.send_command client cmd
 
 let deleteid client id =
-  Client.send client (String.concat " " ["deleteid"; string_of_int id])
+  Client.send_command client (String.concat " " ["deleteid"; string_of_int id])
 
 let move client position_from ?position_end position_to () =
   let cmd = match position_end with
@@ -68,10 +68,10 @@ let move client position_from ?position_end position_to () =
                                        string_of_int pos_end;
                                        " ";
                                        string_of_int position_to]
-  in Client.send client cmd
+  in Client.send_command client cmd
 
 let moveid client id position_to =
-  Client.send client (String.concat " " ["moveid";
+  Client.send_command client (String.concat " " ["moveid";
                                          string_of_int id;
                                          string_of_int position_to])
 
@@ -85,7 +85,7 @@ let rec _build_songs_list client songs l =
   match songs with
   | [] -> Playlist (List.rev l)
   | h :: q -> let song_infos_request = "playlistinfo " ^ (get_song_pos h) in
-    match Client.send client song_infos_request with
+    match Client.send_request client song_infos_request with
     | Protocol.Error (_ack_val, _ack_cmd_num, _ack_cmd, ack_message) ->
       let message =
         Printf.sprintf "Song %s : %s " (get_song_pos h) ack_message in
@@ -101,7 +101,7 @@ let rec _build_songs_list client songs l =
       end
 
 let _playlist_ client request =
-  match Client.send client request with
+  match Client.send_request client request with
   | Protocol.Error (_ack_val, _ack_cmd_num, _ack_cmd, ack_message) ->
     PlaylistError (ack_message)
   | Protocol.Ok (response_opt) -> match response_opt with
@@ -114,7 +114,7 @@ let playlist client =
 
 let playlistid client id =
   let request = "playlistid " ^ (string_of_int id) in
-  match Client.send client request with
+  match Client.send_request client request with
   | Protocol.Error (_ack_val, _ack_cmd_num, _ack_cmd, ack_message) ->
     PlaylistError (ack_message)
   | Protocol.Ok (response_opt) -> match response_opt with
@@ -134,14 +134,14 @@ let swap client pos1 pos2 =
   let request = String.concat " " ["swap";
                                    string_of_int pos1;
                                    string_of_int pos2] in
-  Client.send client request
+  Client.send_command client request
 
 let shuffle client ?range () =
   let request = match range with
     |None -> "shuffle"
     |Some (s, e) -> let r = String.concat ":" [string_of_int s; string_of_int e] in
       String.concat " " ["shuffle"; r]
-  in Client.send client request
+  in Client.send_command client request
 
 let prio client priority ?range () =
   let priority' = string_of_int ( if priority > 255 then 255
@@ -152,7 +152,7 @@ let prio client priority ?range () =
     | None -> "prio " ^ priority'
     | Some (s, e) -> let r = String.concat ":" [string_of_int s; string_of_int e] in
       String.concat " " ["prio"; priority'; r]
-  in Client.send client request
+  in Client.send_command client request
 
 let prioid client priority ids =
   let priority' = string_of_int ( if priority > 255 then 255
@@ -161,13 +161,13 @@ let prioid client priority ids =
   in
   let ids' = String.concat " " (List.map (fun i -> string_of_int i) ids) in
   let request = String.concat " " ["prioid"; priority'; ids'] in
-  Client.send client request
+  Client.send_command client request
 
 let swapid client id1 id2 =
   let request = String.concat " " ["swapid";
                                    string_of_int id1;
                                    string_of_int id2 ] in
-  Client.send client request
+  Client.send_command client request
 
 let rangeid client id ?range () =
   let id' = string_of_int id in
@@ -178,10 +178,10 @@ let rangeid client id ?range () =
       let r = String.concat ":" [string_of_float s; string_of_float e] in
       String.concat " " [cmd; r]
   in
-  Client.send client request
+  Client.send_request client request
 
 let cleartagid client id tag =
   let request = String.concat " " ["cleartagid";
                                    string_of_int id;
                                    tag] in
-  Client.send client request
+  Client.send_command client request

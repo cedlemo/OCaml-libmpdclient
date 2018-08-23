@@ -25,9 +25,13 @@ type t
 val initialize: Connection.t -> t
 (** Initialize the client with a connection. *)
 
-val send: t -> string -> Protocol.response
-(** Send to the mpd server a command or a request. The response of the server
+(** val send: t -> string -> Protocol.response
+Send to the mpd server a command or a request. The response of the server
     is returned under the form of a Protocol.response type. *)
+
+val send_request: t -> string -> Protocol.response
+
+val send_command: t -> string -> Protocol.response
 
 val mpd_banner: t -> string
 (** Return the mpd banner that the server send at the first connection of the

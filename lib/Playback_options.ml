@@ -18,15 +18,15 @@
 
 let consume client state =
   match state with
-  | true  -> Client.send client "consume 1"
-  | false -> Client.send client "consume 0"
+  | true  -> Client.send_command client "consume 1"
+  | false -> Client.send_command client "consume 0"
 
 let crossfade client seconds =
-  Client.send client (String.concat " " ["crossfade";
+  Client.send_command client (String.concat " " ["crossfade";
                                              string_of_int seconds])
 
 let mixrampdb client seconds =
-  Client.send client (String.concat " " ["mixrampdb";
+  Client.send_command client (String.concat " " ["mixrampdb";
                                              string_of_int seconds])
 
 type mixrampd_t =
@@ -35,27 +35,27 @@ type mixrampd_t =
 
 let mixrampdelay client delay =
   match delay with
-  | Nan -> Client.send client "mixrampdelay nan"
-  | Seconds (s) -> Client.send client (String.concat " " ["mixrampdelay";
+  | Nan -> Client.send_command client "mixrampdelay nan"
+  | Seconds (s) -> Client.send_command client (String.concat " " ["mixrampdelay";
                                                            string_of_float s])
 let random client state =
   match state with
-  | true  -> Client.send client "random 1"
-  | false -> Client.send client "random 0"
+  | true  -> Client.send_command client "random 1"
+  | false -> Client.send_command client "random 0"
 
 let repeat client state =
   match state with
-  | true  -> Client.send client "repeat 1"
-  | false -> Client.send client "repeat 0"
+  | true  -> Client.send_command client "repeat 1"
+  | false -> Client.send_command client "repeat 0"
 
 let setvol client volume =
-  Client.send client (String.concat " " ["setvol";
+  Client.send_command client (String.concat " " ["setvol";
                                              string_of_int volume])
 
 let single client state =
   match state with
-  | true  -> Client.send client "single 1"
-  | false -> Client.send client "single 0"
+  | true  -> Client.send_command client "single 1"
+  | false -> Client.send_command client "single 0"
 
 type gain_mode_t =
   | Off
@@ -65,8 +65,8 @@ type gain_mode_t =
 
 let replay_gain_mode client mode =
   match mode with
-  | Off -> Client.send client "replay_gain_mode off"
-  | Track -> Client.send client "replay_gain_mode track"
-  | Album -> Client.send client "replay_gain_mode album"
-  | Auto -> Client.send client "replay_gain_mode auto"
+  | Off -> Client.send_command client "replay_gain_mode off"
+  | Track -> Client.send_command client "replay_gain_mode track"
+  | Album -> Client.send_command client "replay_gain_mode album"
+  | Auto -> Client.send_command client "replay_gain_mode auto"
 

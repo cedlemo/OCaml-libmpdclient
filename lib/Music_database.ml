@@ -89,7 +89,7 @@ let search_find_wrapper cmd_name client what_list ?sort:sort_tag ?window:window 
     | Some (start, stop) -> Printf.sprintf " window %s:%s" (string_of_int start) (string_of_int stop)
   in
   let cmd = Printf.sprintf "%s %s%s%s" cmd_name what sort window in
-  match Client.send client cmd with
+  match Client.send_request client cmd with
   | Error err -> Error err
   | Ok response -> match response with
       | None -> Ok []
@@ -107,7 +107,7 @@ let search_find_add_wrapper cmd_name client what_list =
     |> String.concat " "
   in
   let cmd = Printf.sprintf "%s %s" cmd_name what in
-  Client.send client cmd
+  Client.send_command client cmd
 
 let findadd = search_find_add_wrapper "findadd"
 
@@ -128,7 +128,7 @@ let count client what_list ?group:group_tag () =
     | Some tag -> Some (tag_to_string tag)
   in
   let cmd = Printf.sprintf "count %s %s" what (match group with None -> "" | Some s -> " group " ^ s) in
-  match Client.send client cmd with
+  match Client.send_request client cmd with
   | Error (_, _, _, message) -> Error message
   | Ok response -> match response with
       | None -> Ok []
@@ -143,7 +143,7 @@ let list client tag tag_list =
                        Printf.sprintf "%s \"%s\"" (tag_to_string t) p) tag_list
             |> String.concat " " in
   let cmd = Printf.sprintf "list %s %s" filter tags in
-  match Client.send client cmd with
+  match Client.send_request client cmd with
   | Error (_, _, _, message) -> Error message
   | Ok response -> match response with
       | None -> Ok []
@@ -157,10 +157,10 @@ let update client uri =
   let cmd = match uri with
   | None -> "update"
   | Some uri' -> "update " ^ uri'
-  in Client.send client cmd
+  in Client.send_request client cmd
 
 let rescan client uri =
   let cmd = match uri with
   | None -> "rescan"
   | Some uri' -> "rescan " ^ uri'
-  in Client.send client cmd
+  in Client.send_command client cmd

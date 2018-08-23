@@ -17,7 +17,11 @@
  *)
 
 type t =
-  { hostname : string; port : int; ip : Unix.inet_addr; socket : Unix.file_descr }
+  { hostname : string;
+    port : int;
+    ip : Unix.inet_addr;
+    socket : Unix.file_descr;
+    mutable buffer : string}
 
 let unix_error_message (error, fn_name, param_name) user_str =
   let strs = [Unix.error_message error; fn_name; param_name; user_str; ".Exiting..."] in
@@ -42,7 +46,7 @@ let initialize hostname port =
     let custom_message = Printf.sprintf ": unable to connect to %s:%d" hostname port in
     unix_error_message (error, fn_name, param_name) custom_message
   in
-  {hostname; port; ip; socket = s}
+  {hostname; port; ip; socket = s; buffer = ""}
 
 
 let hostname { hostname; _ } =
@@ -91,3 +95,45 @@ let read t =
           unix_error_message (error, fn_name, param_name) custom_message
   in
   String.concat "" (List.rev (_read t.socket []))
+
+let recvbytes t =
+ let str = Bytes.create 128 in
+    try
+      let recvlen = Unix.recv t.socket str 0 128 [] in
+      Bytes.(sub str 0 recvlen)
+    with
+      | Unix.Unix_error (error, fn_name, param_name) ->
+        match error with
+        | _ ->
+          let custom_message = ": unable to revieve data via the socket." in
+          unix_error_message (error, fn_name, param_name) custom_message
+
+let _read t fn_to_check_for_pattern =
+  let open Protocol in
+  let rec _read t =
+    match fn_to_check_for_pattern t.buffer with
+    | Complete (response, u) -> (
+        let resp_len = (String.length response) + u in
+        let buff_len = String.length t.buffer in
+        let start = resp_len in
+        let length = buff_len - resp_len in
+        let () = t.buffer <- String.sub t.buffer start length in
+        response
+      )
+    | Incomplete ->(
+        let bytes = recvbytes t in
+        let buf = t.buffer ^ (Bytes.to_string bytes) in
+        let () = t.buffer <- buf in
+        _read t
+      )
+  in
+  _read t
+
+let read_mpd_banner connection =
+  _read connection Protocol.full_mpd_banner
+
+let read_request_response connection =
+  _read connection Protocol.request_response
+
+let read_command_response connection =
+  _read connection Protocol.command_response

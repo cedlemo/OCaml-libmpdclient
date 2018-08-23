@@ -19,24 +19,39 @@
 type t = {connection : Connection.t; mpd_banner : string }
 
 let initialize connection =
-  let message = Connection.read connection in
+  let message = Connection.read_mpd_banner connection in
   let pattern = "OK \\(.*\\)\n" in
   let mpd_banner = match Str.string_match (Str.regexp pattern) message 0 with
   | true -> Str.matched_group 1 message
   | false -> message
   in { connection; mpd_banner }
 
-let send client mpd_cmd =
+(* let send client mpd_cmd =
   let {connection = c; _} = client in
   Connection.write c (mpd_cmd ^ "\n");
   let response = Connection.read c in
+  let () = Utils.print_data response in
+  Protocol.parse_response response
+*)
+let send_command client mpd_cmd =
+  let {connection = c; _} = client in
+  Connection.write c (mpd_cmd ^ "\n");
+  let response = Connection.read_command_response c in
+  let () = Utils.print_data response in
+  Protocol.parse_response response
+
+let send_request client mpd_cmd =
+  let {connection = c; _} = client in
+  Connection.write c (mpd_cmd ^ "\n");
+  let response = Connection.read_request_response c in
+  let () = Utils.print_data response in
   Protocol.parse_response response
 
 let mpd_banner {mpd_banner = banner; _ } =
   banner
 
 let status client =
-  let response = send client "status" in
+  let response = send_request client "status" in
   match response with
   | Ok (lines) -> (
     match lines with
@@ -52,13 +67,13 @@ let status client =
       Error message
 
 let ping client =
-  send client "ping"
+  send_command client "ping"
 
 let password client mdp =
-  send client (String.concat " " ["password"; mdp])
+  send_command client (String.concat " " ["password"; mdp])
 
 let tagtypes client =
-  let response = send client "tagtypes" in
+  let response = send_request client "tagtypes" in
   match response with
   | Ok (lines) -> (
     match lines with
