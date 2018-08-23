@@ -53,3 +53,23 @@ val parse_error_response:
 val parse_response:
   string -> response
 (** Parse the mpd server response *)
+
+type mpd_response =
+  | Incomplete
+  | Complete of (string * int)
+(** Type used to describe a data while reading through a socket. *)
+
+val full_mpd_banner:
+  string -> mpd_response
+(** fetch mpd banner*)
+
+val request_response:
+  string -> mpd_response
+(** fetch request response.*)
+
+val command_response:
+  string -> mpd_response
+(** fetch command response.*)
+
+val full_mpd_idle_event:
+  string -> mpd_response

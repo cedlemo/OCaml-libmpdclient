@@ -1,5 +1,5 @@
 (*
- * Copyright 2017 Cedric LE MOIGNE, cedlemo@gmx.com
+ * Copyright 2017-2018 Cedric LE MOIGNE, cedlemo@gmx.com
  * This file is part of OCaml-libmpdclient.
  *
  * OCaml-libmpdclient is free software: you can redistribute it and/or modify
@@ -62,16 +62,29 @@ let str_error_to_val str =
   | "56" -> Exist
   | _ -> Unknown
 
-let parse_error_response mpd_response =
+let ok_response_pattern = "\\(\\(\n\\|.\\)*\\)OK$"
+
+let ok_response_reg = Str.regexp ok_response_pattern
+
+let error_response_pattern =
   let dec = "[0-9]" in
-  let error = "\\(" ^ dec ^ dec ^ "?\\)" in
-  let cmd_num = "\\(" ^ dec ^ "+\\)" in
+  let error = String.concat "" ["\\("; dec; dec; "?\\)"] in
+  let cmd_num = String.concat "" ["\\("; dec; "+\\)"] in
   let cmd = "\\(.*\\)" in
   let message = "\\(.*\\)" in
-  let pattern = "ACK \\[" ^ error ^ "\\@" ^ cmd_num ^ "\\] \\{" ^
-                cmd ^ "\\} " ^ message ^ "\n" in
-  let reg = Str.regexp pattern in
-  ignore(Str.string_match reg mpd_response 0);
+  String.concat ""
+    ["ACK \\["; error; "\\@"; cmd_num; "\\] \\{"; cmd; "\\} "; message; "\n"]
+
+let error_response_reg = Str.regexp error_response_pattern
+
+let is_ok_response mpd_response =
+  Str.string_match ok_response_reg mpd_response 0
+
+let is_error_response mpd_response =
+  Str.string_match error_response_reg mpd_response 0
+
+let parse_error_response mpd_response =
+  ignore(Str.string_match error_response_reg mpd_response 0);
   let ack_val = str_error_to_val (Str.matched_group 1 mpd_response) in
   let ack_cmd_num = int_of_string(Str.matched_group 2 mpd_response) in
   let ack_cmd = Str.matched_group 3 mpd_response in
@@ -79,8 +92,7 @@ let parse_error_response mpd_response =
   (ack_val, ack_cmd_num, ack_cmd, ack_message)
 
 let parse_response mpd_response =
-  let ok_response_reg = Str.regexp "\\(\\(\n\\|.\\)*\\)OK$" in
-  if (Str.string_match ok_response_reg mpd_response 0 == true) then
+  if is_ok_response mpd_response then
     let str = Str.matched_group 1 mpd_response in
     if str = "" then Ok (None) else Ok (Some str)
   else
