@@ -26,7 +26,6 @@ let () =
         Test_regexp_uses.tests;
         Test_connection_and_client.tests;
         Test_queue_and_playlists.tests;
-        (* Test_connection_and_client_lwt.tests;
-        *)
+        Test_connection_and_client_lwt.tests;
       ]
 )
