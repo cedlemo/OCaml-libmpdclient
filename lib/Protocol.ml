@@ -108,7 +108,9 @@ let check_full_response mpd_data pattern group useless_char =
   let response = Str.regexp pattern in
   match Str.string_match response mpd_data 0 with
   | true -> Complete (Str.matched_group group mpd_data, useless_char)
-  | false -> Incomplete
+  | false -> match is_error_response mpd_data with
+    | true -> Complete (Str.matched_group 0 mpd_data, 0)
+    | false -> Incomplete
 
 let full_mpd_banner mpd_data =
   let pattern = "OK \\(.*\\)\n" in
