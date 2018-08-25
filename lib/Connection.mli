@@ -44,6 +44,7 @@ val read_mpd_banner: t -> string
 (** Read in an Mpd connection *)
 
 val read_request_response: t -> string
+(** Read a Mpd response to a request.*)
 
 val read_command_response: t -> string
-
+(** Read a Mpd response to a command.*)

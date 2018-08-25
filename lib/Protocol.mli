@@ -73,3 +73,4 @@ val command_response:
 
 val full_mpd_idle_event:
   string -> mpd_response
+(** Get the Mpd response for an idle command. *)
