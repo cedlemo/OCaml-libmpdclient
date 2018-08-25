@@ -36,12 +36,17 @@ let ensure_playlist_is_cleared client =
 
 let run_test f =
   let client = init_client () in
-  let () = ensure_playlist_is_loaded client in
-  let () = ensure_playback_is_stopped client in
   let () = f client in
-  let () = ensure_playback_is_stopped client in
-  let () = ensure_playlist_is_cleared client in
   Mpd.Client.close client
+
+let run_test_on_playlist f =
+  run_test begin fun client ->
+    let () = ensure_playlist_is_loaded client in
+    let () = ensure_playback_is_stopped client in
+    let () = f client in
+    let () = ensure_playback_is_stopped client in
+    ensure_playlist_is_cleared client
+  end
 
 let assert_state client s test_name =
   match Mpd.Client.status client with
