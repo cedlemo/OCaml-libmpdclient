@@ -29,8 +29,12 @@ let test_stored_playlists_listplaylists _test_ctxt =
       assert_equal ~printer "This should not have been reached" message
     | Ok playlists ->
       let () = assert_equal ~printer:string_of_int 2 (List.length playlists) in
-      let () = assert_equal ~printer "bach1" (List.hd playlists) in
-      assert_equal ~printer "bach" (List.hd (List.tl playlists))
+      let hd = List.hd playlists in
+      let tail = List.hd (List.tl playlists) in
+      let test = "bach" = hd || "bach1" = hd in
+      let () = assert_bool "First playlist" test in
+      let test' = "bach" = tail || "bach1" = tail in
+      assert_bool "Last playlist" test'
   in Mpd.Client.close client
 
 let test_stored_playlists_load_playlist_and_clear _test_ctxt =
@@ -130,10 +134,9 @@ let test_music_database_count _test_ctxt =
 let tests =
   "Queue and playlists tests" >:::
     [
-      (*"test stored playlists listplaylists" >:: test_stored_playlists_listplaylists;
-      "test stored playlists load playlist and clear" >:: test_stored_playlists_load_playlist_and_clear; *)
+      "test stored playlists listplaylists" >:: test_stored_playlists_listplaylists;
+      (* "test stored playlists load playlist and clear" >:: test_stored_playlists_load_playlist_and_clear;
        "test music database find" >:: test_music_database_find;
-      (*
       "test music database findadd" >:: test_music_database_findadd;
       "test music database search" >:: test_music_database_search;
       "test music database searchadd" >:: test_music_database_searchadd;
