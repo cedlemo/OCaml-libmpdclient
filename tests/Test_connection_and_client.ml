@@ -22,12 +22,9 @@ open Test_configuration
 
 module Clt = Mpd.Client
 module Cnx = Mpd.Connection
+module TU = Test_utils
 
 let msg = "This should not has been reached"
-
-let init_client () =
-  let connection = Cnx.initialize host port in
-  Clt.initialize connection
 
 let test_connection_initialize _test_ctxt =
   let connection = Cnx.initialize host port in
@@ -36,54 +33,49 @@ let test_connection_initialize _test_ctxt =
   Cnx.close connection
 
 let test_client_send _test_ctxt =
-  let client = init_client () in
-  let _ = (
+  TU.run_test begin fun client ->
     match Clt.send_command client "ping" with
     | Error _ -> assert_equal ~msg false true
     | Ok response_opt -> match response_opt with
       | None -> assert_equal true true
       | Some _response -> assert_equal ~msg false true
-  )
-  in
-  Clt.close client
+  end
 
 let test_client_banner _test_ctxt =
-  let client = init_client () in
-  let pattern = "MPD [0-9].[0-9][0-9].[0-9]" in
-  let banner = Clt.mpd_banner client in
-  let msg = Printf.sprintf "Banner : %s" banner in
-  let _ =
-    assert_equal true ~msg Str.(string_match (regexp pattern) banner 0) in
-  Clt.close client
+  TU.run_test begin fun client ->
+    let pattern = "MPD [0-9].[0-9][0-9].[0-9]" in
+    let banner = Clt.mpd_banner client in
+    let msg = Printf.sprintf "Banner : %s" banner in
+    assert_equal true ~msg Str.(string_match (regexp pattern) banner 0)
+  end
 
 let test_client_status _test_ctxt =
-  let client = init_client () in
-  let _ = match Client.status client with
+  TU.run_test begin fun client ->
+    match Client.status client with
     | Error message ->
       assert_equal ~printer:(fun _ -> message) true false
     | Ok status ->
       let state = Mpd.(Status.string_of_state (Status.state status)) in
       assert_equal ~printer:(fun s -> s) "stop" state
-  in
-  Clt.close client
+  end
 
 let test_client_ping _test_ctxt =
-  let client = init_client () in
-  let _ = match Clt.ping client with
+  TU.run_test begin fun client ->
+    match Clt.ping client with
     | Error _ -> assert_equal ~msg false true
     | Ok response_opt ->
       match response_opt with
       | None -> assert_equal true true
       | Some _response -> assert_equal ~msg false true
-  in
-  Clt.close client
+  end
 
 let test_client_tagtypes _test_ctxt =
-  let client = init_client () in
-  let tagtypes = Clt.tagtypes client in
-  let () =
-    assert_equal ~printer:string_of_bool true (List.length tagtypes > 0) in
-  assert_equal ~printer:string_of_bool true (List.mem "Artist" tagtypes)
+  TU.run_test begin fun client ->
+    let tagtypes = Clt.tagtypes client in
+    let () =
+      assert_equal ~printer:string_of_bool true (List.length tagtypes > 0) in
+    assert_equal ~printer:string_of_bool true (List.mem "Artist" tagtypes)
+  end
 
 let tests =
   "Connection and client tests" >:::
