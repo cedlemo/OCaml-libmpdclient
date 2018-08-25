@@ -5,5 +5,5 @@
 
 (alias
   (name runtest)
-  (action (run ./test.exe))
+  (action (run ./test.exe -runner sequential))
 )
