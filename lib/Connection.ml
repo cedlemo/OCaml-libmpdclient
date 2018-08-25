@@ -32,19 +32,19 @@ let unix_error_message (error, fn_name, param_name) user_str =
 let initialize hostname port =
   let open Unix in
   let ip = try (Unix.gethostbyname hostname).h_addr_list.(0)
-  with Not_found ->
-    let _ = prerr_endline (hostname ^ ": Host not found") in
-    exit 2
+    with Not_found ->
+      let _ = prerr_endline (hostname ^ ": Host not found") in
+      exit 2
   in
   let s = try Unix.socket PF_INET SOCK_STREAM 0
-  with Unix_error (error, fn_name, param_name) ->
-    let custom_message = ": unable to create socket" in
-    unix_error_message (error, fn_name, param_name) custom_message
+    with Unix_error (error, fn_name, param_name) ->
+      let custom_message = ": unable to create socket" in
+      unix_error_message (error, fn_name, param_name) custom_message
   in
   let _ = try Unix.connect s (Unix.ADDR_INET(ip, port))
-  with Unix_error (error, fn_name, param_name) ->
-    let custom_message = Printf.sprintf ": unable to connect to %s:%d" hostname port in
-    unix_error_message (error, fn_name, param_name) custom_message
+    with Unix_error (error, fn_name, param_name) ->
+      let custom_message = Printf.sprintf ": unable to connect to %s:%d" hostname port in
+      unix_error_message (error, fn_name, param_name) custom_message
   in
   {hostname; port; ip; socket = s; buffer = ""}
 
@@ -74,41 +74,19 @@ let write t str =
     let custom_message = Printf.sprintf ": unable to write %s in socket" str in
     unix_error_message (error, fn_name, param_name) custom_message
 
-let read t =
-  let open Unix in
-  let _ = try ignore(Unix.set_nonblock t.socket)
-  with Unix_error (error, fn_name, param_name) ->
-    let custom_message = ": unable to set socket in non blocking mode." in
-    unix_error_message (error, fn_name, param_name) custom_message
-  in
-  let str = Bytes.create 128 in
-  let rec _read s acc =
-    try
-      let recvlen = Unix.recv s str 0 128 [] in
-      let recvstr = Bytes.(to_string (sub str 0 recvlen)) in _read s (recvstr :: acc)
-    with
-      | Unix.Unix_error (error, fn_name, param_name) ->
-        match error with
-        | Unix.EAGAIN -> if acc = [] then _read s acc else acc
-        | _ ->
-          let custom_message = ": unable to revieve data via the socket." in
-          unix_error_message (error, fn_name, param_name) custom_message
-  in
-  String.concat "" (List.rev (_read t.socket []))
-
 let recvbytes t =
- let str = Bytes.create 128 in
-    try
-      let recvlen = Unix.recv t.socket str 0 128 [] in
-      Bytes.(sub str 0 recvlen)
-    with
-      | Unix.Unix_error (error, fn_name, param_name) ->
-        match error with
-        | _ ->
-          let custom_message = ": unable to revieve data via the socket." in
-          unix_error_message (error, fn_name, param_name) custom_message
+  let str = Bytes.create 128 in
+  try
+    let recvlen = Unix.recv t.socket str 0 128 [] in
+    Bytes.(sub str 0 recvlen)
+  with
+  | Unix.Unix_error (error, fn_name, param_name) ->
+    match error with
+    | _ ->
+      let custom_message = ": unable to revieve data via the socket." in
+      unix_error_message (error, fn_name, param_name) custom_message
 
-let _read t fn_to_check_for_pattern =
+let read t fn_to_check_for_pattern =
   let open Protocol in
   let rec _read t =
     match fn_to_check_for_pattern t.buffer with
@@ -130,10 +108,10 @@ let _read t fn_to_check_for_pattern =
   _read t
 
 let read_mpd_banner connection =
-  _read connection Protocol.full_mpd_banner
+  read connection Protocol.full_mpd_banner
 
 let read_request_response connection =
-  _read connection Protocol.request_response
+  read connection Protocol.request_response
 
 let read_command_response connection =
-  _read connection Protocol.command_response
+  read connection Protocol.command_response
