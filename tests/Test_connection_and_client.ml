@@ -25,6 +25,7 @@ module Cnx = Mpd.Connection
 module TU = Test_utils
 
 let msg = "This should not has been reached"
+let printer = TU.printer
 
 let test_connection_initialize _test_ctxt =
   let connection = Cnx.initialize host port in
@@ -39,6 +40,17 @@ let test_client_send _test_ctxt =
     | Ok response_opt -> match response_opt with
       | None -> assert_equal true true
       | Some _response -> assert_equal ~msg false true
+  end
+
+let test_client_send_bad_command _test_ctxt =
+  TU.run_test begin fun client ->
+    match Clt.send_command client "badcommand" with
+    | Error (ack_val, ack_cmd_num, ack_cmd, ack_message)  ->
+      let () = assert_equal Protocol.Unknown ack_val  in
+      let () = assert_equal ~printer:string_of_int 0 ack_cmd_num in
+      let () = assert_equal ~printer "" ack_cmd in
+      assert_equal ~printer "unknown command \"badcommand\"" ack_message
+    | Ok _ -> assert_equal ~msg false true
   end
 
 let test_client_banner _test_ctxt =
@@ -82,6 +94,7 @@ let tests =
   [
     "Connection initialize test" >:: test_connection_initialize;
     "Client send test" >:: test_client_send;
+    "Client send bad command" >:: test_client_send_bad_command;
     "Client banner test" >:: test_client_banner;
     "Client status test" >:: test_client_status;
     "Client ping test" >:: test_client_ping;
