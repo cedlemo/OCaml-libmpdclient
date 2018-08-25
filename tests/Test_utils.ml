@@ -41,10 +41,7 @@ let run_test f =
 
 let run_test_on_playlist f =
   run_test begin fun client ->
-    let () = ensure_playlist_is_loaded client in
-    let () = ensure_playback_is_stopped client in
     let () = f client in
-    let () = ensure_playback_is_stopped client in
     ensure_playlist_is_cleared client
   end
 
