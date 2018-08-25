@@ -29,8 +29,8 @@ let printer = TU.printer
 
 let test_connection_initialize _test_ctxt =
   let connection = Cnx.initialize host port in
-  let _ = assert_equal ~printer:(fun s -> s) host (Cnx.hostname connection) in
-  let _ = assert_equal ~printer:string_of_int port (Cnx.port connection) in
+  let () = assert_equal ~printer host (Cnx.hostname connection) in
+  let () = assert_equal ~printer:string_of_int port (Cnx.port connection) in
   Cnx.close connection
 
 let test_client_send _test_ctxt =
