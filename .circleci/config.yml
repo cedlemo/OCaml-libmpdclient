@@ -11,12 +11,11 @@ jobs:
           name: Install Alpine packages
           command: sudo apk update && sudo apk add git m4 mpd
       - run:
+          name: Install last opam
+          command: wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sh -s /usr/local/bin
+      - run:
           name: Install OCaml packages.
-          command: opam update -y
-                   && opam --version
-                   && opam switch list-available
-                   && opam upgrade -y
-                   && opam switch 4.07.0
+          command: opam init --comp 4.07.0
                    && eval `opam config env`
                    && opam update -y
                    && opam upgrade -y
