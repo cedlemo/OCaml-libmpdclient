@@ -51,7 +51,7 @@ let run_test_lwt f =
       init_client_lwt ()
       >>= fun client ->
       f client
-      >>= fun () ->
+      >>= fun _ ->
       Mpd.Client_lwt.close client
     end)
 
@@ -59,6 +59,13 @@ let run_test_on_playlist f =
   run_test begin fun client ->
     let () = f client in
     ensure_playlist_is_cleared client
+  end
+
+let run_test_on_playlist_lwt f =
+  run_test_lwt begin fun client ->
+    f client
+    >>= fun _ ->
+    Mpd.Queue_lwt.clear client
   end
 
 let assert_state client s test_name =
