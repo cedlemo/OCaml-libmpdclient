@@ -26,6 +26,12 @@ let queue_length client =
   | Mpd.Queue.PlaylistError _ -> -1
   | Mpd.Queue.Playlist p -> List.length p
 
+let queue_length_lwt client =
+  Mpd.Queue_lwt.playlist client
+  >>= function
+  | Mpd.Queue_lwt.PlaylistError _ -> Lwt.return (-1)
+  | Mpd.Queue_lwt.Playlist p -> Lwt.return (List.length p)
+
 let ensure_playlist_is_loaded client =
   if queue_length client <= 0 then begin
     match Mpd.Stored_playlists.load client "bach" () with
@@ -47,7 +53,7 @@ let run_test f =
   Mpd.Client.close client
 
 let run_test_lwt f =
- ignore(Lwt_main.run begin
+  ignore(Lwt_main.run begin
       init_client_lwt ()
       >>= fun client ->
       f client
