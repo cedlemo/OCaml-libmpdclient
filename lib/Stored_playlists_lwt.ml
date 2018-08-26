@@ -21,11 +21,11 @@ open Lwt.Infix
 let listplaylists client =
   Client_lwt.request client "listplaylists"
   >>= function
-      | Protocol.Error _ -> Lwt.return None
-      | Protocol.Ok (response_opt) -> match response_opt with
-        | None -> Lwt.return None
+  | Protocol.Error (_, _ ,_ , message) -> Lwt.return_error message
+  | Protocol.Ok (response_opt) -> match response_opt with
+    | None -> Lwt.return_ok []
         | Some response -> let playlists = Utils.read_list_playlists response in
-          Lwt.return (Some playlists)
+          Lwt.return_ok playlists
 
 let load client playlist ?range () =
   let request = match range with

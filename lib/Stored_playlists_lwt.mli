@@ -21,7 +21,7 @@
     and without the .m3u suffix). This is module is based on Lwt. *)
 
 val listplaylists:
-  Client_lwt.t -> string list option Lwt.t
+  Client_lwt.t -> (string list, string) result Lwt.t
 (** Print a list of the playlist names. *)
 
 val load:
