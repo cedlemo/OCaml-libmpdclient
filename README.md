@@ -34,12 +34,12 @@ found in the bin and samples directories of this repository.
 
 ## Install
 
-### Jbuilder
+### Dune
 
-    jbuilder build
-    jbuilder build samples/mpd_status_query.exe
-    jbuilder runtest
-    jbuilder clean
+    dune build
+    dune build samples/mpd_status_query.exe
+    dune runtest
+    dune clean
 
 ### Test sample :
 
