@@ -12,7 +12,8 @@ jobs:
           command: sudo apk update && sudo apk add git m4 mpd
       - run:
           name: Install OCaml packages.
-          command: opam switch 4.05.0
+          command: opam switch 4.07.0
+                   && eval `opam config env`
                    && opam update -y
                    && opam upgrade -y
                    && opam install -y lwt cmdliner jbuilder odoc ounit bisect_ppx dune
