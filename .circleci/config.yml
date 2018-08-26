@@ -2,14 +2,29 @@ version: 2
 jobs:
   build:
     docker:
-      - image: ocaml/opam:alpine_ocaml-4.06.0
+      - image: ocaml/opam:ubuntu-16.04_ocaml-4.06.0
         environment:
           TERM: xterm
     steps:
       - checkout
       - run:
-          name: Install Alpine packages
-          command: sudo apk update && sudo apk add git m4 mpd
+          name: Install Ubuntu packages
+          command: sudo apt update && \
+                   sudo apt install -y \
+                   git \
+                   darcs \
+                   mercurial \
+                   gcc \
+                   g++ \
+                   make \
+                   wget \
+                   mpd \
+                   libmpd-dev \
+                   aspcud \
+                   m4 \
+                   unzip \
+                   pkg-config \
+                   patch
       - run:
           name: Install OCaml environment.
           command: sudo wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sudo sh -s /usr/local/bin
