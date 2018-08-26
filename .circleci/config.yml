@@ -13,6 +13,8 @@ jobs:
       - run:
           name: Install OCaml packages.
           command: opam update -y
+                   && opam --version
+                   && opam switch list-available
                    && opam upgrade -y
                    && opam switch 4.07.0
                    && eval `opam config env`
