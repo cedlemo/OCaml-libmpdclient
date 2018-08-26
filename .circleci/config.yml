@@ -12,7 +12,7 @@ jobs:
           command: sudo apk update && sudo apk add git m4 mpd
       - run:
           name: Install last opam
-          command: wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sh -s /usr/local/bin
+          command: wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sudo sh -s /usr/local/bin
       - run:
           name: Install OCaml packages.
           command: opam init --comp 4.07.0
