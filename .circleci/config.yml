@@ -11,12 +11,9 @@ jobs:
           name: Install Alpine packages
           command: sudo apk update && sudo apk add git m4 mpd
       - run:
-          name: Install last opam
-          command: wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sudo sh -s /usr/local/bin
-      - run:
-          name: Install OCaml packages.
-          command: opam init --comp 4.07.0
-                   && eval `opam config env`
+          name: Install OCaml environment.
+          command: sudo wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sudo sh -s /usr/local/bin
+                   && opam init --comp 4.07.0
                    && opam update -y
                    && opam upgrade -y
                    && opam install -y lwt cmdliner jbuilder odoc ounit bisect_ppx dune
