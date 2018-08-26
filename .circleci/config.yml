@@ -13,10 +13,11 @@ jobs:
       - run:
           name: Install OCaml environment.
           command: sudo wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sudo sh -s /usr/local/bin
-                   && opam init --comp 4.07.0
-                   && opam update -y
-                   && opam upgrade -y
-                   && opam install -y lwt cmdliner jbuilder odoc ounit bisect_ppx dune
+                   && /usr/local/bin/opam init --comp 4.07.0
+                   && eval `opam config env`
+                   && /usr/local/bin/opam update -y
+                   && /usr/local/bin/opam upgrade -y
+                   && /usr/local/bin/opam install -y lwt cmdliner jbuilder odoc ounit bisect_ppx dune
       - run:
           name: Create user to run mpd
           command: sudo addgroup -S ocaml-libmpdclient
