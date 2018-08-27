@@ -69,12 +69,9 @@ let test_music_database_findadd _test_ctxt =
     match findadd client [(Mpd_tag Artist, "Bach JS")] with
     | Error (_, _, _, error) ->
       assert_equal ~printer "This should not have been reached " error
-    | Ok _ -> let queue = Mpd.Queue.playlist client in
-      let queue_length = match queue with
-        | Mpd.Queue.PlaylistError _ -> -1
-        | Mpd.Queue.Playlist p -> List.length p
-      in
-      assert_equal ~printer:(fun i -> string_of_int i) 11 queue_length
+    | Ok _ ->
+      let len = queue_length client in
+      assert_equal ~printer:(fun i -> string_of_int i) 11 len
   end
 
 let test_music_database_search _test_ctxt =
@@ -92,12 +89,9 @@ let test_music_database_searchadd _test_ctxt =
     match searchadd client [(Mpd_tag Artist, "bACH js")] with
     | Error (_, _, _, error) ->
       assert_equal ~printer "This should not have been reached " error
-    | Ok _ -> let queue = Mpd.Queue.playlist client in
-      let queue_length = match queue with
-        | Mpd.Queue.PlaylistError _ -> -1
-        | Mpd.Queue.Playlist p -> List.length p
-      in
-      assert_equal ~printer:(fun i -> string_of_int i) 11 queue_length
+    | Ok _ ->
+      let len = queue_length client in
+      assert_equal ~printer:(fun i -> string_of_int i) 11 len
   end
 
 let test_music_database_searchaddpl _test_ctxt =
