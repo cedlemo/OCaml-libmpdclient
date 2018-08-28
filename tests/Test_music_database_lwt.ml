@@ -81,6 +81,35 @@ let test_music_database_searchadd _test_ctxt =
     Lwt.return_unit
   end
 
+let test_music_database_searchaddpl _test_ctxt =
+  let open Mpd.Music_database_lwt in
+  TU.run_test_on_playlist_lwt begin fun client ->
+    let new_playlist = "searchaddpl_new_playlist" in
+    let get_playlist_number () =
+      Mpd.Stored_playlists_lwt.listplaylists client
+      >>= function
+      | Error message ->
+        let () = assert_equal ~printer "This should not have been reached " message in
+        Lwt.return (-1)
+      | Ok playlists -> let len = List.length playlists in Lwt.return len
+    in
+    searchaddpl client new_playlist [(Mpd_tag Artist, "bACH js")]
+    >>= function
+    | Error (_, _, _, error) ->
+      let () = assert_equal ~printer "This should not have been reached " error
+      in Lwt.return_unit
+    | Ok _ ->
+      get_playlist_number ()
+      >>= fun len ->
+      let () = assert_equal 3 len in
+      Mpd.Stored_playlists_lwt.rm client new_playlist
+      >>= fun _ ->
+      get_playlist_number ()
+      >>= fun len' ->
+      let () = assert_equal 2  len' in
+      Lwt.return_unit
+  end
+
 let tests =
   "Queue and playlists lwt tests" >:::
   [
@@ -88,4 +117,5 @@ let tests =
     "test music database findadd" >:: test_music_database_findadd;
     "test music database search" >:: test_music_database_search;
     "test music database searchadd" >:: test_music_database_searchadd;
+    "test music database searchaddpl" >:: test_music_database_searchaddpl;
   ]
