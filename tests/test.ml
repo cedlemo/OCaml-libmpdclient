@@ -29,5 +29,6 @@ let () =
         Test_music_database.tests;
         Test_connection_and_client_lwt.tests;
         Test_queue_and_playlists_lwt.tests;
+        Test_music_database_lwt.tests;
       ]
 )
