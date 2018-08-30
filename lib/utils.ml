@@ -26,6 +26,11 @@ let remove_trailing_new_line str =
   else
     str
 
+(** Remove all new line characters in a string.*)
+let remove_new_lines str =
+  let empty = "" in
+  Str.global_replace (Str.regexp "\n") empty str
+
 (** Split multiline string into a list of strings *)
 let split_lines strings =
   Str.split (Str.regexp "\n") strings
