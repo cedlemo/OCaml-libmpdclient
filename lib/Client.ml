@@ -35,14 +35,16 @@ let initialize connection =
 *)
 let send_command client mpd_cmd =
   let {connection = c; _} = client in
-  Connection.write c (mpd_cmd ^ "\n");
+  let cmd = (Utils.remove_new_lines mpd_cmd) ^ "\n" in
+  Connection.write c cmd;
   let response = Connection.read_command_response c in
   let () = Utils.print_data response in
   Protocol.parse_response response
 
 let send_request client mpd_cmd =
   let {connection = c; _} = client in
-  Connection.write c (mpd_cmd ^ "\n");
+  let request = (Utils.remove_new_lines mpd_cmd) ^ "\n" in
+  Connection.write c request;
   let response = Connection.read_request_response c in
   let () = Utils.print_data response in
   Protocol.parse_response response
