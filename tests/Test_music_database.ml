@@ -103,6 +103,38 @@ let test_music_database_list_album _test_ctxt =
       assert_equal ~printer album (List.hd elements)
   end
 
+let songs =[
+  "Contrapunctus 1";
+  "Contrapunctus 10 a 4 alla Decima";
+  "Contrapunctus 11 a 4";
+  "Contrapunctus 2";
+  "Contrapunctus 3";
+  "Contrapunctus 4";
+  "Contrapunctus 5";
+  "Contrapunctus 6 a 4 in Stylo Francese";
+  "Contrapunctus 7 a 4 per Augmentationem et Diminutionem";
+  "Contrapunctus 8 a 3";
+  "Contrapunctus 9 a 4 alla Duodecima\n";(* TODO: improve, remove new line*)
+]
+
+let rec compare l1 l2 = match l1, l2 with
+  | [], [] -> true
+  | [], _ -> false
+  | _, [] -> false
+  | h1 :: t1, h2 :: t2 -> h1 = h2 && compare t1 t2
+
+let test_music_database_list_title _test_ctxt =
+  let open Mpd.Music_database in
+  TU.run_test begin fun client ->
+    let artist = "Bach JS" in
+    let album = "Die Kunst der Fuge, BWV 1080, for Piano\n" in
+    match list client Title [(Artist, artist); (Album, album)] with
+    | Error message -> assert_equal ~printer:(fun s -> s) "This should not have been reached " message
+    | Ok elements ->
+      let () = assert_equal ~printer:string_of_int 11 (List.length elements) in
+      assert (compare songs elements)
+  end
+
 let tests =
   "Queue and playlists tests" >:::
   [
@@ -113,4 +145,5 @@ let tests =
     "test music database searchaddpl" >:: test_music_database_searchaddpl;
     "test music database count" >:: test_music_database_count;
     "test music database list album" >:: test_music_database_list_album;
+    "test music database list title" >:: test_music_database_list_title;
   ]
