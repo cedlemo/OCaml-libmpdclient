@@ -90,6 +90,19 @@ let test_music_database_count _test_ctxt =
     | Ok counts -> assert_equal ~printer:(fun s -> string_of_int s) 1 (List.length counts)
   end
 
+let test_music_database_list_album _test_ctxt =
+  let open Mpd.Music_database in
+  TU.run_test begin fun client ->
+    let artist = "Bach JS" in
+    (* TODO: improve, remove new line*)
+    let album = "Die Kunst der Fuge, BWV 1080, for Piano\n" in
+    match list client Album [(Artist, artist)] with
+    | Error message -> assert_equal ~printer:(fun s -> s) "This should not have been reached " message
+    | Ok elements ->
+      let () = assert_equal ~printer:string_of_int 1 (List.length elements) in
+      assert_equal ~printer album (List.hd elements)
+  end
+
 let tests =
   "Queue and playlists tests" >:::
   [
@@ -99,4 +112,5 @@ let tests =
     "test music database searchadd" >:: test_music_database_searchadd;
     "test music database searchaddpl" >:: test_music_database_searchaddpl;
     "test music database count" >:: test_music_database_count;
+    "test music database list album" >:: test_music_database_list_album;
   ]
