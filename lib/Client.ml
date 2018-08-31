@@ -26,13 +26,6 @@ let initialize connection =
   | false -> message
   in { connection; mpd_banner }
 
-(* let send client mpd_cmd =
-  let {connection = c; _} = client in
-  Connection.write c (mpd_cmd ^ "\n");
-  let response = Connection.read c in
-  let () = Utils.print_data response in
-  Protocol.parse_response response
-*)
 let send_command client mpd_cmd =
   let {connection = c; _} = client in
   let cmd = (Utils.remove_new_lines mpd_cmd) ^ "\n" in
