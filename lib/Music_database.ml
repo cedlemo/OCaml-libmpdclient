@@ -66,9 +66,6 @@ let tag_to_string = function
   | Album_sort -> "album_sort"
   | Count -> "count"
 
-(* TODO: check for warning :
-   constraints are not satisfied in this type. Type tags should be an instance of
-*)
 type search_tags = Any | File | Base | Modified_since | Mpd_tag of tags
 
 let search_tag_to_string = function
