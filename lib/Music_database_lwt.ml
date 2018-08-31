@@ -20,38 +20,35 @@ open Lwt.Infix
 open Tags
 
 let search_find_wrapper cmd_name client what_list ?sort ?window () =
-  let what =
-    List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (search_tag_to_string tag) param) what_list
-    |> String.concat " "
-  in
+  let what = Tags.build_tag_parameter search_tag_to_string what_list in
   let sort = match sort with
     | None -> ""
     | Some tag -> " sort " ^ (tag_to_string tag)
   in
   let window = match window with
     | None -> ""
-    | Some (start, stop) -> Printf.sprintf " window %s:%s" (string_of_int start) (string_of_int stop)
+    | Some (start, stop) -> Printf.sprintf " window %d:%d" start stop
   in
   let cmd = Printf.sprintf "%s %s%s%s" cmd_name what sort window in
   Client_lwt.request client cmd
   >>= function
-    | Error err -> Lwt.return (Error err)
-    | Ok response -> match response with
-        | None -> Lwt.return (Ok [])
-        | Some r ->
-           let songs = Str.split (Str.regexp_string "file:") r
-           |> List.map (fun s -> Str.split (Str.regexp_string "\n") s |> Song.parse)
-           in Lwt.return (Ok songs)
+  | Error err -> Lwt.return (Error err)
+  | Ok response -> match response with
+    | None -> Lwt.return (Ok [])
+    | Some r ->
+      let songs =
+        Str.split (Str.regexp_string "file:") r
+        |> let build_song s =
+             Utils.split_lines s |> Song.parse
+        in List.map build_song
+      in Lwt.return (Ok songs)
 
 let find = search_find_wrapper "find"
 
 let search = search_find_wrapper "search"
 
 let search_find_add_wrapper cmd_name client what_list =
-  let what =
-    List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (search_tag_to_string tag) param) what_list
-    |> String.concat " "
-  in
+  let what = Tags.build_tag_parameter search_tag_to_string what_list in
   let cmd = Printf.sprintf "%s %s" cmd_name what in
   Client_lwt.request client cmd
 
@@ -65,10 +62,7 @@ let searchaddpl client playlist_name what_list =
 type song_count = { songs: int; playtime: float; misc: string }
 
 let count client what_list ?group () =
-  let what =
-    List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (tag_to_string tag) param) what_list
-    |> String.concat " "
-  in
+  let what = Tags.build_tag_parameter tag_to_string what_list in
   let group = match group with
     | None -> None
     | Some tag -> Some (tag_to_string tag)
@@ -76,43 +70,41 @@ let count client what_list ?group () =
   let cmd = Printf.sprintf "count %s %s" what (match group with None -> "" | Some s -> "group " ^ s) in
   Client_lwt.request client cmd
   >>= function
-    | Error (_, _, _, message) -> Lwt.return (Error message)
-    | Ok response -> match response with
-      | None -> Lwt.return (Ok [])
-      | Some r ->
-        let result = Utils.parse_count_response r group in
-        let song_counts = List.map (fun (songs, playtime, misc) -> {songs; playtime; misc}) result in
-        Lwt.return (Ok song_counts)
+  | Error (_, _, _, message) -> Lwt.return_error message
+  | Ok response -> match response with
+    | None -> Lwt.return_ok []
+    | Some r ->
+      let result = Utils.parse_count_response r group in
+      let tuple_to_song_count (songs, playtime, misc) = {songs; playtime; misc}
+      in
+      let song_counts = List.map tuple_to_song_count result in
+      Lwt.return_ok song_counts
 
 let list client tag tag_list =
   let filter = tag_to_string tag |> String.capitalize_ascii in
-  let tags = List.map (fun (t, p) ->
-                       Printf.sprintf "%s \"%s\"" (tag_to_string t) p) tag_list
-            |> String.concat " "
-  in
+  let tags = Tags.build_tag_parameter tag_to_string tag_list in
   let cmd = Printf.sprintf "list %s %s" filter tags in
   Client_lwt.request client cmd
   >>= function
-  | Error (_, _, _, message) -> Lwt.return (Error message)
+  | Error (_, _, _, message) -> Lwt.return_error message
   | Ok response -> match response with
-      | None -> Lwt.return (Ok [])
-      | Some r -> let split_pattern = Printf.sprintf "\\(\n\\)*%s: " filter in
-      let l = match Str.split (Str.regexp split_pattern) r with
+    | None -> Lwt.return_ok []
+    | Some r ->
+      let r' = Utils.remove_trailing_new_line r in
+      let split_pattern = Printf.sprintf "\\(\n\\)*%s: " filter in
+      let l = match Str.split (Str.regexp split_pattern) r' with
         | [] -> []
-        | h :: t ->
-            if h = "" then t
-            else let h' = Utils.remove_trailing_new_line h in (h' :: t)
-      in Lwt.return (Ok l)
-
+        | h :: t -> if h = "" then t else (h :: t)
+      in Lwt.return_ok l
 
 let update client uri =
   let cmd = match uri with
-  | None -> "update"
-  | Some uri' -> "update " ^ uri'
+    | None -> "update"
+    | Some uri' -> "update " ^ uri'
   in Client_lwt.request client cmd
 
 let rescan client uri =
   let cmd = match uri with
-  | None -> "rescan"
-  | Some uri' -> "rescan " ^ uri'
+    | None -> "rescan"
+    | Some uri' -> "rescan " ^ uri'
   in Client_lwt.send client cmd
