@@ -94,8 +94,7 @@ let test_music_database_list_album _test_ctxt =
   let open Mpd.Music_database in
   TU.run_test begin fun client ->
     let artist = "Bach JS" in
-    (* TODO: improve, remove new line*)
-    let album = "Die Kunst der Fuge, BWV 1080, for Piano\n" in
+    let album = "Die Kunst der Fuge, BWV 1080, for Piano" in
     match list client Album [(Artist, artist)] with
     | Error message -> assert_equal ~printer:(fun s -> s) "This should not have been reached " message
     | Ok elements ->
@@ -114,7 +113,7 @@ let songs =[
   "Contrapunctus 6 a 4 in Stylo Francese";
   "Contrapunctus 7 a 4 per Augmentationem et Diminutionem";
   "Contrapunctus 8 a 3";
-  "Contrapunctus 9 a 4 alla Duodecima\n";(* TODO: improve, remove new line*)
+  "Contrapunctus 9 a 4 alla Duodecima";
 ]
 
 let rec compare l1 l2 = match l1, l2 with
@@ -127,7 +126,7 @@ let test_music_database_list_title _test_ctxt =
   let open Mpd.Music_database in
   TU.run_test begin fun client ->
     let artist = "Bach JS" in
-    let album = "Die Kunst der Fuge, BWV 1080, for Piano\n" in
+    let album = "Die Kunst der Fuge, BWV 1080, for Piano" in
     match list client Title [(Artist, artist); (Album, album)] with
     | Error message -> assert_equal ~printer:(fun s -> s) "This should not have been reached " message
     | Ok elements ->
