@@ -17,72 +17,14 @@
  *)
 
 open Lwt.Infix
+open Tags
 
-type tags =
-  | Unknown
-  | Artist
-  | Album
-  | Album_artist
-  | Title
-  | Track
-  | Name
-  | Genre
-  | Date
-  | Composer
-  | Performer
-  | Comment
-  | Disc
-  | Musicbrainz_artistid
-  | Musicbrainz_albumid
-  | Musicbrainz_albumartistid
-  | Musicbrainz_trackid
-  | Musicbrainz_releasetrackid
-  | Original_date
-  | Artist_sort
-  | Album_artist_sort
-  | Album_sort
-  | Count
-
-let tag_to_string = function
-  | Unknown -> "unknown"
-  | Artist -> "artist"
-  | Album -> "album"
-  | Album_artist -> "album_artist"
-  | Title -> "title"
-  | Track -> "track"
-  | Name -> "name"
-  | Genre -> "genre"
-  | Date -> "date"
-  | Composer -> "composer"
-  | Performer -> "performer"
-  | Comment -> "comment"
-  | Disc -> "disc"
-  | Musicbrainz_artistid -> "musicbrainz_artistid"
-  | Musicbrainz_albumid -> "musicbrainz_albumid"
-  | Musicbrainz_albumartistid -> "musicbrainz_albumartistid"
-  | Musicbrainz_trackid -> "musicbrainz_trackid"
-  | Musicbrainz_releasetrackid -> "musicbrainz_releasetrackid"
-  | Original_date -> "original_date"
-  | Artist_sort -> "artist_sort"
-  | Album_artist_sort -> "album_artist_sort"
-  | Album_sort -> "album_sort"
-  | Count -> "count"
-
-type search_tags = Any | File | Base | Modified_since | Mpd_tag of tags
-
-let search_tag_to_string = function
-  | Any -> "any"
-  | File -> "file"
-  | Base -> "base"
-  | Modified_since -> "modified-since"
-  | Mpd_tag t -> tag_to_string t
-
-let search_find_wrapper cmd_name client what_list ?sort:sort_tag ?window:window () =
+let search_find_wrapper cmd_name client what_list ?sort ?window () =
   let what =
     List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (search_tag_to_string tag) param) what_list
     |> String.concat " "
   in
-  let sort = match sort_tag with
+  let sort = match sort with
     | None -> ""
     | Some tag -> " sort " ^ (tag_to_string tag)
   in
@@ -122,12 +64,12 @@ let searchaddpl client playlist_name what_list =
 
 type song_count = { songs: int; playtime: float; misc: string }
 
-let count client what_list ?group:group_tag () =
+let count client what_list ?group () =
   let what =
     List.map (fun (tag, param) -> Printf.sprintf "%s \"%s\"" (tag_to_string tag) param) what_list
     |> String.concat " "
   in
-  let group = match group_tag with
+  let group = match group with
     | None -> None
     | Some tag -> Some (tag_to_string tag)
   in
