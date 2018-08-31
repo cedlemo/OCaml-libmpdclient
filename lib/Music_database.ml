@@ -16,74 +16,10 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-type tags =
-  | Unknown
-  | Artist
-  | Album
-  | Album_artist
-  | Title
-  | Track
-  | Name
-  | Genre
-  | Date
-  | Composer
-  | Performer
-  | Comment
-  | Disc
-  | Musicbrainz_artistid
-  | Musicbrainz_albumid
-  | Musicbrainz_albumartistid
-  | Musicbrainz_trackid
-  | Musicbrainz_releasetrackid
-  | Original_date
-  | Artist_sort
-  | Album_artist_sort
-  | Album_sort
-  | Count
-
-let tag_to_string = function
-  | Unknown -> "unknown"
-  | Artist -> "artist"
-  | Album -> "album"
-  | Album_artist -> "album_artist"
-  | Title -> "title"
-  | Track -> "track"
-  | Name -> "name"
-  | Genre -> "genre"
-  | Date -> "date"
-  | Composer -> "composer"
-  | Performer -> "performer"
-  | Comment -> "comment"
-  | Disc -> "disc"
-  | Musicbrainz_artistid -> "musicbrainz_artistid"
-  | Musicbrainz_albumid -> "musicbrainz_albumid"
-  | Musicbrainz_albumartistid -> "musicbrainz_albumartistid"
-  | Musicbrainz_trackid -> "musicbrainz_trackid"
-  | Musicbrainz_releasetrackid -> "musicbrainz_releasetrackid"
-  | Original_date -> "original_date"
-  | Artist_sort -> "artist_sort"
-  | Album_artist_sort -> "album_artist_sort"
-  | Album_sort -> "album_sort"
-  | Count -> "count"
-
-type search_tags = Any | File | Base | Modified_since | Mpd_tag of tags
-
-let search_tag_to_string = function
-  | Any -> "any"
-  | File -> "file"
-  | Base -> "base"
-  | Modified_since -> "modified-since"
-  | Mpd_tag t -> tag_to_string t
-
-let build_tag_parameter printer tags =
-  let tag_and_param_to_string (t, p) =
-    Printf.sprintf "%s \"%s\"" (printer t) p
-  in
-  List.map tag_and_param_to_string tags
-  |> String.concat " "
+open Tags
 
 let search_find_wrapper cmd_name client what_list ?sort ?window () =
-  let what = build_tag_parameter search_tag_to_string what_list in
+  let what = Tags.build_tag_parameter search_tag_to_string what_list in
   let sort = match sort with
     | None -> ""
     | Some tag -> " sort " ^ (tag_to_string tag)
@@ -111,7 +47,7 @@ let find = search_find_wrapper "find"
 let search = search_find_wrapper "search"
 
 let search_find_add_wrapper cmd_name client what_list =
-  let what = build_tag_parameter search_tag_to_string what_list in
+  let what = Tags.build_tag_parameter search_tag_to_string what_list in
   let cmd = Printf.sprintf "%s %s" cmd_name what in
   Client.send_command client cmd
 
@@ -125,7 +61,7 @@ let searchaddpl client playlist_name what_list =
 type song_count = { songs: int; playtime: float; misc: string }
 
 let count client what_list ?group () =
-  let what = build_tag_parameter tag_to_string what_list in
+  let what = Tags.build_tag_parameter tag_to_string what_list in
   let group = match group with
     | None -> None
     | Some tag -> Some (tag_to_string tag)
@@ -144,7 +80,7 @@ let count client what_list ?group () =
 
 let list client tag tag_list =
   let filter = tag_to_string tag |> String.capitalize_ascii in
-  let tags = build_tag_parameter tag_to_string tag_list in
+  let tags = Tags.build_tag_parameter tag_to_string tag_list in
   let cmd = Printf.sprintf "list %s %s" filter tags in
   match Client.send_request client cmd with
   | Error (_, _, _, message) -> Error message
