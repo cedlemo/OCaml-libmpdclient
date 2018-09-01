@@ -123,6 +123,22 @@ let test_music_database_count _test_ctxt =
     Lwt.return_unit
   end
 
+let test_music_database_list_album _test_ctxt =
+  let open Mpd in
+  TU.run_test_lwt begin fun client ->
+    let artist = "Bach JS" in
+    let album = "Die Kunst der Fuge, BWV 1080, for Piano" in
+    Music_database_lwt.list client Album [(Artist, artist)]
+    >>= fun response ->
+    let () = match response with
+      | Error message ->
+        assert_equal ~printer:(fun s -> s) "This should not have been reached " message
+      | Ok elements ->
+        let () = assert_equal ~printer:string_of_int 1 (List.length elements) in
+        assert_equal ~printer album (List.hd elements)
+    in Lwt.return_nil
+  end
+
 let tests =
   "Queue and playlists lwt tests" >:::
   [
@@ -132,4 +148,5 @@ let tests =
     "test music database searchadd" >:: test_music_database_searchadd;
     "test music database searchaddpl" >:: test_music_database_searchaddpl;
     "test music database count" >:: test_music_database_count;
+    "test music database list album" >:: test_music_database_list_album;
   ]
