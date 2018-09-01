@@ -94,3 +94,32 @@ let check_state client s =
     false
   | Ok status ->
     s == Mpd.Status.state status
+
+let bad_branch error =
+  assert_equal ~printer "This should not have been reached " error
+
+let artist = "Bach JS"
+
+let bad_name_artist = "bACH js"
+
+let album = "Die Kunst der Fuge, BWV 1080, for Piano"
+
+let songs =[
+  "Contrapunctus 1";
+  "Contrapunctus 10 a 4 alla Decima";
+  "Contrapunctus 11 a 4";
+  "Contrapunctus 2";
+  "Contrapunctus 3";
+  "Contrapunctus 4";
+  "Contrapunctus 5";
+  "Contrapunctus 6 a 4 in Stylo Francese";
+  "Contrapunctus 7 a 4 per Augmentationem et Diminutionem";
+  "Contrapunctus 8 a 3";
+  "Contrapunctus 9 a 4 alla Duodecima";
+]
+
+let rec compare l1 l2 = match l1, l2 with
+  | [], [] -> true
+  | [], _ -> false
+  | _, [] -> false
+  | h1 :: t1, h2 :: t2 -> h1 = h2 && compare t1 t2
