@@ -67,7 +67,7 @@ let test_music_database_searchaddpl _test_ctxt =
       | Error message -> let () = TU.bad_branch message in -1
       | Ok playlists -> List.length playlists
     in
-    match searchaddpl client new_playlist [(Mpd_tag Artist, "bACH js")] with
+    match searchaddpl client new_playlist [(Mpd_tag Artist, TU.bad_name_artist)] with
     | Error (_, _, _, error) -> TU.bad_branch error
     | Ok _ ->
       let () = assert_equal 3 (get_playlist_number ()) in
@@ -96,9 +96,7 @@ let test_music_database_list_album _test_ctxt =
 let test_music_database_list_title _test_ctxt =
   let open Mpd.Music_database in
   TU.run_test begin fun client ->
-    let artist = "Bach JS" in
-    let album = "Die Kunst der Fuge, BWV 1080, for Piano" in
-    match list client Title [(Artist, artist); (Album, album)] with
+    match list client Title [(Artist, TU.artist); (Album, TU.album)] with
     | Error message -> TU.bad_branch message
     | Ok elements ->
       let () = assert_equal ~printer:string_of_int 11 (List.length elements) in

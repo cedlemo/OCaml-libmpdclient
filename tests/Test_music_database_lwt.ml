@@ -22,15 +22,15 @@ module TU = Test_utils
 
 let printer = TU.printer
 let queue_length_lwt = TU.queue_length_lwt
+let bad_branch = TU.bad_branch
 
 let test_music_database_find _test_ctxt =
   let open Mpd.Music_database_lwt in
   TU.run_test_on_playlist_lwt begin fun client ->
-    find client [(Mpd_tag Artist, "Bach JS")] ()
+    find client [(Mpd_tag Artist, TU.artist)] ()
     >>= fun response ->
     let () = match response with
-      | Error (_, _, _, error) ->
-        assert_equal ~printer "This should not have been reached " error
+      | Error (_, _, _, error) -> bad_branch error
       | Ok songs -> assert_equal 11 (List.length songs)
     in
     Lwt.return_unit
@@ -39,15 +39,14 @@ let test_music_database_find _test_ctxt =
 let test_music_database_findadd _test_ctxt =
   let open Mpd.Music_database_lwt in
   TU.run_test_on_playlist_lwt begin fun client ->
-    findadd client [(Mpd_tag Artist, "Bach JS")]
+    findadd client [(Mpd_tag Artist, TU.artist)]
     >>= fun response ->
     TU.queue_length_lwt client
     >>= fun len ->
     let () = match response with
-      | Error (_, _, _, error) ->
-        assert_equal ~printer "This should not have been reached " error
+      | Error (_, _, _, error) -> bad_branch error
       | Ok _ ->
-        assert_equal ~printer:(fun i -> string_of_int i) 11 len
+        assert_equal ~printer:string_of_int 11 len
     in
     Lwt.return_unit
   end
@@ -55,11 +54,10 @@ let test_music_database_findadd _test_ctxt =
 let test_music_database_search _test_ctxt =
   let open Mpd.Music_database_lwt in
   TU.run_test_lwt begin fun client ->
-    search client [(Mpd_tag Artist, "bACH js")] ()
+    search client [(Mpd_tag Artist, TU.bad_name_artist)] ()
     >>= fun response ->
     let () = match response with
-      | Error (_, _, _, error) ->
-        assert_equal ~printer "This should not have been reached " error
+      | Error (_, _, _, error) -> bad_branch error
       | Ok songs -> assert_equal 11 (List.length songs)
     in
     Lwt.return_unit
@@ -68,15 +66,14 @@ let test_music_database_search _test_ctxt =
 let test_music_database_searchadd _test_ctxt =
   let open Mpd.Music_database_lwt in
   TU.run_test_on_playlist_lwt begin fun client ->
-    searchadd client [(Mpd_tag Artist, "bACH js")]
+    searchadd client [(Mpd_tag Artist, TU.bad_name_artist)]
     >>= fun response ->
     queue_length_lwt client
     >>= fun len ->
     let () = match response with
-      | Error (_, _, _, error) ->
-        assert_equal ~printer "This should not have been reached " error
+      | Error (_, _, _, error) -> bad_branch error
       | Ok _ ->
-        assert_equal ~printer:(fun i -> string_of_int i) 11 len
+        assert_equal ~printer:string_of_int 11 len
     in
     Lwt.return_unit
   end
@@ -88,16 +85,12 @@ let test_music_database_searchaddpl _test_ctxt =
     let get_playlist_number () =
       Mpd.Stored_playlists_lwt.listplaylists client
       >>= function
-      | Error message ->
-        let () = assert_equal ~printer "This should not have been reached " message in
-        Lwt.return (-1)
+      | Error message -> let () = bad_branch message in Lwt.return (-1)
       | Ok playlists -> let len = List.length playlists in Lwt.return len
     in
-    searchaddpl client new_playlist [(Mpd_tag Artist, "bACH js")]
+    searchaddpl client new_playlist [(Mpd_tag Artist, TU.bad_name_artist)]
     >>= function
-    | Error (_, _, _, error) ->
-      let () = assert_equal ~printer "This should not have been reached " error
-      in Lwt.return_unit
+    | Error (_, _, _, error) -> let () = bad_branch error in Lwt.return_unit
     | Ok _ ->
       get_playlist_number ()
       >>= fun len ->
@@ -116,8 +109,7 @@ let test_music_database_count _test_ctxt =
     count client [] ?group:(Some Artist) ()
     >>= fun response ->
     let () = match response with
-      | Error message ->
-        assert_equal ~printer "This should not have been reached " message
+      | Error message -> bad_branch message
       | Ok counts -> assert_equal ~printer:string_of_int 1 (List.length counts)
     in
     Lwt.return_unit
@@ -126,16 +118,13 @@ let test_music_database_count _test_ctxt =
 let test_music_database_list_album _test_ctxt =
   let open Mpd in
   TU.run_test_lwt begin fun client ->
-    let artist = "Bach JS" in
-    let album = "Die Kunst der Fuge, BWV 1080, for Piano" in
-    Music_database_lwt.list client Album [(Artist, artist)]
+    Music_database_lwt.list client Album [(Artist, TU.artist)]
     >>= fun response ->
     let () = match response with
-      | Error message ->
-        assert_equal ~printer:(fun s -> s) "This should not have been reached " message
+      | Error message -> bad_branch message
       | Ok elements ->
         let () = assert_equal ~printer:string_of_int 1 (List.length elements) in
-        assert_equal ~printer album (List.hd elements)
+        assert_equal ~printer TU.album (List.hd elements)
     in Lwt.return_nil
   end
 
