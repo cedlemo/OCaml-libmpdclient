@@ -25,18 +25,16 @@ let queue_length = TU.queue_length
 let test_music_database_find _test_ctxt =
   let open Mpd.Music_database in
   TU.run_test_on_playlist begin fun client ->
-    match find client [(Mpd_tag Artist, "Bach JS")] () with
-    | Error (_, _, _, error) ->
-      assert_equal ~printer "This should not have been reached " error
+    match find client [(Mpd_tag Artist, TU.artist)] () with
+    | Error (_, _, _, error) -> TU.bad_branch error
     | Ok songs -> assert_equal 11 (List.length songs)
   end
 
 let test_music_database_findadd _test_ctxt =
   let open Mpd.Music_database in
   TU.run_test_on_playlist begin fun client ->
-    match findadd client [(Mpd_tag Artist, "Bach JS")] with
-    | Error (_, _, _, error) ->
-      assert_equal ~printer "This should not have been reached " error
+    match findadd client [(Mpd_tag Artist, TU.artist)] with
+    | Error (_, _, _, error) -> TU.bad_branch error
     | Ok _ ->
       let len = queue_length client in
       assert_equal ~printer:(fun i -> string_of_int i) 11 len
@@ -45,18 +43,16 @@ let test_music_database_findadd _test_ctxt =
 let test_music_database_search _test_ctxt =
   let open Mpd.Music_database in
   TU.run_test begin fun client ->
-    match search client [(Mpd_tag Artist, "bACH js")] () with
-    | Error (_, _, _, error) ->
-      assert_equal ~printer "This should not have been reached " error
+    match search client [(Mpd_tag Artist, TU.bad_name_artist)] () with
+    | Error (_, _, _, error) -> TU.bad_branch error
     | Ok songs -> assert_equal 11 (List.length songs)
   end
 
 let test_music_database_searchadd _test_ctxt =
   let open Mpd.Music_database in
   TU.run_test_on_playlist begin fun client ->
-    match searchadd client [(Mpd_tag Artist, "bACH js")] with
-    | Error (_, _, _, error) ->
-      assert_equal ~printer "This should not have been reached " error
+    match searchadd client [(Mpd_tag Artist, TU.bad_name_artist)] with
+    | Error (_, _, _, error) -> TU.bad_branch error
     | Ok _ ->
       let len = queue_length client in
       assert_equal ~printer:(fun i -> string_of_int i) 11 len
@@ -68,14 +64,11 @@ let test_music_database_searchaddpl _test_ctxt =
     let new_playlist = "searchaddpl_new_playlist" in
     let get_playlist_number () =
       match Mpd.Stored_playlists.listplaylists client with
-      | Error message ->
-        let () = assert_equal ~printer "This should not have been reached " message in
-        -1
+      | Error message -> let () = TU.bad_branch message in -1
       | Ok playlists -> List.length playlists
     in
     match searchaddpl client new_playlist [(Mpd_tag Artist, "bACH js")] with
-    | Error (_, _, _, error) ->
-      assert_equal ~printer "This should not have been reached " error
+    | Error (_, _, _, error) -> TU.bad_branch error
     | Ok _ ->
       let () = assert_equal 3 (get_playlist_number ()) in
       let () = ignore(Mpd.Stored_playlists.rm client new_playlist) in
@@ -86,41 +79,19 @@ let test_music_database_count _test_ctxt =
   let open Mpd.Music_database in
   TU.run_test begin fun client ->
     match count client [] ?group:(Some Artist) () with
-    | Error message -> assert_equal ~printer:(fun s -> s) "This should not have been reached " message
-    | Ok counts -> assert_equal ~printer:(fun s -> string_of_int s) 1 (List.length counts)
+    | Error message -> TU.bad_branch message
+    | Ok counts -> assert_equal ~printer:string_of_int 1 (List.length counts)
   end
 
 let test_music_database_list_album _test_ctxt =
   let open Mpd.Music_database in
   TU.run_test begin fun client ->
-    let artist = "Bach JS" in
-    let album = "Die Kunst der Fuge, BWV 1080, for Piano" in
-    match list client Album [(Artist, artist)] with
-    | Error message -> assert_equal ~printer:(fun s -> s) "This should not have been reached " message
+    match list client Album [(Artist, TU.artist)] with
+    | Error message -> TU.bad_branch message
     | Ok elements ->
       let () = assert_equal ~printer:string_of_int 1 (List.length elements) in
-      assert_equal ~printer album (List.hd elements)
+      assert_equal ~printer TU.album (List.hd elements)
   end
-
-let songs =[
-  "Contrapunctus 1";
-  "Contrapunctus 10 a 4 alla Decima";
-  "Contrapunctus 11 a 4";
-  "Contrapunctus 2";
-  "Contrapunctus 3";
-  "Contrapunctus 4";
-  "Contrapunctus 5";
-  "Contrapunctus 6 a 4 in Stylo Francese";
-  "Contrapunctus 7 a 4 per Augmentationem et Diminutionem";
-  "Contrapunctus 8 a 3";
-  "Contrapunctus 9 a 4 alla Duodecima";
-]
-
-let rec compare l1 l2 = match l1, l2 with
-  | [], [] -> true
-  | [], _ -> false
-  | _, [] -> false
-  | h1 :: t1, h2 :: t2 -> h1 = h2 && compare t1 t2
 
 let test_music_database_list_title _test_ctxt =
   let open Mpd.Music_database in
@@ -128,10 +99,10 @@ let test_music_database_list_title _test_ctxt =
     let artist = "Bach JS" in
     let album = "Die Kunst der Fuge, BWV 1080, for Piano" in
     match list client Title [(Artist, artist); (Album, album)] with
-    | Error message -> assert_equal ~printer:(fun s -> s) "This should not have been reached " message
+    | Error message -> TU.bad_branch message
     | Ok elements ->
       let () = assert_equal ~printer:string_of_int 11 (List.length elements) in
-      assert (compare songs elements)
+      assert (TU.compare TU.songs elements)
   end
 
 let tests =
