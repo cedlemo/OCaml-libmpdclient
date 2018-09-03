@@ -25,8 +25,7 @@ let queue_length = TU.queue_length
 let test_stored_playlists_listplaylists _test_ctxt =
   TU.run_test_on_playlist begin fun client ->
     match Mpd.Stored_playlists.listplaylists client with
-    | Error message ->
-      assert_equal ~printer "This should not have been reached" message
+    | Error message -> TU.bad_branch message
     | Ok playlists ->
       let () = assert_equal ~printer:string_of_int 2 (List.length playlists) in
       let hd = List.hd playlists in
@@ -40,14 +39,12 @@ let test_stored_playlists_listplaylists _test_ctxt =
 let test_stored_playlists_load_playlist_and_clear _test_ctxt =
   TU.run_test begin fun client ->
     match Mpd.Stored_playlists.load client "bach" () with
-    | Error (_, _, _, message) ->
-      assert_equal ~printer "This should not have been reached " message
+    | Error (_, _, _, message) -> TU.bad_branch message
     | Ok _ ->
       let len = queue_length client in
       let () =  assert_equal ~printer:string_of_int 11 len in
       match Mpd.Queue.clear client with
-      | Error (_, _, _, message) ->
-        assert_equal ~printer "This should not have been reached " message
+      | Error (_, _, _, message) -> TU.bad_branch message
       | Ok _ -> begin
           let len = queue_length client in
           assert_equal ~printer:string_of_int 0 len
