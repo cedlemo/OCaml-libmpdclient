@@ -104,6 +104,7 @@ let bad_name_artist = "bACH js"
 
 let album = "Die Kunst der Fuge, BWV 1080, for Piano"
 
+(* List of songs returned by Music_database.list *)
 let songs =[
   "Contrapunctus 1";
   "Contrapunctus 10 a 4 alla Decima";
@@ -116,6 +117,21 @@ let songs =[
   "Contrapunctus 7 a 4 per Augmentationem et Diminutionem";
   "Contrapunctus 8 a 3";
   "Contrapunctus 9 a 4 alla Duodecima";
+]
+
+(* List of songs when the Basch playlist is loaded. *)
+let queue =[
+  "Contrapunctus 1";
+  "Contrapunctus 2";
+  "Contrapunctus 3";
+  "Contrapunctus 4";
+  "Contrapunctus 5";
+  "Contrapunctus 6 a 4 in Stylo Francese";
+  "Contrapunctus 7 a 4 per Augmentationem et Diminutionem";
+  "Contrapunctus 8 a 3";
+  "Contrapunctus 9 a 4 alla Duodecima";
+  "Contrapunctus 10 a 4 alla Decima";
+  "Contrapunctus 11 a 4";
 ]
 
 let rec compare l1 l2 = match l1, l2 with
