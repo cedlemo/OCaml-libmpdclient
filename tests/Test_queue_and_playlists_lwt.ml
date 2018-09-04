@@ -65,9 +65,29 @@ let test_stored_playlists_load_playlist_and_clear _test_ctxt =
         end
   end
 
+let test_queue_list _test_ctxt =
+  TU.run_test_on_playlist_lwt begin fun client ->
+    Mpd.Stored_playlists_lwt.load client "bach" ()
+    >>= fun response ->
+    match response with
+    | Error (_, _, _, message) -> TU.bad_branch message; Lwt.return_unit
+    | Ok _ ->
+      Mpd.Queue_lwt.playlist client
+      >>= fun response ->
+      match response with
+      | PlaylistError message -> TU.bad_branch message; Lwt.return_unit
+      | Playlist songs ->
+        let song_names = List.map Mpd.Song.title songs in
+        let same = TU.compare TU.queue song_names in
+        let () = assert_bool "Songs titles do not match" same
+        in
+        Lwt.return_unit
+  end
+
 let tests =
   "Queue and playlists lwt tests" >:::
   [
     "test stored playlists listplaylists" >:: test_stored_playlists_listplaylists;
     "test stored playlists load playlist and clear" >:: test_stored_playlists_load_playlist_and_clear;
+    "test queue playlist" >:: test_queue_list;
   ]
