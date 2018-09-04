@@ -128,6 +128,19 @@ let test_music_database_list_album _test_ctxt =
     in Lwt.return_nil
   end
 
+let test_music_database_list_title _test_ctxt =
+  let open Mpd in
+  TU.run_test_lwt begin fun client ->
+    Music_database_lwt.list client Title [(Artist, TU.artist); (Album, TU.album)]
+    >>= fun response ->
+    let () = match response with
+      | Error message -> bad_branch message
+      | Ok elements ->
+        let () = assert_equal ~printer:string_of_int 11 (List.length elements) in
+        assert (TU.compare TU.songs elements)
+    in Lwt.return_nil
+  end
+
 let tests =
   "Queue and playlists lwt tests" >:::
   [
@@ -138,4 +151,5 @@ let tests =
     "test music database searchaddpl" >:: test_music_database_searchaddpl;
     "test music database count" >:: test_music_database_count;
     "test music database list album" >:: test_music_database_list_album;
+    "test music database list title" >:: test_music_database_list_title;
   ]
