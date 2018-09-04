@@ -116,11 +116,12 @@ let playlistid client id =
   let request = "playlistid " ^ (string_of_int id) in
   match Client.send_request client request with
   | Protocol.Error (_ack_val, _ack_cmd_num, _ack_cmd, ack_message) ->
-    PlaylistError (ack_message)
+    Error ack_message
   | Protocol.Ok (response_opt) -> match response_opt with
-    | None -> Playlist []
-    | Some response ->let song = Song.parse (Utils.split_lines response) in
-      Playlist (song::[])
+    | None ->
+      let message = "No song with id " ^ (string_of_int id) in Error message
+    | Some response ->
+      let song = Song.parse (Utils.split_lines response) in Ok song
 
 let playlistfind client tag needle =
   let request = String.concat " " ["playlistfind"; tag; needle] in

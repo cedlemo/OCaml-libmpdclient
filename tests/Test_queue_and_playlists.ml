@@ -76,9 +76,8 @@ let test_queue_playlistid _test_ctxt =
           let song = List.nth songs n in
           let id = Mpd.Song.id song in
           match Mpd.Queue.playlistid client id with
-          | PlaylistError message -> TU.bad_branch message
-          | Playlist song' ->
-            let song' = List.hd song' in
+          | Error message -> TU.bad_branch message
+          | Ok song' ->
             let title = Mpd.Song.title song in
             let title' = Mpd.Song.title song' in
             assert_equal ~printer title title'
