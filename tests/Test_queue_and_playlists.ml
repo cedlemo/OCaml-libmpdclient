@@ -64,10 +64,36 @@ let test_queue_list _test_ctxt =
         assert_bool "Songs titles do not match" same
   end
 
+let test_queue_playlistid _test_ctxt =
+  TU.run_test_on_playlist begin fun client ->
+    match Mpd.Stored_playlists.load client "bach" () with
+    | Error (_, _, _, message) -> TU.bad_branch message
+    | Ok _ ->
+      match Mpd.Queue.playlist client with
+      | PlaylistError message -> TU.bad_branch message
+      | Playlist songs ->
+        let check_song n =
+          let song = List.nth songs n in
+          let id = Mpd.Song.id song in
+          match Mpd.Queue.playlistid client id with
+          | PlaylistError message -> TU.bad_branch message
+          | Playlist song' ->
+            let song' = List.hd song' in
+            let title = Mpd.Song.title song in
+            let title' = Mpd.Song.title song' in
+            assert_equal ~printer title title'
+        in
+        let () = check_song 0 in
+        let () = check_song 1 in
+        let () = check_song 5 in
+        check_song 10
+  end
+
 let tests =
   "Queue and playlists tests" >:::
   [
     "test stored playlists listplaylists" >:: test_stored_playlists_listplaylists;
     "test stored playlists load playlist and clear" >:: test_stored_playlists_load_playlist_and_clear;
     "test queue playlist" >:: test_queue_list;
+    "test queue playlistid" >:: test_queue_playlistid;
   ]
