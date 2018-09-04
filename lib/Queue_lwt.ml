@@ -122,6 +122,11 @@ let playlistid client id =
   Client_lwt.request client request
   >>= fun response ->
   playlist_command_responses_handler client response
+     >>= function
+      | PlaylistError message -> Lwt.return_error message
+      | Playlist songs -> match songs with
+        | song :: [] -> Lwt.return_ok song
+        | _ -> Lwt.return_error "No match found"
 
 let playlistfind client tag needle =
   let request = String.concat " " ["playlistfind"; tag; needle] in

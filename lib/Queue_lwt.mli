@@ -63,7 +63,7 @@ val playlist:
     playlist. *)
 
 val playlistid:
-  Client_lwt.t -> int -> t Lwt.t
+  Client_lwt.t -> int -> (Song.t, string) result Lwt.t
 (** Get a list with the Song.s of the song id in the playlist *)
 
 val playlistfind:
