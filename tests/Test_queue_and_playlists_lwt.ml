@@ -84,10 +84,40 @@ let test_queue_list _test_ctxt =
         Lwt.return_unit
   end
 
+let test_queue_playlistid _test_ctxt =
+  TU.run_test_on_playlist_lwt begin fun client ->
+    Mpd.Stored_playlists_lwt.load client "bach" ()
+    >>= function
+    | Error (_, _, _, message) -> TU.bad_branch message; Lwt.return_unit
+    | Ok _ ->
+       Mpd.Queue_lwt.playlist client
+       >>= function
+       | PlaylistError message -> TU.bad_branch message; Lwt.return_unit
+       | Playlist songs ->
+         let check_song n =
+           let song = List.nth songs n in
+           let id = Mpd.Song.id song in
+           Mpd.Queue_lwt.playlistid client id
+           >>= function
+           | Error message -> TU.bad_branch message; Lwt.return_unit
+           | Ok song' ->
+             let title = Mpd.Song.title song in
+             let title' = Mpd.Song.title song' in
+             assert_equal ~printer title title';
+             Lwt.return_unit
+        in
+        check_song 0
+        >>= fun () -> check_song 1
+        >>= fun () -> check_song 5
+        >>= fun () -> check_song 10
+  end
+
+
 let tests =
   "Queue and playlists lwt tests" >:::
   [
     "test stored playlists listplaylists" >:: test_stored_playlists_listplaylists;
     "test stored playlists load playlist and clear" >:: test_stored_playlists_load_playlist_and_clear;
     "test queue playlist" >:: test_queue_list;
+    "test queue playlistid" >:: test_queue_playlistid;
   ]
