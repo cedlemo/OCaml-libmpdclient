@@ -81,7 +81,7 @@ let moveid client id position_to =
                                              string_of_int id;
                                              string_of_int position_to])
 
-let get_song_id song =
+let get_song_pos song =
   let pattern = "\\([0-9]+\\):file:.*" in
   let found = Str.string_match (Str.regexp pattern) song 0 in
   if found then Str.matched_group 1 song
@@ -90,7 +90,7 @@ let get_song_id song =
 let rec _build_songs_list client songs l =
   match songs with
   | [] -> let playlist = Playlist (List.rev l) in Lwt.return playlist
-  | h :: q -> let song_infos_request = "playlistinfo " ^ (get_song_id h) in
+  | h :: q -> let song_infos_request = "playlistinfo " ^ (get_song_pos h) in
     Client_lwt.request client song_infos_request
     >>= function
     | Protocol.Error (_, _, _, ack_message)->
@@ -98,7 +98,7 @@ let rec _build_songs_list client songs l =
     | Protocol.Ok (song_infos_opt) ->
       match song_infos_opt with
       | None ->
-        let message = "No song information for " ^ (get_song_id h) in
+        let message = "No song information for " ^ (get_song_pos h) in
         Lwt.return (PlaylistError message)
       | Some song_infos ->
         let song = Song.parse (Utils.split_lines song_infos) in
@@ -120,13 +120,15 @@ let playlist client =
 let playlistid client id =
   let request = "playlistid " ^ (string_of_int id) in
   Client_lwt.request client request
-  >>= fun response ->
-  playlist_command_responses_handler client response
-     >>= function
-      | PlaylistError message -> Lwt.return_error message
-      | Playlist songs -> match songs with
-        | song :: [] -> Lwt.return_ok song
-        | _ -> Lwt.return_error "No match found"
+  >>= function
+  | Protocol.Error (_ack_val, _ack_cmd_num, _ack_cmd, ack_message) ->
+    Lwt.return_error ack_message
+  | Protocol.Ok (response_opt) -> match response_opt with
+    | None ->
+      let message = "No song with id " ^ (string_of_int id) in
+      Lwt.return_error message
+    | Some response ->
+      let song = Song.parse (Utils.split_lines response) in Lwt.return_ok song
 
 let playlistfind client tag needle =
   let request = String.concat " " ["playlistfind"; tag; needle] in
