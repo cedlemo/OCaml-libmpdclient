@@ -164,7 +164,7 @@ let idle common_opts =
 
 open Cmdliner
 let cmd =
-  let doc = "Use Ompdc an Mpd server events listener. Quit with Ctl+Alt+C." in
+  let doc = "Use Ompdc as an Mpd server events listener. Quit with Ctl+Alt+C." in
   let man = [ `S Manpage.s_description;
               `P "Idle command that display events of the Mpd server.";
               `Blocks help_section
