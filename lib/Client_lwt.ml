@@ -25,10 +25,6 @@ let initialize connection =
   >>= fun message ->
   Lwt.return {connection = connection; mpd_banner = message}
 
-let close client =
-let {connection = connection; _} = client in
-Connection_lwt.close connection
-
 let mpd_banner {mpd_banner = banner; _ } =
   Lwt.return banner
 
@@ -99,3 +95,9 @@ let noidle client =
     >>= fun response ->
       let parsed_response = Protocol.parse_response response in
       Lwt.return parsed_response *)
+
+let close client =
+  let {connection = connection; _} = client in
+  send client "close"
+  >>= function _ ->
+  Connection_lwt.close connection

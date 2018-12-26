@@ -25,9 +25,6 @@ type t
 val initialize: Connection_lwt.t -> t Lwt.t
 (** Initialize the client with a connection. *)
 
-val close: t -> unit Lwt.t
-(** Close the client *)
-
 val mpd_banner: t -> string Lwt.t
 (** Return the mpd banner that the server send at the first connection of the
     client. *)
@@ -72,3 +69,10 @@ val noidle:
   t -> Protocol.response Lwt.t
 (** This command is needed to stop listening after a Client.idle command.
     An example of usage can be seen in samples/mpd_lwt_client_idle_noidle.exe. *)
+
+val close: t -> unit Lwt.t
+(** Close the client. MPD will try to send the remaining output
+    buffer before it actually closes the connection, but that cannot be
+    guaranteed. This command will not generate a response. This function is a
+    wrapper to the "close" command of the Mpd protocol, this means that it first
+    send the "close" command and it close the connection at the socket level. *)
