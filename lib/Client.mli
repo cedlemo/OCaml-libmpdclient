@@ -51,7 +51,9 @@ val password: t -> string -> Protocol.response
 val close: t -> unit
 (** Close the connection to MPD. MPD will try to send the remaining output
     buffer before it actually closes the connection, but that cannot be
-    guaranteed. This command will not generate a response. *)
+    guaranteed. This command will not generate a response. This function is a
+    wrapper to the "close" command of the Mpd protocol, this means that it first
+    send the "close" command and it close the connection at the socket level. *)
 
 val tagtypes: t -> string list
 (** Show a list of available tag types. It is an intersection of the
