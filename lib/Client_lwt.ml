@@ -98,6 +98,4 @@ let noidle client =
 
 let close client =
   let {connection = connection; _} = client in
-  send client "close"
-  >>= function _ ->
   Connection_lwt.close connection
