@@ -36,13 +36,3 @@ RUN sudo chown -R $U:$U $WDIR
 WORKDIR /home/ocaml-libmpdclient/ocaml-libmpdclient
 RUN opam init --disable-sandboxing \
   && opam install lwt cmdliner jbuilder odoc ounit bisect_ppx dune logs fmt
-RUN mkdir -p $TMP/mpd/music && mkdir $TMP/mpd/playlists \
-  && cp $WDIR/.travis/mpd.conf $TMP/mpd/mpd.conf \
-  && cp $WDIR/.travis/*.mp3 $TMP/mpd/music/ \
-  && ls -1 $TMP/mpd/music/ > $TMP/mpd/playlists/bach.m3u \
-  && echo $TMP"/mpd/music/kunst01.mp3" > $TMP/mpd/playlists/bach1.m3u \
-  && echo ". /home/ocaml-libmpdclient/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true" > $WDIR/runtest.sh \
-  && echo "mpd "$TMP"/mpd/mpd.conf" >> $WDIR/runtest.sh \
-  && echo "dune runtest --profile release" >> $WDIR/runtest.sh \
-  && mpd --version
-CMD bash -ex $WDIR/runtest.sh

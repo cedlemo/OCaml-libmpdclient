@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+  mpd:
+    build:
+      context: ../
+      dockerfile: .travis/Dockerfile-mpd
+    ports:
+      - 6600:6600
+  alpine:
+    build:
+      context: ../
+      dockerfile: .travis/Dockerfile-alpine
+    depends_on:
+      - mpd

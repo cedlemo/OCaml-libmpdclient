@@ -1,0 +1,19 @@
+FROM vimagick/mpd
+
+RUN \
+  addgroup -S ocaml-libmpdclient && adduser -S -G ocaml-libmpdclient ocaml-libmpdclient
+
+ENV TMP=/tmp
+ENV WDIR=/tmp/data
+COPY . $WDIR
+WORKDIR $WDIR
+
+USER ocaml-libmpdclient
+
+RUN mkdir -p $TMP/mpd/music && mkdir $TMP/mpd/playlists \
+  && cp $WDIR/.travis/mpd/mpd.conf $TMP/mpd/mpd.conf \
+  && cp $WDIR/.travis/mpd/*.mp3 $TMP/mpd/music/ \
+  && ls -1 $TMP/mpd/music/ > $TMP/mpd/playlists/bach.m3u \
+  && echo $TMP"/mpd/music/kunst01.mp3" > $TMP/mpd/playlists/bach1.m3u
+
+CMD ["mpd", "--stdout", "--no-daemon", "/tmp/mpd/mpd.conf"]

@@ -2,20 +2,27 @@ language: c
 sudo: required
 
 services:
-        -docker
+        - docker
+
+env:
+  DOCKER_COMPOSE_VERSION: 1.23.2
 
 matrix:
   include:
     - env: TYPE=ubuntu
     - env: TYPE=alpine
-install:
-  - docker build
-      -t ocaml-libmpdclient/${TYPE}
-      -f .travis/Dockerfile-${TYPE}
-      .
+
+before_install:
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+
+before_script:
+  - docker-compose -f .travis/docker-compose-${TYPE}.yaml up -d --build
 
 script:
-  - docker run
-      --interactive
-      --tty
-      ocaml-libmpdclient/${TYPE}
+  - docker-compose -f .travis/docker-compose-${TYPE}.yaml run ${TYPE} dune runtest --profile=release
+
+after_script:
+  - docker-compose -f .travis/docker-compose-${TYPE}.yaml down
