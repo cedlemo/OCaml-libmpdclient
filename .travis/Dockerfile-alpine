@@ -20,7 +20,7 @@ COPY . /home/ocaml-libmpdclient/ocaml-libmpdclient
 RUN sudo chown -R $U:$U $WDIR
 WORKDIR /home/ocaml-libmpdclient/ocaml-libmpdclient
 RUN opam init  --disable-sandboxing \
-  && opam install lwt cmdliner jbuilder dune odoc ounit bisect_ppx logs
+  && opam install lwt cmdliner jbuilder dune odoc ounit bisect_ppx logs fmt
 RUN mkdir -p $TMP/mpd/music && mkdir $TMP/mpd/playlists \
   && cp $WDIR/.travis/mpd.conf $TMP/mpd/mpd.conf \
   && cp $WDIR/.travis/*.mp3 $TMP/mpd/music/ \
