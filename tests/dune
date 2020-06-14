@@ -1,9 +1,4 @@
-(executables
-  (names test)
+(test
+  (name test)
   (libraries libmpdclient lwt lwt.unix unix oUnit logs logs.lwt logs.fmt)
-)
-
-(alias
-  (name runtest)
-  (action (run ./test.exe -runner sequential))
 )
