@@ -21,10 +21,7 @@
 (** Remove new line char at the end of a string.*)
 let remove_trailing_new_line str =
   let len = String.length str in
-  if len > 0 && str.[len-1] = '\n' then
-    String.sub str 0 (len-1)
-  else
-    str
+  if len > 0 && str.[len - 1] = '\n' then String.sub str 0 (len - 1) else str
 
 (** Remove all new line characters in a string.*)
 let remove_new_lines str =
@@ -32,8 +29,7 @@ let remove_new_lines str =
   Str.global_replace (Str.regexp "\n") empty str
 
 (** Split multiline string into a list of strings *)
-let split_lines strings =
-  Str.split (Str.regexp "\n") strings
+let split_lines strings = Str.split (Str.regexp "\n") strings
 
 (** Type that can save the id of an element which can be an int or two int *)
 type item_id = Simple of int | Num_on_num of int * int
@@ -42,39 +38,43 @@ type item_id = Simple of int | Num_on_num of int * int
  * is used in track and disc tab of the song data *)
 let num_on_num_parse numbers =
   let is_simple_number = Str.string_match (Str.regexp "^[0-9]+$") numbers 0 in
-  let is_num_on_num = Str.string_match (Str.regexp "\\([0-9]+\\)/\\([0-9]+\\)") numbers 0 in
+  let is_num_on_num =
+    Str.string_match (Str.regexp "\\([0-9]+\\)/\\([0-9]+\\)") numbers 0
+  in
   if is_simple_number then Simple (int_of_string numbers)
   else if is_num_on_num then
-    Num_on_num (int_of_string (Str.matched_group 1 numbers),
-                int_of_string (Str.matched_group 2 numbers))
-  else
-    Num_on_num (-1, -1)
+    Num_on_num
+      ( int_of_string (Str.matched_group 1 numbers),
+        int_of_string (Str.matched_group 2 numbers) )
+  else Num_on_num (-1, -1)
 
+type pair = { key : string; value : string }
 (** Create a type used when splitting a line which has the form key: value .
  * This type is used by Mpd.Utils.read_key_val. *)
-type pair = { key : string; value : string }
 
 (** Split a line with the form "k: v" in the value of type pair *)
 let read_key_val str =
   let pattern = Str.regexp "\\(.*\\): \\(.*\\)" in
-  if Str.string_match pattern str 0 then let k = Str.matched_group 1 str in
-  let v = Str.matched_group 2 str in {key = k; value = v}
-  else {key = ""; value = ""}
+  if Str.string_match pattern str 0 then
+    let k = Str.matched_group 1 str in
+    let v = Str.matched_group 2 str in
+    { key = k; value = v }
+  else { key = ""; value = "" }
 
 (** Returns all the values of a list of strings that have the key/value form. *)
 let values_of_pairs list_of_pairs =
   let rec _values pairs acc =
     match pairs with
     | [] -> acc
-    | pair :: remainder -> let {key = _; value = v} = read_key_val pair in _values remainder (v :: acc)
-  in _values list_of_pairs []
+    | pair :: remainder ->
+        let { key = _; value = v } = read_key_val pair in
+        _values remainder (v :: acc)
+  in
+  _values list_of_pairs []
 
 (** Get a boolean value from a string number. The string "0" is false while all
  * other string is true. *)
-let bool_of_int_str b =
-  match b with
-  | "0" -> false
-  | _   -> true
+let bool_of_int_str b = match b with "0" -> false | _ -> true
 
 (** Get the file path from the ouput of the command "listplaylist name"*)
 let read_file_paths data =
@@ -83,9 +83,11 @@ let read_file_paths data =
   let rec get_paths files acc =
     match files with
     | [] -> acc
-    | f :: remainded -> if Str.string_match pattern f 0
-      then get_paths remainded ((Str.matched_group 2 f) :: acc)
-      else get_paths remainded acc in
+    | f :: remainded ->
+        if Str.string_match pattern f 0 then
+          get_paths remainded (Str.matched_group 2 f :: acc)
+        else get_paths remainded acc
+  in
   let paths = get_paths lines [] in
   List.rev paths
 
@@ -97,11 +99,10 @@ let read_list_playlists data =
     match lines with
     | [] -> List.rev acc
     | item :: remain ->
-      if Str.string_match pattern item 0 then
-        let name = Str.matched_group 1 item in
-        get_playlists remain (name :: acc)
-      else
-        get_playlists remain acc
+        if Str.string_match pattern item 0 then
+          let name = Str.matched_group 1 item in
+          get_playlists remain (name :: acc)
+        else get_playlists remain acc
   in
   get_playlists lines []
 
@@ -110,26 +111,37 @@ exception EMusic_database of string
 (** Get the count list from the Mpd count command. *)
 let parse_count_response response group_tag =
   match group_tag with
-  | None -> let songs = Str.split (Str.regexp_string "songs:") response in
+  | None ->
+      let songs = Str.split (Str.regexp_string "songs:") response in
       let match_pattern = "\\(.*\\)\nplaytime: *\\(.*\\)\n" in
-      List.map begin fun s ->
-        if Str.string_match (Str.regexp match_pattern) s 1 then
-          (int_of_string (Str.matched_group 1 s),
-           float_of_string (Str.matched_group 2 s),
-           "")
-        else raise (EMusic_database (Printf.sprintf "Count response parsing: empty for %s" match_pattern))
-      end songs
+      List.map
+        (fun s ->
+          if Str.string_match (Str.regexp match_pattern) s 1 then
+            ( int_of_string (Str.matched_group 1 s),
+              float_of_string (Str.matched_group 2 s),
+              "" )
+          else
+            raise
+              (EMusic_database
+                 (Printf.sprintf "Count response parsing: empty for %s"
+                    match_pattern)))
+        songs
   | Some grp ->
       let group_pattern = Printf.sprintf "%s:" (String.capitalize_ascii grp) in
       let songs = Str.split (Str.regexp_string group_pattern) response in
       let match_pattern = "\\(.*\\)\nsongs: *\\(.*\\)\nplaytime: *\\(.*\\)\n" in
-      List.map begin fun s ->
-        if Str.string_match (Str.regexp match_pattern) s 1 then
-          (int_of_string (Str.matched_group 2 s),
-           float_of_string (Str.matched_group 3 s),
-           Str.matched_group 1 s)
-        else raise (EMusic_database (Printf.sprintf "Count response parsing: empty for %s" match_pattern))
-      end songs
+      List.map
+        (fun s ->
+          if Str.string_match (Str.regexp match_pattern) s 1 then
+            ( int_of_string (Str.matched_group 2 s),
+              float_of_string (Str.matched_group 3 s),
+              Str.matched_group 1 s )
+          else
+            raise
+              (EMusic_database
+                 (Printf.sprintf "Count response parsing: empty for %s"
+                    match_pattern)))
+        songs
 
 let print_data data =
   let message = Printf.sprintf "-|%s|-" data in

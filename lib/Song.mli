@@ -22,34 +22,34 @@
 type t
 (** Song type *)
 
-val empty: t
+val empty : t
 (** Empty song type *)
 
-val parse: string list -> t
+val parse : string list -> t
 (** Parse a list of song attributes to a Song.s type *)
 
-val album: t -> string
-val albumsort: t -> string
-val albumartist: t -> string
-val albumartistsort: t -> string
-val artist: t -> string
-val artistsort: t -> string
-val comment: t -> string
-val composer: t -> string
-val date: t -> string
-val disc: t -> string
-val duration: t -> float
-val file: t -> string
-val genre: t -> string
-val id: t -> int
-val last_modified: t -> string
-val name: t -> string
-val performer: t -> string
-val pos: t -> int
-val rate:  t -> int
-val time: t -> int
-val title: t -> string
-val track: t -> string
+val album : t -> string
+val albumsort : t -> string
+val albumartist : t -> string
+val albumartistsort : t -> string
+val artist : t -> string
+val artistsort : t -> string
+val comment : t -> string
+val composer : t -> string
+val date : t -> string
+val disc : t -> string
+val duration : t -> float
+val file : t -> string
+val genre : t -> string
+val id : t -> int
+val last_modified : t -> string
+val name : t -> string
+val performer : t -> string
+val pos : t -> int
+val rate : t -> int
+val time : t -> int
+val title : t -> string
+val track : t -> string
 
 (*
 TAG_MUSICBRAINZ_ARTISTID

@@ -27,6 +27,7 @@ let () =
   match Mpd.Music_database.count client [] ~group:Mpd.Tags.Artist () with
   | Error message -> print_endline message
   | Ok count ->
-      List.iter (fun {songs; playtime; misc} ->
-              Printf.printf "%d %f %s" songs playtime misc) count
-
+      List.iter
+        (fun { songs; playtime; misc } ->
+          Printf.printf "%d %f %s" songs playtime misc)
+        count

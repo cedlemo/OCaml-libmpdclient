@@ -27,11 +27,12 @@ let host = "127.0.0.1"
 let port = 6600
 
 let () =
-   let connection = Mpd.Connection.initialize host port in
-   let client = Mpd.Client.initialize connection in
-   print_endline ("banner: " ^ (Mpd.Client.mpd_banner client));
-   match Mpd.Client.status client with
-   | Error message -> print_endline message
-   | Ok status -> let vol = Mpd.Status.volume status in
-     print_endline (string_of_int vol);
-   Mpd.Connection.close connection;
+  let connection = Mpd.Connection.initialize host port in
+  let client = Mpd.Client.initialize connection in
+  print_endline ("banner: " ^ Mpd.Client.mpd_banner client);
+  match Mpd.Client.status client with
+  | Error message -> print_endline message
+  | Ok status ->
+      let vol = Mpd.Status.volume status in
+      print_endline (string_of_int vol);
+      Mpd.Connection.close connection

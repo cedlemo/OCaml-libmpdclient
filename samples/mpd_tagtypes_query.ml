@@ -25,7 +25,7 @@ let host = "127.0.0.1"
 let port = 6600
 
 let () =
-   let connection = Mpd.Connection.initialize host port in
-   let client = Mpd.Client.initialize connection in
-   let tagtypes = Mpd.Client.tagtypes client in
-   List.iter (fun x -> print_endline ("-*-" ^ x)) tagtypes;
+  let connection = Mpd.Connection.initialize host port in
+  let client = Mpd.Client.initialize connection in
+  let tagtypes = Mpd.Client.tagtypes client in
+  List.iter (fun x -> print_endline ("-*-" ^ x)) tagtypes

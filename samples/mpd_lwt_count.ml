@@ -20,28 +20,22 @@ open Lwt.Infix
 
 let host = "127.0.0.1"
 let port = 6600
-
-let lwt_print_line str =
-  Lwt_io.write_line Lwt_io.stdout str
+let lwt_print_line str = Lwt_io.write_line Lwt_io.stdout str
 
 open Mpd.Music_database_lwt
 
 let main_thread =
   let open Mpd in
-  Connection_lwt.initialize host port
-  >>= fun connection ->
-    Client_lwt.initialize connection
-    >>= fun client ->
-      Music_database_lwt.count client [] ~group:(Tags.Artist) ()
-      >>= function
-        | Error message -> lwt_print_line message
-        | Ok count -> lwt_print_line (string_of_int (List.length count))
-          >>= fun () ->
-            Lwt_list.iter_s (fun {songs; playtime; misc} ->
-              lwt_print_line (Printf.sprintf "%d %f %s" songs playtime misc)
-            ) count
-        >>= fun () ->
-          Client_lwt.close client
+  Connection_lwt.initialize host port >>= fun connection ->
+  Client_lwt.initialize connection >>= fun client ->
+  Music_database_lwt.count client [] ~group:Tags.Artist () >>= function
+  | Error message -> lwt_print_line message
+  | Ok count ->
+      lwt_print_line (string_of_int (List.length count)) >>= fun () ->
+      Lwt_list.iter_s
+        (fun { songs; playtime; misc } ->
+          lwt_print_line (Printf.sprintf "%d %f %s" songs playtime misc))
+        count
+      >>= fun () -> Client_lwt.close client
 
-let () =
-  Lwt_main.run main_thread
+let () = Lwt_main.run main_thread

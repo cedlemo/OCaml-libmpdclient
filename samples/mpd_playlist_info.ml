@@ -26,15 +26,18 @@ let host = "127.0.0.1"
 let port = 6600
 
 let () =
-   let connection = Mpd.Connection.initialize host port in
-   let client = Mpd.Client.initialize connection in
-   match Mpd.Queue.playlist client with
-   | Mpd.Queue.PlaylistError message -> print_endline message
-   | Mpd.Queue.Playlist playlist -> let n = List.length playlist in
-   print_endline ("Number of songs : " ^ (string_of_int n));
-   List.iter (fun song ->
-     let id = string_of_int (Mpd.Song.id song) in
-     let title = Mpd.Song.title song in
-     let album = Mpd.Song.album song in
-     print_endline (String.concat " " ["\t*"; id; title; album])) playlist;
-   Mpd.Connection.close connection
+  let connection = Mpd.Connection.initialize host port in
+  let client = Mpd.Client.initialize connection in
+  match Mpd.Queue.playlist client with
+  | Mpd.Queue.PlaylistError message -> print_endline message
+  | Mpd.Queue.Playlist playlist ->
+      let n = List.length playlist in
+      print_endline ("Number of songs : " ^ string_of_int n);
+      List.iter
+        (fun song ->
+          let id = string_of_int (Mpd.Song.id song) in
+          let title = Mpd.Song.title song in
+          let album = Mpd.Song.album song in
+          print_endline (String.concat " " [ "\t*"; id; title; album ]))
+        playlist;
+      Mpd.Connection.close connection

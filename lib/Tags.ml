@@ -61,5 +61,4 @@ let build_tag_parameter printer tags =
   let tag_and_param_to_string (t, p) =
     Printf.sprintf "%s \"%s\"" (printer t) p
   in
-  List.map tag_and_param_to_string tags
-  |> String.concat " "
+  List.map tag_and_param_to_string tags |> String.concat " "

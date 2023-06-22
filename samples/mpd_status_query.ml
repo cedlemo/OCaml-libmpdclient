@@ -27,12 +27,19 @@ let host = "127.0.0.1"
 let port = 6600
 
 let () =
-   let connection = Mpd.Connection.initialize host port in
-   print_endline ("received: " ^ (Mpd.Connection.read connection (fun s -> Mpd.Protocol.Complete (s, 0))));
-   Mpd.Connection.write connection ("status\n");
-   let status = Mpd.Connection.read connection (fun s -> Mpd.Protocol.Complete (s, 0)) in
-   let lines = Mpd.Utils.split_lines status in
-   let rec display_infos = function
-     | [] -> Mpd.Connection.close connection
-     | h :: q -> let _ = print_endline ("*>" ^ h) in display_infos q
-   in display_infos lines
+  let connection = Mpd.Connection.initialize host port in
+  print_endline
+    ("received: "
+    ^ Mpd.Connection.read connection (fun s -> Mpd.Protocol.Complete (s, 0)));
+  Mpd.Connection.write connection "status\n";
+  let status =
+    Mpd.Connection.read connection (fun s -> Mpd.Protocol.Complete (s, 0))
+  in
+  let lines = Mpd.Utils.split_lines status in
+  let rec display_infos = function
+    | [] -> Mpd.Connection.close connection
+    | h :: q ->
+        let _ = print_endline ("*>" ^ h) in
+        display_infos q
+  in
+  display_infos lines

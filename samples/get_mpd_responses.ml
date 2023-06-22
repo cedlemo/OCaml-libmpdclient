@@ -23,24 +23,27 @@ let host = "127.0.0.1"
 let port = 6600
 
 let fd =
-  let flags = [Open_trunc; Open_append; Open_creat] in
+  let flags = [ Open_trunc; Open_append; Open_creat ] in
   let perm = 0o666 in
-   Stdlib.open_out_gen flags perm "responses"
+  Stdlib.open_out_gen flags perm "responses"
 
 let write_down question response =
   let _ = Printf.fprintf fd "question -|%s|-\n" question in
   Printf.fprintf fd "response -|%s|-\n" response
 
-let queries = ["ping";
-               "stop";
-               "playlist";
-               "listplaylists";
-               "listplaylist zen";
-               "list Artist";
-               "list Album artist Nile";
-               "list Title artist Nile album Ithyphallic";
-               "list Title album Ithyphallic artist Nile";
-               "find artist Nile album Ithyphallic";]
+let queries =
+  [
+    "ping";
+    "stop";
+    "playlist";
+    "listplaylists";
+    "listplaylist zen";
+    "list Artist";
+    "list Album artist Nile";
+    "list Title artist Nile album Ithyphallic";
+    "list Title album Ithyphallic artist Nile";
+    "find artist Nile album Ithyphallic";
+  ]
 
 let () =
   let connection = Mpd.Connection.initialize host port in
@@ -49,11 +52,13 @@ let () =
   let rec loop = function
     | [] -> Stdlib.close_out fd
     | q :: t ->
-      let query = q ^ "\n" in
-      let _ = Mpd.Connection.write connection query in
-      let response = Mpd.Connection.read connection (fun s -> Mpd.Protocol.Complete (s, 0)) in
-      let _ = write_down query response in
-      loop t
+        let query = q ^ "\n" in
+        let _ = Mpd.Connection.write connection query in
+        let response =
+          Mpd.Connection.read connection (fun s -> Mpd.Protocol.Complete (s, 0))
+        in
+        let _ = write_down query response in
+        loop t
   in
   let _ = loop queries in
   Mpd.Connection.close connection

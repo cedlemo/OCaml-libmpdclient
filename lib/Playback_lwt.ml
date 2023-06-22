@@ -16,37 +16,28 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-let next client =
-  Client_lwt.send client "next"
-
-let previous client =
-  Client_lwt.send client "previous"
-
-let stop client =
-  Client_lwt.send client "stop"
+let next client = Client_lwt.send client "next"
+let previous client = Client_lwt.send client "previous"
+let stop client = Client_lwt.send client "stop"
 
 let pause client arg =
   match arg with
   | true -> Client_lwt.send client "pause 1"
-  | _    -> Client_lwt.send client "pause 0"
+  | _ -> Client_lwt.send client "pause 0"
 
 let play client songpos =
-  Client_lwt.send client (String.concat " " ["play";
-                                                string_of_int songpos])
+  Client_lwt.send client (String.concat " " [ "play"; string_of_int songpos ])
 
 let playid client songid =
-  Client_lwt.send client (String.concat " " ["playid";
-                                                string_of_int songid])
+  Client_lwt.send client (String.concat " " [ "playid"; string_of_int songid ])
 
 let seek client songpos time =
-  Client_lwt.send client (String.concat " " ["seek";
-                                                string_of_int songpos;
-                                                string_of_float time])
+  Client_lwt.send client
+    (String.concat " " [ "seek"; string_of_int songpos; string_of_float time ])
 
 let seekid client songid time =
-  Client_lwt.send client (String.concat " " ["seekid";
-                                                string_of_int songid;
-                                                string_of_float time])
+  Client_lwt.send client
+    (String.concat " " [ "seekid"; string_of_int songid; string_of_float time ])
 
 let seekcur client time =
-  Client_lwt.send client (String.concat " " ["seekcur"; string_of_float time])
+  Client_lwt.send client (String.concat " " [ "seekcur"; string_of_float time ])

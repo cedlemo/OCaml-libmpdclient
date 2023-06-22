@@ -20,15 +20,13 @@ open OUnit2
 
 let () =
   run_test_tt_main
-  (
-    "Mpd client library tests" >:::
-      [
-        Test_regexp_uses.tests;
-        Test_connection_and_client.tests;
-        Test_queue_and_playlists.tests;
-        Test_music_database.tests;
-        Test_connection_and_client_lwt.tests;
-        Test_queue_and_playlists_lwt.tests;
-        Test_music_database_lwt.tests;
-      ]
-)
+    ("Mpd client library tests"
+    >::: [
+           Test_regexp_uses.tests;
+           Test_connection_and_client.tests;
+           Test_queue_and_playlists.tests;
+           Test_music_database.tests;
+           Test_connection_and_client_lwt.tests;
+           Test_queue_and_playlists_lwt.tests;
+           Test_music_database_lwt.tests;
+         ])

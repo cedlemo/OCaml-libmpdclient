@@ -18,10 +18,13 @@
 
 (** Music_database module with Lwt: regroups data base related commands. *)
 
-val find:
-  Client_lwt.t -> (Tags.search_tags * string) list -> ?sort:Tags.t
-  -> ?window:(int * int) -> unit
-  -> (Song.t list, Protocol.ack_error * int * string * string) result Lwt.t
+val find :
+  Client_lwt.t ->
+  (Tags.search_tags * string) list ->
+  ?sort:Tags.t ->
+  ?window:int * int ->
+  unit ->
+  (Song.t list, Protocol.ack_error * int * string * string) result Lwt.t
 (** Find songs in the db that match exactly the a list of pairs (tag, exact_pattern). The
     exact_pattern is a string and the tah can be any tag supported by MPD, or
     one of the special parameters:
@@ -33,38 +36,47 @@ val find:
                      (ISO 8601 or UNIX time stamp)
 *)
 
-val findadd:
+val findadd :
   Client_lwt.t -> (Tags.search_tags * string) list -> Protocol.response Lwt.t
 (* Find songs in the db that and adds them to current playlist. Parameters
    have the same meaning as for find. *)
 
-val search:
-  Client_lwt.t -> (Tags.search_tags * string) list -> ?sort:Tags.t
-  -> ?window:(int * int) -> unit
-  -> (Song.t list, Protocol.ack_error * int * string * string) result Lwt.t
+val search :
+  Client_lwt.t ->
+  (Tags.search_tags * string) list ->
+  ?sort:Tags.t ->
+  ?window:int * int ->
+  unit ->
+  (Song.t list, Protocol.ack_error * int * string * string) result Lwt.t
 (** Search for any song that contains WHAT. Parameters have the same meaning
    as for find, except that search is not case sensitive. *)
 
-val searchadd:
+val searchadd :
   Client_lwt.t -> (Tags.search_tags * string) list -> Protocol.response Lwt.t
 (** Search for any song that contains WHAT in tag TYPE and adds them to
    current playlist.
    Parameters have the same meaning as for findadd, except that search is not
    case sensitive. *)
 
-val searchaddpl:
-  Client_lwt.t -> string -> (Tags.search_tags * string) list -> Protocol.response Lwt.t
+val searchaddpl :
+  Client_lwt.t ->
+  string ->
+  (Tags.search_tags * string) list ->
+  Protocol.response Lwt.t
 (** Search for any song that contains WHAT in tag TYPE and adds them to the
    playlist named NAME.  If a playlist by that name doesn't exist it is
    created. Parameters have the same meaning as for find, except that search is
    not case sensitive. *)
 
-type song_count = { songs: int; playtime: float; misc: string }
+type song_count = { songs : int; playtime : float; misc : string }
 (** basic type for the response of the count command. *)
 
-val count:
-  Client_lwt.t -> (Tags.t * string) list -> ?group:Tags.t -> unit
-  -> (song_count list, string) result Lwt.t
+val count :
+  Client_lwt.t ->
+  (Tags.t * string) list ->
+  ?group:Tags.t ->
+  unit ->
+  (song_count list, string) result Lwt.t
 (** Get a count of songs with filters. For examples: count group artist will
    return for each artist the number of sons, the total playtime and the
    name of the artist in misc.
@@ -75,27 +87,27 @@ val count:
    count genre metal date 2016 group artist
  *)
 
-
-val list:
-  Client_lwt.t -> Tags.t -> (Tags.t * string) list
-  -> (string list, string) result Lwt.t
+val list :
+  Client_lwt.t ->
+  Tags.t ->
+  (Tags.t * string) list ->
+  (string list, string) result Lwt.t
 (** Get a list based on some filer. For example "list album artist "Elvis Presley""
     will return a list of the album names of Elvis Presley that exists in the
     music database. *)
 
-val update:
-  Client_lwt.t -> string option -> Protocol.response Lwt.t
+val update : Client_lwt.t -> string option -> Protocol.response Lwt.t
 (** Update the music database: find new files, remove deleted files, update
     modified files. URI is a particular directory or song/file to update. If
     you do not specify it, everything is updated.
     Prints "updating_db: JOBID" where JOBID is a positive number identifying
     the update job. You can read the current job id in the status response. *)
 
-val rescan:
-  Client_lwt.t -> string option -> Protocol.response Lwt.t
+val rescan : Client_lwt.t -> string option -> Protocol.response Lwt.t
 (** Same as update, but also rescans unmodified files. *)
 
 (**/**)
+
 (*
 list {TYPE} [FILTERTYPE] [FILTERWHAT] [...] [group] [GROUPTYPE] [...]
 Lists unique tags values of the specified type. TYPE can be any tag supported by MPD or file.

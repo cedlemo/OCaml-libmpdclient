@@ -20,25 +20,19 @@ open Cmdliner
 open Ompdc_common
 
 let listplaylists common_opts =
-  let {host; port} = common_opts in
-  let client = initialize_client {host; port} in
-  let () = match Mpd.Stored_playlists.listplaylists client with
+  let { host; port } = common_opts in
+  let client = initialize_client { host; port } in
+  let () =
+    match Mpd.Stored_playlists.listplaylists client with
     | Error message -> print_endline message
     | Ok playlists -> List.iter print_endline playlists
   in
   Mpd.Client.close client
 
 let listplaylists_t =
-    let doc = "List all the playlists"
-    in
-    let man = [
-               `S Manpage.s_description;
-               `P doc;
-               `Blocks help_section; ]
-    in
-    Term.(const listplaylists $ common_opts_t),
-    Cmd.info "listplaylists" ~doc ~sdocs ~exits ~man
+  let doc = "List all the playlists" in
+  let man = [ `S Manpage.s_description; `P doc; `Blocks help_section ] in
+  ( Term.(const listplaylists $ common_opts_t),
+    Cmd.info "listplaylists" ~doc ~sdocs ~exits ~man )
 
-let cmds = [listplaylists_t]
-
-
+let cmds = [ listplaylists_t ]

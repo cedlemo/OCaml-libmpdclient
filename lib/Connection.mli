@@ -22,29 +22,29 @@
 type t
 (** connection type *)
 
-val initialize: string -> int -> t
+val initialize : string -> int -> t
 (** Create the connection, exit if the connection can not be initialized. *)
 
-val hostname: t -> string
+val hostname : t -> string
 (** Retrieve the host's string of the initialized connection. *)
 
-val port: t -> int
+val port : t -> int
 (** Retrieve the port of the connection of the initialized connection. *)
 
-val close: t -> unit
+val close : t -> unit
 (** Close the connection *)
 
-val write: t -> string -> unit
+val write : t -> string -> unit
 (** Write to an Mpd connection *)
 
-val read: t -> (string -> Protocol.mpd_response) -> string
+val read : t -> (string -> Protocol.mpd_response) -> string
 (** Read in an Mpd connection *)
 
-val read_mpd_banner: t -> string
+val read_mpd_banner : t -> string
 (** Read in an Mpd connection *)
 
-val read_request_response: t -> string
+val read_request_response : t -> string
 (** Read a Mpd response to a request.*)
 
-val read_command_response: t -> string
+val read_command_response : t -> string
 (** Read a Mpd response to a command.*)
