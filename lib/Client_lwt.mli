@@ -29,7 +29,7 @@ val mpd_banner: t -> string Lwt.t
 (** Return the mpd banner that the server send at the first connection of the
     client. *)
 
-val idle: t -> (string, string) Pervasives.result Lwt.t
+val idle: t -> (string, string) result Lwt.t
 (** Wait for an event to occur in order to return. When a Client send this
  *  command to the Mpd server throught its connection, the Mpd server do
  *  not answer to any other command except the noidle command. The idea is
@@ -54,7 +54,7 @@ val request:
     an error while a request does not generate an action from Mpd and returns
     "some data to analyse"OK or an error.*)
 
-val status: t -> (Status.t, string) Pervasives.result Lwt.t
+val status: t -> (Status.t, string) result Lwt.t
 (** Create a status request and returns the status under a Mpd.Status.s Lwt.t
     type.*)
 

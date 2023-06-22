@@ -170,4 +170,4 @@ let cmd =
               `Blocks help_section
   ] in
   Term.(const idle $ common_opts_t),
-  Term.info "idle" ~doc ~sdocs ~exits ~man
+  Cmd.info "idle" ~doc ~sdocs ~exits ~man

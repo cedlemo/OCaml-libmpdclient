@@ -34,7 +34,7 @@ let main_thread =
       >>= fun _ ->
         Connection_lwt.write connection "ping\n"
         >>= fun _ ->
-          Connection_lwt.recvstr connection
+          Connection_lwt.recvbytes connection
           >>= fun buf ->
             lwt_print_line (Printf.sprintf "received : %s" (Bytes.to_string buf))
             >>= fun () ->

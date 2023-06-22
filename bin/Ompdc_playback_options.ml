@@ -130,4 +130,4 @@ let cmd =
     Term.(const playback_options $ common_opts_t $ consume $ crossfade
                                  $ mixrampdb $ random $ repeat $ setvol
                                  $ single $ mixrampdelay $ replay_gain_mode),
-    Term.info "playback_options" ~doc ~sdocs ~exits ~man
+    Cmd.info "playback_options" ~doc ~sdocs ~exits ~man

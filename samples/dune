@@ -1,19 +1,9 @@
 (executables
-  (names try_mpd_queries
-         mpd_status_query
-	 mpd_tagtypes_query
-	 mpd_volume_query
-	 mpd_playlist_info
-	 mpd_lwt_playlist_info
-	 mpd_lwt_client_idle_loop
-	 mpd_lwt_client_idle
-	 mpd_lwt_client_idle_noidle
-	 mpd_lwt_count
-	 mpd_count
-	 mpd_lwt_send_ping
-	 mpd_lwt_ping
-	 mpd_lwt_send_cmd
-	 mpd_lwt_status
-	 get_mpd_responses)
-  (libraries libmpdclient lwt lwt.unix)
-)
+ (names try_mpd_queries mpd_status_query mpd_tagtypes_query mpd_volume_query
+   mpd_playlist_info mpd_lwt_playlist_info mpd_lwt_client_idle_loop
+   mpd_lwt_client_idle mpd_lwt_client_idle_noidle mpd_lwt_count mpd_count
+   mpd_lwt_send_ping mpd_lwt_ping mpd_lwt_send_cmd mpd_lwt_status
+   get_mpd_responses)
+ (libraries libmpdclient lwt lwt.unix stdlib)
+ (preprocess
+  (pps lwt_ppx)))

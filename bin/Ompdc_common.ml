@@ -22,7 +22,7 @@ open Mpd.Protocol
 let version = "not.yet"
 let sdocs = Manpage.s_common_options
 let docs = Manpage.s_common_options
-let exits = Term.default_exits
+let exits = Cmd.Exit.defaults
 
 let help _copts man_format cmds topic = match topic with
 | None -> `Help (`Pager, None) (* help about the program. *)
@@ -53,12 +53,12 @@ let common_opts host port =
 let common_opts_t =
   let host =
     let doc = "Set the address of the Mpd server." in
-    let env = Arg.env_var "OMPDC_HOST" ~doc in
+    let env = Cmd.Env.info "OMPDC_HOST" ~doc in
     Arg.(value & opt string "127.0.0.1" & info ["h"; "host"] ~docs ~env ~docv:"HOST")
   in
   let port =
     let doc = "Set the port of the Mpd server." in
-    let env = Arg.env_var "OMPDC_PORT" ~doc in
+    let env = Cmd.Env.info "OMPDC_PORT" ~doc in
     Arg.(value & opt int 6600 & info ["p"; "port"] ~docs ~env ~docv:"PORT")
   in
   Term.(const common_opts $ host $ port)
@@ -76,7 +76,7 @@ let help_cmd =
   in
   Term.(ret
           (const help $ common_opts_t $ Arg.man_format $ Term.choice_names $topic)),
-  Term.info "help" ~doc ~exits ~man
+  Cmd.info "help" ~doc ~exits ~man
 
 
 let initialize_client {host; port} =

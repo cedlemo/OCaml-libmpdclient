@@ -24,7 +24,7 @@ open Mpd.Music_database
 let () =
   let connection = Mpd.Connection.initialize host port in
   let client = Mpd.Client.initialize connection in
-  match Mpd.Music_database.count client [] ~group:Mpd.Music_database.Artist () with
+  match Mpd.Music_database.count client [] ~group:Mpd.Tags.Artist () with
   | Error message -> print_endline message
   | Ok count ->
       List.iter (fun {songs; playtime; misc} ->

@@ -48,7 +48,7 @@ let play_t =
                `Blocks help_section; ]
     in
     Term.(const play $ common_opts_t $ song_pos),
-    Term.info "play" ~doc ~sdocs ~exits ~man
+    Cmd.info "play" ~doc ~sdocs ~exits ~man
 
 let play_id_t =
     let doc = "Play the song SONG_ID."
@@ -59,7 +59,7 @@ let play_id_t =
                `Blocks help_section; ]
     in
     Term.(const play $ common_opts_t $ song_id),
-    Term.info "play_id" ~doc ~sdocs ~exits ~man
+    Cmd.info "play_id" ~doc ~sdocs ~exits ~man
 
 let time =
   let doc = "Float value that could represents the length of a song or the \
@@ -93,7 +93,7 @@ let seek_t =
                `Blocks help_section; ]
     in
     Term.(const seek $ common_opts_t $ song_pos $ time),
-    Term.info "seek" ~doc ~sdocs ~exits ~man
+    Cmd.info "seek" ~doc ~sdocs ~exits ~man
 
 let seek_id_t =
     let doc = "Play the song SONG_ID at TIME"
@@ -104,7 +104,7 @@ let seek_id_t =
                `Blocks help_section; ]
     in
     Term.(const seek_id $ common_opts_t $ song_id $ time),
-    Term.info "seek_id" ~doc ~sdocs ~exits ~man
+    Cmd.info "seek_id" ~doc ~sdocs ~exits ~man
 
 let seek_cur_t =
   let doc = "Play the current song at TIME" in
@@ -113,7 +113,7 @@ let seek_cur_t =
     `P doc;
     `Blocks help_section; ] in
   Term.(const seek_cur $ common_opts_t $ time),
-  Term.info "seek_cur" ~doc ~sdocs ~exits ~man
+  Cmd.info "seek_cur" ~doc ~sdocs ~exits ~man
 
 let next common_opts =
   let {host; port} = common_opts in
@@ -130,7 +130,7 @@ let next_t =
                `Blocks help_section; ]
     in
     Term.(const next $ common_opts_t),
-    Term.info "next" ~doc ~sdocs ~exits ~man
+    Cmd.info "next" ~doc ~sdocs ~exits ~man
 
 let previous common_opts =
   let {host; port} = common_opts in
@@ -147,7 +147,7 @@ let previous_t =
                `Blocks help_section; ]
     in
     Term.(const previous $ common_opts_t),
-    Term.info "previous" ~doc ~sdocs ~exits ~man
+    Cmd.info "previous" ~doc ~sdocs ~exits ~man
 
 let stop common_opts =
   let {host; port} = common_opts in
@@ -164,7 +164,7 @@ let stop_t =
                `Blocks help_section; ]
     in
     Term.(const stop $ common_opts_t),
-    Term.info "stop" ~doc ~sdocs ~exits ~man
+    Cmd.info "stop" ~doc ~sdocs ~exits ~man
 
 let pause common_opts value =
   let {host; port} = common_opts in
@@ -185,6 +185,6 @@ let pause_t =
                `Blocks help_section; ]
     in
     Term.(const pause $ common_opts_t $ toggle_value),
-    Term.info "pause" ~doc ~sdocs ~exits ~man
+    Cmd.info "pause" ~doc ~sdocs ~exits ~man
 
 let cmds = [play_t; play_id_t; seek_t; seek_id_t; seek_cur_t; next_t; previous_t; stop_t; pause_t]

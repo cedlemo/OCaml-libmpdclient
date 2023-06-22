@@ -32,7 +32,7 @@ let main_thread =
   >>= fun connection ->
     Client_lwt.initialize connection
     >>= fun client ->
-      Music_database_lwt.count client [] ~group:(Music_database_lwt.Artist) ()
+      Music_database_lwt.count client [] ~group:(Tags.Artist) ()
       >>= function
         | Error message -> lwt_print_line message
         | Ok count -> lwt_print_line (string_of_int (List.length count))

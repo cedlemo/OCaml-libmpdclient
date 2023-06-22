@@ -37,7 +37,7 @@ let listplaylists_t =
                `Blocks help_section; ]
     in
     Term.(const listplaylists $ common_opts_t),
-    Term.info "listplaylists" ~doc ~sdocs ~exits ~man
+    Cmd.info "listplaylists" ~doc ~sdocs ~exits ~man
 
 let cmds = [listplaylists_t]
 

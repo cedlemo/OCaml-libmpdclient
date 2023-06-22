@@ -1,5 +1,4 @@
 (executable
-  (name ompdc)
-  (public_name ompdc)
-  (libraries libmpdclient lwt lwt.unix cmdliner notty notty.lwt unix)
-)
+ (name ompdc)
+ (public_name ompdc)
+ (libraries libmpdclient lwt lwt.unix cmdliner notty notty.lwt unix))

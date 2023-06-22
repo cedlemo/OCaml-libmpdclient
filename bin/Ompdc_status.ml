@@ -149,4 +149,4 @@ let cmd =
               `Blocks help_section
   ] in
   Term.(const get_status $ common_opts_t $ status_fields),
-  Term.info "status" ~doc ~sdocs ~exits ~man
+  Cmd.info "status" ~doc ~sdocs ~exits ~man

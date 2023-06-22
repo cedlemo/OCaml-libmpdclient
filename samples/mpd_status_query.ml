@@ -16,9 +16,6 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-open Sys
-open Unix
-
 (* compile with
  * ocamlfind ocamlc -o mpd_status_query -package str,unix -linkpkg -g mpd_responses.ml mpd.ml mpd_status_query.ml
  * or
@@ -31,9 +28,9 @@ let port = 6600
 
 let () =
    let connection = Mpd.Connection.initialize host port in
-   print_endline ("received: " ^ (Mpd.Connection.read connection));
+   print_endline ("received: " ^ (Mpd.Connection.read connection (fun s -> Mpd.Protocol.Complete (s, 0))));
    Mpd.Connection.write connection ("status\n");
-   let status = Mpd.Connection.read connection in
+   let status = Mpd.Connection.read connection (fun s -> Mpd.Protocol.Complete (s, 0)) in
    let lines = Mpd.Utils.split_lines status in
    let rec display_infos = function
      | [] -> Mpd.Connection.close connection

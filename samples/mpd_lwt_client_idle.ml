@@ -18,7 +18,6 @@
  *)
 
 open Lwt
-open Mpd
 
 (* Simple client that connects to a mpd server with the "idle" command and get
  * one event of the mpd server. *)
@@ -35,18 +34,19 @@ let main_thread =
    (fun () ->
      Mpd.Connection_lwt.initialize host port
      >>= fun connection ->
-       Mpd.Client_lwt.initialize connection
-       >>= fun client ->
-         Lwt_io.write_line Lwt_io.stdout (Mpd.Client_lwt.mpd_banner client)
-         >>= fun () ->
-           Mpd.Client_lwt.idle client
-           >>= function
-             | Error message -> Mpd.Client_lwt.close client
-                                >>= fun () ->
-                                  Lwt_io.write_line Lwt_io.stdout message >|= fun () -> 125
-             | Ok event_name -> Lwt_io.write_line Lwt_io.stdout event_name
-                                    >>= fun () ->
-                                      Mpd.Client_lwt.close client >|= fun () -> 0
+     Mpd.Client_lwt.initialize connection
+     >>= fun client ->
+     let%lwt banner = Mpd.Client_lwt.mpd_banner client in
+     Lwt_io.write_line Lwt_io.stdout banner
+     >>= fun () ->
+     Mpd.Client_lwt.idle client
+     >>= function
+     | Error message -> Mpd.Client_lwt.close client
+                        >>= fun () ->
+                        Lwt_io.write_line Lwt_io.stdout message >|= fun () -> 125
+     | Ok event_name -> Lwt_io.write_line Lwt_io.stdout event_name
+                        >>= fun () ->
+                        Mpd.Client_lwt.close client >|= fun () -> 0
    )
    (function
      | Mpd.Connection_lwt.Lwt_unix_exn message ->

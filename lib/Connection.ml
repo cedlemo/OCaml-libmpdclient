@@ -88,7 +88,7 @@ let recvbytes t =
 
 let read t fn_to_check_for_pattern =
   let open Protocol in
-  let rec _read t =
+  let rec read t =
     match fn_to_check_for_pattern t.buffer with
     | Complete (response, u) -> (
         let resp_len = (String.length response) + u in
@@ -102,10 +102,10 @@ let read t fn_to_check_for_pattern =
         let bytes = recvbytes t in
         let buf = t.buffer ^ (Bytes.to_string bytes) in
         let () = t.buffer <- buf in
-        _read t
+        read t
       )
   in
-  _read t
+  read t
 
 let read_mpd_banner connection =
   read connection Protocol.full_mpd_banner

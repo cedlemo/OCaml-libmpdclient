@@ -16,9 +16,6 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-open Sys
-open Unix
-
 (* compile with
  * ocamlfind ocamlc -o mpd_tagtypes_query -package str,unix -linkpkg -g mpd_responses.ml mpd.ml mpd_tagtypes_query.ml
  * or
