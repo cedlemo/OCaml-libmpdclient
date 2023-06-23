@@ -20,25 +20,16 @@ open Lwt.Infix
 
 let host = "127.0.0.1"
 let port = 6600
-
-let lwt_print_line str =
-  Lwt_io.write_line Lwt_io.stdout str
+let lwt_print_line str = Lwt_io.write_line Lwt_io.stdout str
 
 let main_thread =
   let open Mpd in
-  Connection_lwt.initialize host port
-  >>= fun connection ->
-    Client_lwt.initialize connection
-    >>= fun client ->
-      Client_lwt.ping client
-      >>= function
-        | Error (_, _, _, message) -> lwt_print_line (Printf.sprintf "No response : %s" message)
-        | Ok response ->
-            lwt_print_line begin
-              match response with
-              | None -> "Ok"
-              | Some s -> s
-            end
+  Connection_lwt.initialize host port >>= fun connection ->
+  Client_lwt.initialize connection >>= fun client ->
+  Client_lwt.ping client >>= function
+  | Error (_, _, _, message) ->
+      lwt_print_line (Printf.sprintf "No response : %s" message)
+  | Ok response ->
+      lwt_print_line (match response with None -> "Ok" | Some s -> s)
 
-let () =
-  Lwt_main.run main_thread
+let () = Lwt_main.run main_thread

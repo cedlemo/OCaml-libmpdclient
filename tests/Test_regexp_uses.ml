@@ -29,75 +29,70 @@ let test_protocol_parse_response_simple_ok _test_ctxt =
 
 let test_protocol_parse_response_request_ok _test_ctxt =
   let complex_response = "test: this is a complex\nresponse: request\nOK\n" in
-      match Protocol.parse_response  complex_response with
-      | Error _ -> bad_branch ()
-      | Ok response -> match response with
-        | None -> bad_branch ()
-        | Some s ->
+  match Protocol.parse_response complex_response with
+  | Error _ -> bad_branch ()
+  | Ok response -> (
+      match response with
+      | None -> bad_branch ()
+      | Some s ->
           let expected = "test: this is a complex\nresponse: request\n" in
-          assert_equal ~printer:(fun s -> s) expected s
+          assert_equal ~printer:(fun s -> s) expected s)
 
 let test_protocol_parse_response_error_50 _test_ctxt =
   match Protocol.parse_response "ACK [50@1] {play} error while playing\n" with
   | Ok _ -> bad_branch ()
   | Error (er_val, cmd_num, cmd, message) ->
-    assert (
-      er_val = No_exist && cmd_num = 1 &&
-      cmd = "play" && message = "error while playing"
-    )
+      assert (
+        er_val = No_exist && cmd_num = 1 && cmd = "play"
+        && message = "error while playing")
 
 let test_protocol_parse_response_error_1 _test_ctxt =
   match Protocol.parse_response "ACK [1@12] {play} error while playing\n" with
   | Ok _ -> bad_branch ()
   | Error (er_val, cmd_num, cmd, message) ->
-    assert (
-      er_val = Not_list && cmd_num = 12 &&
-      cmd = "play" && message = "error while playing"
-    )
+      assert (
+        er_val = Not_list && cmd_num = 12 && cmd = "play"
+        && message = "error while playing")
 
 open Utils
 
 let test_num_on_num_parse_simple_int _test_ctxt =
   let simple_int = "3" in
   match Utils.num_on_num_parse simple_int with
-  | Utils.Simple n -> assert_equal  3 n
-                        ~msg:"Simple int value"
-                        ~printer:string_of_int
+  | Utils.Simple n ->
+      assert_equal 3 n ~msg:"Simple int value" ~printer:string_of_int
   | _ -> assert_equal false true
 
 let test_num_on_num_parse_num_on_num _test_ctxt =
   let simple_int = "3/10" in
   match Utils.num_on_num_parse simple_int with
-  | Utils.Num_on_num (a, b) -> assert_equal 3 a
-                                 ~msg:"Simple int value"
-                                 ~printer:string_of_int;
-    assert_equal  10 b
-      ~msg:"Simple int value"
-      ~printer:string_of_int
-
+  | Utils.Num_on_num (a, b) ->
+      assert_equal 3 a ~msg:"Simple int value" ~printer:string_of_int;
+      assert_equal 10 b ~msg:"Simple int value" ~printer:string_of_int
   | _ -> assert_equal false true
 
 let test_read_key_val _test_ctxt =
   let key_val = "mykey: myvalue" in
-  let {key = k; value = v} = Utils.read_key_val key_val in
+  let { key = k; value = v } = Utils.read_key_val key_val in
   assert_equal "mykey" k;
   assert_equal "myvalue" v
 
-let song = "file: Bjork-Volta/11 Earth Intruders (Mark Stent Exten.m4a
-Last-Modified: 2009-09-21T14:25:52Z
-Artist: Björk
-Album: Volta
-Title: Earth Intruders (Mark Stent Extended Mix)
-Track: 11/13
-Genre: Alternative
-Date: 2007
-Composer: Björk
-Disc: 1/1
-AlbumArtist: Björk
-Time: 266
-duration: 266.472
-Pos: 10
-Id: 11"
+let song =
+  "file: Bjork-Volta/11 Earth Intruders (Mark Stent Exten.m4a\n\
+   Last-Modified: 2009-09-21T14:25:52Z\n\
+   Artist: Björk\n\
+   Album: Volta\n\
+   Title: Earth Intruders (Mark Stent Extended Mix)\n\
+   Track: 11/13\n\
+   Genre: Alternative\n\
+   Date: 2007\n\
+   Composer: Björk\n\
+   Disc: 1/1\n\
+   AlbumArtist: Björk\n\
+   Time: 266\n\
+   duration: 266.472\n\
+   Pos: 10\n\
+   Id: 11"
 
 let test_song_parse _test_ctxt =
   let song = Song.parse (Utils.split_lines song) in
@@ -115,169 +110,174 @@ let test_song_parse _test_ctxt =
   assert_equal 266.472 (Song.duration song);
   assert_equal 11 (Song.id song)
 
-let playlist_info_list_data = "file: Wardruna-Runaljod-Yggdrasil-2013/01. Rotlaust Tre Fell_[plixid.com].mp3
-file: jod/02. F.mp3
-file: jod/03. N.mp3
-file: jod/04. E.mp3
-file: jod/05. A.mp3
-file: jod/06. I.mp3
-file: jod/07. I.mp3"
+let playlist_info_list_data =
+  "file: Wardruna-Runaljod-Yggdrasil-2013/01. Rotlaust Tre Fell_[plixid.com].mp3\n\
+   file: jod/02. F.mp3\n\
+   file: jod/03. N.mp3\n\
+   file: jod/04. E.mp3\n\
+   file: jod/05. A.mp3\n\
+   file: jod/06. I.mp3\n\
+   file: jod/07. I.mp3"
 
 let test_list_playlist_response_parse _test_ctxt =
   let paths = Utils.read_file_paths playlist_info_list_data in
   let second = List.nth paths 1 in
-  assert_equal  ~printer:(fun s ->
-      s)
-    "jod/02. F.mp3" second
+  assert_equal ~printer:(fun s -> s) "jod/02. F.mp3" second
 
 let listplaylists_data =
-  "playlist: zen
-Last-Modified: 2014-12-02T10:15:57Z
-playlist: rtl
-Last-Modified: 2014-12-02T10:15:57Z
-"
+  "playlist: zen\n\
+   Last-Modified: 2014-12-02T10:15:57Z\n\
+   playlist: rtl\n\
+   Last-Modified: 2014-12-02T10:15:57Z\n"
 
 let test_listplaylists_response_parse _test_ctxt =
   let playlist_names = Utils.read_list_playlists listplaylists_data in
-  assert_equal ~printer:(fun s -> s) "zen rtl" (String.concat " " playlist_names)
+  assert_equal
+    ~printer:(fun s -> s)
+    "zen rtl"
+    (String.concat " " playlist_names)
 
 let count_group_artist =
-  "Artist: jedi mind tricks
-songs: 18
-playtime: 4002
-Artist: woven hand
-songs: 11
-playtime: 2491
-"
+  "Artist: jedi mind tricks\n\
+   songs: 18\n\
+   playtime: 4002\n\
+   Artist: woven hand\n\
+   songs: 11\n\
+   playtime: 2491\n"
 
-let count_artist_woven_hand =
-  "songs: 11
-playtime: 2491
-"
+let count_artist_woven_hand = "songs: 11\nplaytime: 2491\n"
+
 let test_music_database_count_parse_group_artist _test_ctxt =
   try
     let count = Utils.parse_count_response count_group_artist (Some "artist") in
     let _ = assert_equal 2 (List.length count) in
     let fst = List.nth count 0 in
     let scd = List.nth count 1 in
-    let (songs, time, misc) = fst in
+    let songs, time, misc = fst in
     let _ = assert_equal 18 songs in
     let _ = assert_equal 4002. time in
     let _ = assert_equal ~printer:(fun s -> s) "jedi mind tricks" misc in
-    let (songs, time, misc) = scd in
+    let songs, time, misc = scd in
     let _ = assert_equal 11 songs in
     let _ = assert_equal 2491. time in
     assert_equal ~printer:(fun s -> s) "woven hand" misc
-
-  with Utils.EMusic_database message -> assert_equal ~printer:(fun s -> s) "" message
+  with Utils.EMusic_database message ->
+    assert_equal ~printer:(fun s -> s) "" message
 
 let test_music_database_count_parse_artist_woven_hand _test_ctxt =
   try
     let count = Utils.parse_count_response count_artist_woven_hand None in
     let _ = assert_equal 1 (List.length count) in
     let fst = List.nth count 0 in
-    let (songs, time, misc) = fst in
+    let songs, time, misc = fst in
     let _ = assert_equal 11 songs in
     let _ = assert_equal 2491. time in
     assert_equal ~printer:(fun s -> s) "" misc
-
-  with Utils.EMusic_database message -> assert_equal ~printer:(fun s -> s) "" message
+  with Utils.EMusic_database message ->
+    assert_equal ~printer:(fun s -> s) "" message
 
 let test_connection_lwt_mpd_banner_regex _test_ctxt =
   let data = "OK MPD 1.23.4\n" in
   let pattern = "OK \\(.*\\)\n" in
   match Str.string_match (Str.regexp pattern) data 0 with
   | false -> assert_equal ~msg:"No banner found" true false
-  | true -> let result = Str.matched_group 1 data in
-    let _ = assert_equal ~printer:(fun s -> s) "MPD 1.23.4" result in
-    assert_equal ~msg:"Non used char"
-      ~printer:string_of_int
-      4 String.((length data) - (length result))
+  | true ->
+      let result = Str.matched_group 1 data in
+      let _ = assert_equal ~printer:(fun s -> s) "MPD 1.23.4" result in
+      assert_equal ~msg:"Non used char" ~printer:string_of_int 4
+        String.(length data - length result)
 
 let test_connection_lwt_request_response_regex _test_ctxt =
   let data = "this is a test\nOK\n" in
   let pattern = "\\(\\(\n\\|.\\)*OK\n\\)" in
   match Str.string_match (Str.regexp pattern) data 0 with
   | false -> assert_equal ~msg:"Bad pattern for request response" true false
-  | true -> let result = Str.matched_group 1 data in
-    let () = assert_equal ~printer:(fun s -> s) "this is a test\nOK\n" result in
-    assert_equal ~msg:"Non used char"
-      ~printer:string_of_int
-      0 String.((length data) - (length result))
+  | true ->
+      let result = Str.matched_group 1 data in
+      let () =
+        assert_equal ~printer:(fun s -> s) "this is a test\nOK\n" result
+      in
+      assert_equal ~msg:"Non used char" ~printer:string_of_int 0
+        String.(length data - length result)
 
 let test_connection_lwt_command_response_regex _test_ctxt =
   let data = "OK\ntototata\n" in
   let pattern = "^\\(OK\n\\)\\(\n\\|.\\)*" in
   match Str.string_match (Str.regexp pattern) data 0 with
   | false -> assert_equal ~msg:"Bad pattern for command response" true false
-  | true -> let result = Str.matched_group 1 data in
-    let () = assert_equal ~printer:(fun s -> s) "OK\n" result in
-    assert_equal ~msg:"Non used char"
-      ~printer:string_of_int
-      9 String.((length data) - (length result))
+  | true ->
+      let result = Str.matched_group 1 data in
+      let () = assert_equal ~printer:(fun s -> s) "OK\n" result in
+      assert_equal ~msg:"Non used char" ~printer:string_of_int 9
+        String.(length data - length result)
 
 let test_connection_lwt_command_response_regex_1 _test_ctxt =
   let data = "OK\n" in
   let pattern = "^\\(OK\n\\)\\(\n\\|.\\)*" in
   match Str.string_match (Str.regexp pattern) data 0 with
   | false -> assert_equal ~msg:"Bad pattern for command response" true false
-  | true -> let result = Str.matched_group 1 data in
-    let () = assert_equal ~printer:(fun s -> s) "OK\n" result in
-    assert_equal ~msg:"Non used char"
-      ~printer:string_of_int
-      0 String.((length data) - (length result))
+  | true ->
+      let result = Str.matched_group 1 data in
+      let () = assert_equal ~printer:(fun s -> s) "OK\n" result in
+      assert_equal ~msg:"Non used char" ~printer:string_of_int 0
+        String.(length data - length result)
 
 let test_connection_lwt_full_mpd_idle_event _test_ctxt =
   let data = "changed: mixerOK\n" in
   let pattern = "changed: \\(\\(\n\\|.\\)*\\)OK\n" in
   match Str.string_match (Str.regexp pattern) data 0 with
   | false -> assert_equal ~msg:"Bad pattern for idle event" true false
-  | true -> let result = Str.matched_group 1 data in
-    let _ = assert_equal ~printer:(fun s -> s) "mixer" result in
-    assert_equal ~msg:"Non used char"
-      ~printer:string_of_int
-      12 String.((length data) - (length result))
+  | true ->
+      let result = Str.matched_group 1 data in
+      let _ = assert_equal ~printer:(fun s -> s) "mixer" result in
+      assert_equal ~msg:"Non used char" ~printer:string_of_int 12
+        String.(length data - length result)
 
 let test_remove_trailing_new_line _test_ctxt =
   let str1 = "a string with \n" in
   let str1' = "a string with " in
   let str2 = "a normal string" in
-  let _ = assert_equal ~printer:(fun s -> s) str1' (Utils.remove_trailing_new_line str1) in
+  let _ =
+    assert_equal
+      ~printer:(fun s -> s)
+      str1'
+      (Utils.remove_trailing_new_line str1)
+  in
   assert_equal ~printer:(fun s -> s) str2 (Utils.remove_trailing_new_line str2)
 
 let tests =
-  "Mpd responses parsing tests" >:::
-  ["test protocol parse response simple OK" >::
-   test_protocol_parse_response_simple_ok;
-   "test protocol parse response request OK" >::
-   test_protocol_parse_response_request_ok;
-   "test protocol parse response error 50" >::
-   test_protocol_parse_response_error_50;
-   "test prototol parse response error 1" >::
-   test_protocol_parse_response_error_1;
-   "test Mpd.utils.num_on_num_parse simple int" >::
-   test_num_on_num_parse_simple_int;
-   "test Mpd.utils.num_on_num_parse num_on_num" >::
-   test_num_on_num_parse_num_on_num;
-   "test Mpd.utils.read_key_value" >:: test_read_key_val;
-   "test Mpd.Song.parse" >:: test_song_parse;
-   "test Utils.read_file_path" >:: test_list_playlist_response_parse;
-   "test Mpd.utils.read_list_playlists" >::
-   test_listplaylists_response_parse;
-   "test Mpd.utils.parse_count_response" >::
-   test_music_database_count_parse_group_artist;
-   "test Mpd.utils.parse_count_response" >::
-   test_music_database_count_parse_artist_woven_hand;
-   "test connection lwt mpd banner regex" >::
-   test_connection_lwt_mpd_banner_regex;
-   "test connection lwt request response regex" >::
-   test_connection_lwt_request_response_regex;
-   "test connection lwt command response regex" >::
-   test_connection_lwt_command_response_regex;
-   "test connection lwt command response regex 1" >::
-   test_connection_lwt_command_response_regex_1;
-   "test connection lwt full mpd idle event" >::
-   test_connection_lwt_full_mpd_idle_event;
-   "test remove trailing new line" >::
-   test_remove_trailing_new_line;
-  ]
+  "Mpd responses parsing tests"
+  >::: [
+         "test protocol parse response simple OK"
+         >:: test_protocol_parse_response_simple_ok;
+         "test protocol parse response request OK"
+         >:: test_protocol_parse_response_request_ok;
+         "test protocol parse response error 50"
+         >:: test_protocol_parse_response_error_50;
+         "test prototol parse response error 1"
+         >:: test_protocol_parse_response_error_1;
+         "test Mpd.utils.num_on_num_parse simple int"
+         >:: test_num_on_num_parse_simple_int;
+         "test Mpd.utils.num_on_num_parse num_on_num"
+         >:: test_num_on_num_parse_num_on_num;
+         "test Mpd.utils.read_key_value" >:: test_read_key_val;
+         "test Mpd.Song.parse" >:: test_song_parse;
+         "test Utils.read_file_path" >:: test_list_playlist_response_parse;
+         "test Mpd.utils.read_list_playlists"
+         >:: test_listplaylists_response_parse;
+         "test Mpd.utils.parse_count_response"
+         >:: test_music_database_count_parse_group_artist;
+         "test Mpd.utils.parse_count_response"
+         >:: test_music_database_count_parse_artist_woven_hand;
+         "test connection lwt mpd banner regex"
+         >:: test_connection_lwt_mpd_banner_regex;
+         "test connection lwt request response regex"
+         >:: test_connection_lwt_request_response_regex;
+         "test connection lwt command response regex"
+         >:: test_connection_lwt_command_response_regex;
+         "test connection lwt command response regex 1"
+         >:: test_connection_lwt_command_response_regex_1;
+         "test connection lwt full mpd idle event"
+         >:: test_connection_lwt_full_mpd_idle_event;
+         "test remove trailing new line" >:: test_remove_trailing_new_line;
+       ]

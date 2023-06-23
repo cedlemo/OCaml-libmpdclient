@@ -1,4 +1,3 @@
 (test
-  (name test)
-  (libraries libmpdclient lwt lwt.unix unix oUnit logs logs.lwt logs.fmt)
-)
+ (name test)
+ (libraries libmpdclient lwt lwt.unix unix oUnit logs logs.lwt logs.fmt))

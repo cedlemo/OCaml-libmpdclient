@@ -24,100 +24,98 @@ let printer = TU.printer
 let queue_length_lwt = TU.queue_length_lwt
 
 let test_stored_playlists_listplaylists _test_ctxt =
-  TU.run_test_on_playlist_lwt begin fun client ->
-    Mpd.Stored_playlists_lwt.listplaylists client
-    >>= fun response ->
-    let () = match response with
-      | Error message ->
-        assert_equal ~printer "This should not have been reached" message
-      | Ok playlists ->
-        let () = assert_equal ~printer:string_of_int 2 (List.length playlists) in
-        let hd = List.hd playlists in
-        let tail = List.hd (List.tl playlists) in
-        let test = "bach" = hd || "bach1" = hd in
-        let () = assert_bool "First playlist" test in
-        let test' = "bach" = tail || "bach1" = tail in
-        assert_bool "Last playlist" test'
-    in Lwt.return_unit
-  end
+  TU.run_test_on_playlist_lwt (fun client ->
+      Mpd.Stored_playlists_lwt.listplaylists client >>= fun response ->
+      let () =
+        match response with
+        | Error message ->
+            assert_equal ~printer "This should not have been reached" message
+        | Ok playlists ->
+            let () =
+              assert_equal ~printer:string_of_int 2 (List.length playlists)
+            in
+            let hd = List.hd playlists in
+            let tail = List.hd (List.tl playlists) in
+            let test = "bach" = hd || "bach1" = hd in
+            let () = assert_bool "First playlist" test in
+            let test' = "bach" = tail || "bach1" = tail in
+            assert_bool "Last playlist" test'
+      in
+      Lwt.return_unit)
 
 let test_stored_playlists_load_playlist_and_clear _test_ctxt =
-  TU.run_test_lwt begin fun client ->
-    Mpd.Stored_playlists_lwt.load client "bach" ()
-    >>= function
-    | Error (_, _, _, message) ->
-      assert_equal ~printer "This should not have been reached " message;
-      Lwt.return_unit
-    | Ok _ ->
-      queue_length_lwt client
-      >>= fun len ->
-      let () =  assert_equal ~printer:string_of_int 11 len in
-      Mpd.Queue_lwt.clear client
-      >>= function
+  TU.run_test_lwt (fun client ->
+      Mpd.Stored_playlists_lwt.load client "bach" () >>= function
       | Error (_, _, _, message) ->
-        assert_equal ~printer "This should not have been reached " message;
-        Lwt.return_unit
-      | Ok _ -> begin
-          queue_length_lwt client
-          >>= fun len ->
-          assert_equal ~printer:string_of_int 0 len;
+          assert_equal ~printer "This should not have been reached " message;
           Lwt.return_unit
-        end
-  end
+      | Ok _ -> (
+          queue_length_lwt client >>= fun len ->
+          let () = assert_equal ~printer:string_of_int 11 len in
+          Mpd.Queue_lwt.clear client >>= function
+          | Error (_, _, _, message) ->
+              assert_equal ~printer "This should not have been reached " message;
+              Lwt.return_unit
+          | Ok _ ->
+              queue_length_lwt client >>= fun len ->
+              assert_equal ~printer:string_of_int 0 len;
+              Lwt.return_unit))
 
 let test_queue_list _test_ctxt =
-  TU.run_test_on_playlist_lwt begin fun client ->
-    Mpd.Stored_playlists_lwt.load client "bach" ()
-    >>= fun response ->
-    match response with
-    | Error (_, _, _, message) -> TU.bad_branch message; Lwt.return_unit
-    | Ok _ ->
-      Mpd.Queue_lwt.playlist client
-      >>= fun response ->
+  TU.run_test_on_playlist_lwt (fun client ->
+      Mpd.Stored_playlists_lwt.load client "bach" () >>= fun response ->
       match response with
-      | PlaylistError message -> TU.bad_branch message; Lwt.return_unit
-      | Playlist songs ->
-        let song_names = List.map Mpd.Song.title songs in
-        let same = TU.compare TU.queue song_names in
-        let () = assert_bool "Songs titles do not match" same
-        in
-        Lwt.return_unit
-  end
+      | Error (_, _, _, message) ->
+          TU.bad_branch message;
+          Lwt.return_unit
+      | Ok _ -> (
+          Mpd.Queue_lwt.playlist client >>= fun response ->
+          match response with
+          | PlaylistError message ->
+              TU.bad_branch message;
+              Lwt.return_unit
+          | Playlist songs ->
+              let song_names = List.map Mpd.Song.title songs in
+              let same = TU.compare TU.queue song_names in
+              let () = assert_bool "Songs titles do not match" same in
+              Lwt.return_unit))
 
 let test_queue_playlistid _test_ctxt =
-  TU.run_test_on_playlist_lwt begin fun client ->
-    Mpd.Stored_playlists_lwt.load client "bach" ()
-    >>= function
-    | Error (_, _, _, message) -> TU.bad_branch message; Lwt.return_unit
-    | Ok _ ->
-       Mpd.Queue_lwt.playlist client
-       >>= function
-       | PlaylistError message -> TU.bad_branch message; Lwt.return_unit
-       | Playlist songs ->
-         let check_song n =
-           let song = List.nth songs n in
-           let id = Mpd.Song.id song in
-           Mpd.Queue_lwt.playlistid client id
-           >>= function
-           | Error message -> TU.bad_branch message; Lwt.return_unit
-           | Ok song' ->
-             let title = Mpd.Song.title song in
-             let title' = Mpd.Song.title song' in
-             assert_equal ~printer title title';
-             Lwt.return_unit
-        in
-        check_song 0
-        >>= fun () -> check_song 1
-        >>= fun () -> check_song 5
-        >>= fun () -> check_song 10
-  end
-
+  TU.run_test_on_playlist_lwt (fun client ->
+      Mpd.Stored_playlists_lwt.load client "bach" () >>= function
+      | Error (_, _, _, message) ->
+          TU.bad_branch message;
+          Lwt.return_unit
+      | Ok _ -> (
+          Mpd.Queue_lwt.playlist client >>= function
+          | PlaylistError message ->
+              TU.bad_branch message;
+              Lwt.return_unit
+          | Playlist songs ->
+              let check_song n =
+                let song = List.nth songs n in
+                let id = Mpd.Song.id song in
+                Mpd.Queue_lwt.playlistid client id >>= function
+                | Error message ->
+                    TU.bad_branch message;
+                    Lwt.return_unit
+                | Ok song' ->
+                    let title = Mpd.Song.title song in
+                    let title' = Mpd.Song.title song' in
+                    assert_equal ~printer title title';
+                    Lwt.return_unit
+              in
+              check_song 0 >>= fun () ->
+              check_song 1 >>= fun () ->
+              check_song 5 >>= fun () -> check_song 10))
 
 let tests =
-  "Queue and playlists lwt tests" >:::
-  [
-    "test stored playlists listplaylists" >:: test_stored_playlists_listplaylists;
-    "test stored playlists load playlist and clear" >:: test_stored_playlists_load_playlist_and_clear;
-    "test queue playlist" >:: test_queue_list;
-    "test queue playlistid" >:: test_queue_playlistid;
-  ]
+  "Queue and playlists lwt tests"
+  >::: [
+         "test stored playlists listplaylists"
+         >:: test_stored_playlists_listplaylists;
+         "test stored playlists load playlist and clear"
+         >:: test_stored_playlists_load_playlist_and_clear;
+         "test queue playlist" >:: test_queue_list;
+         "test queue playlistid" >:: test_queue_playlistid;
+       ]

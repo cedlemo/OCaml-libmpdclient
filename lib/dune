@@ -1,5 +1,4 @@
 (library
- (name        Mpd)
-  (public_name libmpdclient)
-  (libraries unix lwt lwt.unix str logs fmt logs.lwt logs.fmt)
-)
+ (name Mpd)
+ (public_name libmpdclient)
+ (libraries unix lwt lwt.unix str logs fmt logs.lwt logs.fmt))

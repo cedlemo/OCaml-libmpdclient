@@ -18,7 +18,6 @@
  *)
 
 open Lwt
-open Mpd
 
 (* Simple client that connects to a mpd server with the "idle" command and get
  * all the events of the mpd server.
@@ -28,32 +27,27 @@ let host = "127.0.0.1"
 let port = 6600
 
 let on_mpd_event = function
-  | "mixer" -> print_endline "Mixer related command has been executed"; Lwt.return true
-  | _ as event_name -> print_endline (("-" ^ event_name) ^ "-"); Lwt.return false
+  | "mixer" ->
+      print_endline "Mixer related command has been executed";
+      Lwt.return true
+  | _ as event_name ->
+      print_endline (("-" ^ event_name) ^ "-");
+      Lwt.return false
 
 let main_thread =
-   Lwt.catch
-   (fun () ->
-     Mpd.Connection_lwt.initialize host port
-     >>= fun connection ->
-       Lwt_io.write_line Lwt_io.stdout "Client on"
-       >>= fun () ->
-         Mpd.Client_lwt.initialize connection
-         >>= fun client ->
-           Lwt_io.write_line Lwt_io.stdout (Mpd.Client_lwt.mpd_banner client)
-           >>= fun () ->
-             Mpd.Client_lwt.idle_loop client on_mpd_event
-             >>= fun () ->
-               Lwt.return 0
-   )
-   (function
-     | Mpd.Connection_lwt.Lwt_unix_exn message ->
-         Lwt_io.write_line Lwt_io.stderr message
-         >>= fun () ->
-           Lwt.return 125
-     | _ ->
-         Lwt_io.write_line Lwt_io.stderr "Uncaught exception. Exiting ..."
-         >>= fun () ->
-           Lwt.return 125
-   )
+  Lwt.catch
+    (fun () ->
+      Mpd.Connection_lwt.initialize host port >>= fun connection ->
+      Lwt_io.write_line Lwt_io.stdout "Client on" >>= fun () ->
+      Mpd.Client_lwt.initialize connection >>= fun client ->
+      let%lwt banner = Mpd.Client_lwt.mpd_banner client in
+      Lwt_io.write_line Lwt_io.stdout banner >>= fun () ->
+      Mpd.Client_lwt.idle_loop client on_mpd_event >>= fun () -> Lwt.return 0)
+    (function
+      | Mpd.Connection_lwt.Lwt_unix_exn message ->
+          Lwt_io.write_line Lwt_io.stderr message >>= fun () -> Lwt.return 125
+      | _ ->
+          Lwt_io.write_line Lwt_io.stderr "Uncaught exception. Exiting ..."
+          >>= fun () -> Lwt.return 125)
+
 let () = exit (Lwt_main.run main_thread)

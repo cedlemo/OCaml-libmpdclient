@@ -20,25 +20,17 @@ open Lwt.Infix
 
 let host = "127.0.0.1"
 let port = 6600
-
-let lwt_print_line str =
-  Lwt_io.write_line Lwt_io.stdout str
+let lwt_print_line str = Lwt_io.write_line Lwt_io.stdout str
 
 let main_thread =
   let open Mpd in
-  Connection_lwt.initialize host port
-  >>= fun connection ->
-    Connection_lwt.recvbytes connection
-    >>= fun buf ->
-      lwt_print_line (Printf.sprintf "received : %s" (Bytes.to_string buf))
-      >>= fun _ ->
-        Connection_lwt.write connection "ping\n"
-        >>= fun _ ->
-          Connection_lwt.recvstr connection
-          >>= fun buf ->
-            lwt_print_line (Printf.sprintf "received : %s" (Bytes.to_string buf))
-            >>= fun () ->
-              Connection_lwt.close connection
+  Connection_lwt.initialize host port >>= fun connection ->
+  Connection_lwt.recvbytes connection >>= fun buf ->
+  lwt_print_line (Printf.sprintf "received : %s" (Bytes.to_string buf))
+  >>= fun _ ->
+  Connection_lwt.write connection "ping\n" >>= fun _ ->
+  Connection_lwt.recvbytes connection >>= fun buf ->
+  lwt_print_line (Printf.sprintf "received : %s" (Bytes.to_string buf))
+  >>= fun () -> Connection_lwt.close connection
 
-let () =
-  Lwt_main.run main_thread
+let () = Lwt_main.run main_thread

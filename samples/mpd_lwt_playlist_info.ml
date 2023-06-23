@@ -25,33 +25,25 @@ open Lwt.Infix
  *)
 let host = "127.0.0.1"
 let port = 6600
-
-let lwt_print_line str =
-  Lwt_io.write_line Lwt_io.stdout str
+let lwt_print_line str = Lwt_io.write_line Lwt_io.stdout str
 
 let main_thread =
   let open Mpd in
-  Connection_lwt.initialize host port
-  >>= fun connection ->
-    Client_lwt.initialize connection
-    >>= fun client ->
-      Queue_lwt.playlist client
-      >>= function
-      | Queue_lwt.PlaylistError message -> lwt_print_line ("err" ^ message)
-      | Queue_lwt.Playlist playlist ->
-          Lwt.return playlist
-          >>= fun p ->
-            let n = List.length p in
-            lwt_print_line ("Number of songs : " ^ (string_of_int n))
-            >>= fun () ->
-              Lwt_list.iter_s (fun song ->
-                                 let id = string_of_int (Song.id song) in
-                                 let title = Song.title song in
-                                 let album = Song.album song in
-                                 lwt_print_line (String.concat " " ["\t*"; id; title; album])
-                              ) p
-              >>= fun () ->
-                Client_lwt.close client
+  Connection_lwt.initialize host port >>= fun connection ->
+  Client_lwt.initialize connection >>= fun client ->
+  Queue_lwt.playlist client >>= function
+  | Queue_lwt.PlaylistError message -> lwt_print_line ("err" ^ message)
+  | Queue_lwt.Playlist playlist ->
+      Lwt.return playlist >>= fun p ->
+      let n = List.length p in
+      lwt_print_line ("Number of songs : " ^ string_of_int n) >>= fun () ->
+      Lwt_list.iter_s
+        (fun song ->
+          let id = string_of_int (Song.id song) in
+          let title = Song.title song in
+          let album = Song.album song in
+          lwt_print_line (String.concat " " [ "\t*"; id; title; album ]))
+        p
+      >>= fun () -> Client_lwt.close client
 
-let () =
-  Lwt_main.run main_thread
+let () = Lwt_main.run main_thread

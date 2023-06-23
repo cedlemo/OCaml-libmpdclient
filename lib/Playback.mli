@@ -19,31 +19,31 @@
 (** Controlling playback functions.
   https://www.musicpd.org/doc/protocol/playback_commands.html *)
 
-val next: Client.t -> Protocol.response
+val next : Client.t -> Protocol.response
 (** Play next song in the playlist. *)
 
-val previous: Client.t -> Protocol.response
+val previous : Client.t -> Protocol.response
 (** Play previous song in the playlist. *)
 
-val stop: Client.t -> Protocol.response
+val stop : Client.t -> Protocol.response
 (** Stop playing.*)
 
-val pause: Client.t -> bool -> Protocol.response
+val pause : Client.t -> bool -> Protocol.response
 (** Toggle pause/resumers playing *)
 
-val play: Client.t -> int -> Protocol.response
+val play : Client.t -> int -> Protocol.response
 (** Begin playing the playlist at song number. *)
 
-val playid: Client.t -> int -> Protocol.response
+val playid : Client.t -> int -> Protocol.response
 (** Begin playing the playlist at song id. *)
 
-val seek: Client.t -> int -> float -> Protocol.response
+val seek : Client.t -> int -> float -> Protocol.response
 (** Seek to the position time of entry songpos in the playlist. *)
 
-val seekid: Client.t -> int -> float -> Protocol.response
+val seekid : Client.t -> int -> float -> Protocol.response
 (** Seek to the position time of song id. *)
 
-val seekcur: Client.t -> float -> Protocol.response
+val seekcur : Client.t -> float -> Protocol.response
 (** Seek to the position time within the current song.
  TODO : If prefixed by '+' or '-', then the time is relative to the current
  playing position

@@ -22,40 +22,39 @@
 type t
 (** Client type *)
 
-val initialize: Connection.t -> t
+val initialize : Connection.t -> t
 (** Initialize the client with a connection. *)
 
 (** val send: t -> string -> Protocol.response
 Send to the mpd server a command or a request. The response of the server
     is returned under the form of a Protocol.response type. *)
 
-val send_request: t -> string -> Protocol.response
+val send_request : t -> string -> Protocol.response
+val send_command : t -> string -> Protocol.response
 
-val send_command: t -> string -> Protocol.response
-
-val mpd_banner: t -> string
+val mpd_banner : t -> string
 (** Return the mpd banner that the server send at the first connection of the
     client. *)
 
-val status: t -> (Status.t, string) result
+val status : t -> (Status.t, string) result
 (** Create a status request and returns the status under a Mpd.Status.t
     type if no error occurs.*)
 
-val ping: t -> Protocol.response
+val ping : t -> Protocol.response
 (** Does nothing but return "OK". *)
 
-val password: t -> string -> Protocol.response
+val password : t -> string -> Protocol.response
 (** This is used for authentication with the server. PASSWORD is simply the
     plaintext password. *)
 
-val close: t -> unit
+val close : t -> unit
 (** Close the connection to MPD. MPD will try to send the remaining output
     buffer before it actually closes the connection, but that cannot be
     guaranteed. This command will not generate a response. This function is a
     wrapper to the "close" command of the Mpd protocol, this means that it first
     send the "close" command and it close the connection at the socket level. *)
 
-val tagtypes: t -> string list
+val tagtypes : t -> string list
 (** Show a list of available tag types. It is an intersection of the
     metadata_to_use setting and this client's tag mask.
     About the tag mask: each client can decide to disable any number of tag
@@ -64,6 +63,7 @@ val tagtypes: t -> string list
     commands configure this list. *)
 
 (**/**)
+
 (* val tagtypes_disable: t -> string list -> Protocol.response
    val tagtypes_clear: t -> Protocol.response
    val tagtypes_all: t -> Protocol.response *)

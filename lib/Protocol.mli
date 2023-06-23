@@ -20,57 +20,50 @@
 (* https://github.com/sol/mpd/blob/master/src/ack.h *)
 
 type ack_error =
-  | Not_list        (* 1 *)
-  | Arg             (* 2 *)
-  | Password        (* 3 *)
-  | Permission      (* 4 *)
-  | Unknown         (* 5 *)
-  | No_exist        (* 50 *)
-  | Playlist_max    (* 51 *)
-  | System          (* 52 *)
-  | Playlist_load   (* 53 *)
-  | Update_already  (* 54 *)
-  | Player_sync     (* 55 *)
-  | Exist           (* 56 *)
-(** Type of error that could occur when a command is sent to the mpd server. *)
+  | Not_list (* 1 *)
+  | Arg (* 2 *)
+  | Password (* 3 *)
+  | Permission (* 4 *)
+  | Unknown (* 5 *)
+  | No_exist (* 50 *)
+  | Playlist_max (* 51 *)
+  | System (* 52 *)
+  | Playlist_load (* 53 *)
+  | Update_already (* 54 *)
+  | Player_sync (* 55 *)
+  | Exist (* 56 *)
+      (** Type of error that could occur when a command is sent to the mpd server. *)
 
 type response =
-  | Ok of string option | Error of (ack_error * int * string * string)
-(** Type of the response of the mpd server. *)
+  | Ok of string option
+  | Error of (ack_error * int * string * string)
+      (** Type of the response of the mpd server. *)
 
-val error_name:
-  ack_error -> string
+val error_name : ack_error -> string
 (** Get the error name of the error type. *)
 
-val str_error_to_val:
-  string -> ack_error
+val str_error_to_val : string -> ack_error
 (** Return the related type for the error returned by the server as a string. *)
 
-val parse_error_response:
-  string -> (ack_error * int * string * string)
+val parse_error_response : string -> ack_error * int * string * string
 (** Parse the error response of the mpd server into the error type. *)
 
-val parse_response:
-  string -> response
+val parse_response : string -> response
 (** Parse the mpd server response *)
 
 type mpd_response =
   | Incomplete
   | Complete of (string * int)
-(** Type used to describe a data while reading through a socket. *)
+      (** Type used to describe a data while reading through a socket. *)
 
-val full_mpd_banner:
-  string -> mpd_response
+val full_mpd_banner : string -> mpd_response
 (** fetch mpd banner*)
 
-val request_response:
-  string -> mpd_response
+val request_response : string -> mpd_response
 (** fetch request response.*)
 
-val command_response:
-  string -> mpd_response
+val command_response : string -> mpd_response
 (** fetch command response.*)
 
-val full_mpd_idle_event:
-  string -> mpd_response
+val full_mpd_idle_event : string -> mpd_response
 (** Get the Mpd response for an idle command. *)

@@ -19,18 +19,20 @@
 open Cmdliner
 open Ompdc_common
 
-let default_cmd =
+let default = Term.(ret (const (fun _ -> `Help (`Pager, None)) $ common_opts_t))
+
+let cmd_info =
   let doc = "a Mpd client written in OCaml." in
   let man = help_section in
-  Term.(ret (const (fun _ -> `Help (`Pager, None)) $ common_opts_t)),
-  Term.info "ompdc" ~version ~doc ~sdocs ~exits ~man
+  Cmd.info ~version ~doc ~sdocs ~exits ~man "ompdc"
 
-let cmds = List.concat [Ompdc_playback.cmds;
-                        Ompdc_stored_playlists.cmds;
-                         [Ompdc_status.cmd;
-                          Ompdc_idle.cmd;
-                          Ompdc_playback_options.cmd;
-                          help_cmd]
-                       ]
+let cmds =
+  List.concat
+    [
+      Ompdc_playback.cmds;
+      Ompdc_stored_playlists.cmds;
+      [ Ompdc_status.cmd; Ompdc_idle.cmd; Ompdc_playback_options.cmd; help_cmd ];
+    ]
+  |> List.map (fun t -> Cmd.v (snd t) (fst t))
 
-let () = Term.(exit @@ eval_choice default_cmd cmds)
+let () = exit @@ Cmd.(eval @@ group ~default cmd_info cmds)

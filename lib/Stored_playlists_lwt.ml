@@ -19,24 +19,27 @@
 open Lwt.Infix
 
 let listplaylists client =
-  Client_lwt.request client "listplaylists"
-  >>= function
-  | Protocol.Error (_, _ ,_ , message) -> Lwt.return_error message
-  | Protocol.Ok (response_opt) -> match response_opt with
-    | None -> Lwt.return_ok []
-        | Some response -> let playlists = Utils.read_list_playlists response in
-          Lwt.return_ok playlists
+  Client_lwt.request client "listplaylists" >>= function
+  | Protocol.Error (_, _, _, message) -> Lwt.return_error message
+  | Protocol.Ok response_opt -> (
+      match response_opt with
+      | None -> Lwt.return_ok []
+      | Some response ->
+          let playlists = Utils.read_list_playlists response in
+          Lwt.return_ok playlists)
 
 let load client playlist ?range () =
-  let request = match range with
+  let request =
+    match range with
     | None -> "load " ^ playlist
-    | Some (s, e) -> let r = String.concat ":" [string_of_int s; string_of_int e] in
-      String.concat " " ["load"; playlist; r]
+    | Some (s, e) ->
+        let r = String.concat ":" [ string_of_int s; string_of_int e ] in
+        String.concat " " [ "load"; playlist; r ]
   in
   Client_lwt.request client request
 
 let playlistadd client playlist uri =
-  let request = String.concat " " ["playlistadd"; playlist; uri] in
+  let request = String.concat " " [ "playlistadd"; playlist; uri ] in
   Client_lwt.send client request
 
 let playlistclear client playlist =
@@ -44,22 +47,20 @@ let playlistclear client playlist =
   Client_lwt.send client request
 
 let playlistdelete client playlist position =
-  let request = String.concat " " ["playlistclear";
-                                   playlist;
-                                   string_of_int position] in
+  let request =
+    String.concat " " [ "playlistclear"; playlist; string_of_int position ]
+  in
   Client_lwt.send client request
 
 let playlistmove client playlist from to_dest =
-  let request = String.concat " " ["playlistmove";
-                                   playlist;
-                                   string_of_int from;
-                                   string_of_int to_dest] in
+  let request =
+    String.concat " "
+      [ "playlistmove"; playlist; string_of_int from; string_of_int to_dest ]
+  in
   Client_lwt.send client request
 
 let rename client playlist new_name =
-  let request = String.concat " " ["rename";
-                                   playlist;
-                                   new_name] in
+  let request = String.concat " " [ "rename"; playlist; new_name ] in
   Client_lwt.send client request
 
 let rm client playlist =

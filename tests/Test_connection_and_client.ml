@@ -19,7 +19,6 @@
 open OUnit2
 open Mpd
 open Test_configuration
-
 module Clt = Mpd.Client
 module Cnx = Mpd.Connection
 module TU = Test_utils
@@ -34,69 +33,64 @@ let test_connection_initialize _test_ctxt =
   Cnx.close connection
 
 let test_client_send _test_ctxt =
-  TU.run_test begin fun client ->
-    match Clt.send_command client "ping" with
-    | Error _ -> assert_equal ~msg false true
-    | Ok response_opt -> match response_opt with
-      | None -> assert_equal true true
-      | Some _response -> assert_equal ~msg false true
-  end
+  TU.run_test (fun client ->
+      match Clt.send_command client "ping" with
+      | Error _ -> assert_equal ~msg false true
+      | Ok response_opt -> (
+          match response_opt with
+          | None -> assert_equal true true
+          | Some _response -> assert_equal ~msg false true))
 
 let test_client_send_bad_command _test_ctxt =
-  TU.run_test begin fun client ->
-    match Clt.send_command client "badcommand" with
-    | Error (ack_val, ack_cmd_num, ack_cmd, ack_message)  ->
-      let () = assert_equal Protocol.Unknown ack_val  in
-      let () = assert_equal ~printer:string_of_int 0 ack_cmd_num in
-      let () = assert_equal ~printer "" ack_cmd in
-      assert_equal ~printer "unknown command \"badcommand\"" ack_message
-    | Ok _ -> assert_equal ~msg false true
-  end
+  TU.run_test (fun client ->
+      match Clt.send_command client "badcommand" with
+      | Error (ack_val, ack_cmd_num, ack_cmd, ack_message) ->
+          let () = assert_equal Protocol.Unknown ack_val in
+          let () = assert_equal ~printer:string_of_int 0 ack_cmd_num in
+          let () = assert_equal ~printer "" ack_cmd in
+          assert_equal ~printer "unknown command \"badcommand\"" ack_message
+      | Ok _ -> assert_equal ~msg false true)
 
 let test_client_banner _test_ctxt =
-  TU.run_test begin fun client ->
-    let pattern = "MPD [0-9].[0-9][0-9].[0-9]" in
-    let banner = Clt.mpd_banner client in
-    let msg = Printf.sprintf "Banner : %s" banner in
-    assert_equal true ~msg Str.(string_match (regexp pattern) banner 0)
-  end
+  TU.run_test (fun client ->
+      let pattern = "MPD [0-9].[0-9][0-9].[0-9]" in
+      let banner = Clt.mpd_banner client in
+      let msg = Printf.sprintf "Banner : %s" banner in
+      assert_equal true ~msg Str.(string_match (regexp pattern) banner 0))
 
 let test_client_status _test_ctxt =
-  TU.run_test begin fun client ->
-    match Client.status client with
-    | Error message ->
-      assert_equal ~printer:(fun _ -> message) true false
-    | Ok status ->
-      let state = Mpd.(Status.string_of_state (Status.state status)) in
-      assert_equal ~printer:(fun s -> s) "stop" state
-  end
+  TU.run_test (fun client ->
+      match Client.status client with
+      | Error message -> assert_equal ~printer:(fun _ -> message) true false
+      | Ok status ->
+          let state = Mpd.(Status.string_of_state (Status.state status)) in
+          assert_equal ~printer:(fun s -> s) "stop" state)
 
 let test_client_ping _test_ctxt =
-  TU.run_test begin fun client ->
-    match Clt.ping client with
-    | Error _ -> assert_equal ~msg false true
-    | Ok response_opt ->
-      match response_opt with
-      | None -> assert_equal true true
-      | Some _response -> assert_equal ~msg false true
-  end
+  TU.run_test (fun client ->
+      match Clt.ping client with
+      | Error _ -> assert_equal ~msg false true
+      | Ok response_opt -> (
+          match response_opt with
+          | None -> assert_equal true true
+          | Some _response -> assert_equal ~msg false true))
 
 let test_client_tagtypes _test_ctxt =
-  TU.run_test begin fun client ->
-    let tagtypes = Clt.tagtypes client in
-    let () =
-      assert_equal ~printer:string_of_bool true (List.length tagtypes > 0) in
-    assert_equal ~printer:string_of_bool true (List.mem "Artist" tagtypes)
-  end
+  TU.run_test (fun client ->
+      let tagtypes = Clt.tagtypes client in
+      let () =
+        assert_equal ~printer:string_of_bool true (List.length tagtypes > 0)
+      in
+      assert_equal ~printer:string_of_bool true (List.mem "Artist" tagtypes))
 
 let tests =
-  "Connection and client tests" >:::
-  [
-    "Connection initialize test" >:: test_connection_initialize;
-    "Client send test" >:: test_client_send;
-    "Client send bad command" >:: test_client_send_bad_command;
-    "Client banner test" >:: test_client_banner;
-    "Client status test" >:: test_client_status;
-    "Client ping test" >:: test_client_ping;
-    "Client tagtypes" >:: test_client_tagtypes
-  ]
+  "Connection and client tests"
+  >::: [
+         "Connection initialize test" >:: test_connection_initialize;
+         "Client send test" >:: test_client_send;
+         "Client send bad command" >:: test_client_send_bad_command;
+         "Client banner test" >:: test_client_banner;
+         "Client status test" >:: test_client_status;
+         "Client ping test" >:: test_client_ping;
+         "Client tagtypes" >:: test_client_tagtypes;
+       ]

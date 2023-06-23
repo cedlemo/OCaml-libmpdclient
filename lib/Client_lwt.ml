@@ -18,84 +18,74 @@
 
 open Lwt.Infix
 
-type t = {connection : Connection_lwt.t; mpd_banner : string }
+type t = { connection : Connection_lwt.t; mpd_banner : string }
 
 let initialize connection =
-  Connection_lwt.read_mpd_banner connection
-  >>= fun message ->
-  Lwt.return {connection = connection; mpd_banner = message}
+  Connection_lwt.read_mpd_banner connection >>= fun message ->
+  Lwt.return { connection; mpd_banner = message }
 
-let mpd_banner {mpd_banner = banner; _ } =
-  Lwt.return banner
+let mpd_banner { mpd_banner = banner; _ } = Lwt.return banner
 
 let idle client =
-  let {connection = connection; _} = client in
+  let { connection; _ } = client in
   let cmd = "idle\n" in
-  Connection_lwt.write connection cmd
-  >>= function
-    | (-1) -> Lwt.return (Error "Connection error: unable to write \"idle\" command.")
-    | _ -> Connection_lwt.read_idle_events connection
-           >|= fun event_name -> Ok event_name
+  Connection_lwt.write connection cmd >>= function
+  | -1 ->
+      Lwt.return (Error "Connection error: unable to write \"idle\" command.")
+  | _ ->
+      Connection_lwt.read_idle_events connection >|= fun event_name ->
+      Ok event_name
 
 let rec idle_loop client on_event =
-  let {connection = connection; _} = client in
+  let { connection; _ } = client in
   let cmd = "idle\n" in
-  Connection_lwt.write connection cmd
-  >>= function
-    | (-1) -> Lwt.return () (* TODO: Should return a meaningfull value so that the user can exit on this value. *)
-    | _ -> Connection_lwt.read_idle_events connection
-      >>= fun response ->
-        on_event response
-        >>= function
-          | true -> Lwt.return ()
-          | false -> idle_loop client on_event
+  Connection_lwt.write connection cmd >>= function
+  | -1 ->
+      Lwt.return ()
+      (* TODO: Should return a meaningfull value so that the user can exit on this value. *)
+  | _ -> (
+      Connection_lwt.read_idle_events connection >>= fun response ->
+      on_event response >>= function
+      | true -> Lwt.return ()
+      | false -> idle_loop client on_event)
 
 let send client cmd =
-  let {connection = c; _} = client in
-  Connection_lwt.write c (cmd ^ "\n")
-  >>= fun _ ->
-    Connection_lwt.read_command_response c
-    >>= fun response ->
-      let parsed_response = Protocol.parse_response response in
-      Lwt.return parsed_response
+  let { connection = c; _ } = client in
+  Connection_lwt.write c (cmd ^ "\n") >>= fun _ ->
+  Connection_lwt.read_command_response c >>= fun response ->
+  let parsed_response = Protocol.parse_response response in
+  Lwt.return parsed_response
 
 let request client cmd =
-  let {connection = c; _} = client in
-  Connection_lwt.write c (cmd ^ "\n")
-  >>= fun _ ->
-    Connection_lwt.read_request_response c
-    >>= fun response ->
-      let parsed_response = Protocol.parse_response response in
-      Lwt.return parsed_response
+  let { connection = c; _ } = client in
+  Connection_lwt.write c (cmd ^ "\n") >>= fun _ ->
+  Connection_lwt.read_request_response c >>= fun response ->
+  let parsed_response = Protocol.parse_response response in
+  Lwt.return parsed_response
 
 let status client =
-  request client "status"
-  >>= function
-    | Ok lines -> (
-        match lines with
-        | None -> Lwt.return (Error "No status")
-        | Some lines' -> let status_pairs = Utils.split_lines lines' in
-            let status = Status.parse status_pairs in Lwt.return (Ok status)
-    )
-    | Error (_ack, _ack_cmd_num, _cmd, error_message) ->
-        Lwt.return (Error error_message)
+  request client "status" >>= function
+  | Ok lines -> (
+      match lines with
+      | None -> Lwt.return (Error "No status")
+      | Some lines' ->
+          let status_pairs = Utils.split_lines lines' in
+          let status = Status.parse status_pairs in
+          Lwt.return (Ok status))
+  | Error (_ack, _ack_cmd_num, _cmd, error_message) ->
+      Lwt.return (Error error_message)
 
-let ping client =
-  send client "ping"
-
-let password client mdp =
-  send client (String.concat " " ["password"; mdp])
-
-let noidle client =
-  send client "noidle"
-  (* let {connection = connection; _} = client in
-  Connection_lwt.write connection "noidle\n"
-  >>= fun _ ->
-    Connection_lwt.read_no_idle_response c
-    >>= fun response ->
-      let parsed_response = Protocol.parse_response response in
-      Lwt.return parsed_response *)
+let ping client = send client "ping"
+let password client mdp = send client (String.concat " " [ "password"; mdp ])
+let noidle client = send client "noidle"
+(* let {connection = connection; _} = client in
+   Connection_lwt.write connection "noidle\n"
+   >>= fun _ ->
+     Connection_lwt.read_no_idle_response c
+     >>= fun response ->
+       let parsed_response = Protocol.parse_response response in
+       Lwt.return parsed_response *)
 
 let close client =
-  let {connection = connection; _} = client in
+  let { connection; _ } = client in
   Connection_lwt.close connection

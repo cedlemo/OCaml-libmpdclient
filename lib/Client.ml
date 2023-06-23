@@ -16,66 +16,71 @@
  * along with OCaml-libmpdclient.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-type t = {connection : Connection.t; mpd_banner : string }
+type t = { connection : Connection.t; mpd_banner : string }
 
 let initialize connection =
   let message = Connection.read_mpd_banner connection in
   let pattern = "OK \\(.*\\)\n" in
-  let mpd_banner = match Str.string_match (Str.regexp pattern) message 0 with
-  | true -> Str.matched_group 1 message
-  | false -> message
-  in { connection; mpd_banner }
+  let mpd_banner =
+    match Str.string_match (Str.regexp pattern) message 0 with
+    | true -> Str.matched_group 1 message
+    | false -> message
+  in
+  { connection; mpd_banner }
 
 let send_command client mpd_cmd =
-  let {connection = c; _} = client in
-  let cmd = (Utils.remove_new_lines mpd_cmd) ^ "\n" in
+  let { connection = c; _ } = client in
+  let cmd = Utils.remove_new_lines mpd_cmd ^ "\n" in
   Connection.write c cmd;
   let response = Connection.read_command_response c in
   let () = Utils.print_data response in
   Protocol.parse_response response
 
 let send_request client mpd_cmd =
-  let {connection = c; _} = client in
-  let request = (Utils.remove_new_lines mpd_cmd) ^ "\n" in
+  let { connection = c; _ } = client in
+  let request = Utils.remove_new_lines mpd_cmd ^ "\n" in
   Connection.write c request;
   let response = Connection.read_request_response c in
   let () = Utils.print_data response in
   Protocol.parse_response response
 
-let mpd_banner {mpd_banner = banner; _ } =
-  banner
+let mpd_banner { mpd_banner = banner; _ } = banner
 
 let status client =
   let response = send_request client "status" in
   match response with
-  | Ok (lines) -> (
-    match lines with
+  | Ok lines -> (
+      match lines with
       | None -> Error "Empty status"
-      | Some lines' -> let status_pairs = Utils.split_lines lines' in
-           Ok (Status.parse status_pairs)
-  )
+      | Some lines' ->
+          let status_pairs = Utils.split_lines lines' in
+          Ok (Status.parse status_pairs))
   | Error (ack, _ack_cmd_num, _cmd, ack_message) ->
-      let message = String.concat " " ["Error type:";
-                                       Protocol.error_name ack;
-                                       "-- error message:";
-                                       ack_message] in
+      let message =
+        String.concat " "
+          [
+            "Error type:";
+            Protocol.error_name ack;
+            "-- error message:";
+            ack_message;
+          ]
+      in
       Error message
 
-let ping client =
-  send_command client "ping"
+let ping client = send_command client "ping"
 
 let password client mdp =
-  send_command client (String.concat " " ["password"; mdp])
+  send_command client (String.concat " " [ "password"; mdp ])
 
 let tagtypes client =
   let response = send_request client "tagtypes" in
   match response with
-  | Ok (lines) -> (
-    match lines with
-    | None -> []
-    | Some lines' -> let tagid_keys_vals = Utils.split_lines lines' in
-       List.rev (Utils.values_of_pairs tagid_keys_vals)
-  )
+  | Ok lines -> (
+      match lines with
+      | None -> []
+      | Some lines' ->
+          let tagid_keys_vals = Utils.split_lines lines' in
+          List.rev (Utils.values_of_pairs tagid_keys_vals))
   | Error (_ack, _ack_cmd_num, _cmd, _error) -> []
 (*
 (** Remove one or more tags from the list of tag types the client is
@@ -101,6 +106,6 @@ let tagtypes_all client =
  *)
 
 let close client =
-  let {connection = c; _} = client in
-  Connection.write c ("close\n");
-  Connection.close c;
+  let { connection = c; _ } = client in
+  Connection.write c "close\n";
+  Connection.close c
